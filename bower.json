@@ -1,0 +1,17 @@
+{
+  "name": "launcher-partial",
+  "version": "2.0.0-pre11",
+  "homepage": "https://github.com/Polyjuice/Launcher",
+  "authors": [
+    "Tomek Wytrebowicz <tomalecpub@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "wwwroot/sys",
+    "test",
+    "tests"
+  ]
+}
