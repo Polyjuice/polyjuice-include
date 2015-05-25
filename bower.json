@@ -1,11 +1,12 @@
 {
-  "name": "launcher-partial",
+  "name": "imported-template",
   "version": "2.0.0-pre11",
+  "description": "imported-template extended with Polyjuice features",
   "homepage": "https://github.com/Polyjuice/Launcher",
+  "main": "imported-template.html.html",
   "authors": [
     "Tomek Wytrebowicz <tomalecpub@gmail.com>"
   ],
-  "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -13,5 +14,9 @@
     "wwwroot/sys",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "juicy-tile-grid": "~0.1.1",
+    "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#~0.0.1"
+  }
 }
