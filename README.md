@@ -2,9 +2,7 @@
 ==============
 
 `<polyjuice-include>` is a custom element that let's you load HTML partials into your Polyjuice page, it uses [`<imported-template>`](https://github.com/Juicy/imported-template), so, you can take full control over loaded `<script>`s and `<link rel="import">`s. Thanks to HTML Imports - caching, script execution, etc. is completely native.
-
-In fact it's just `<template is="imported-template">` wrapped into meaningful container with some sugar attributes.
-
+g
 ### Small sample
 
 If you have **/app/sub/page/path.html**:
@@ -65,7 +63,7 @@ Install the component using [Bower](http://bower.io/):
 $ bower install Polyjuice/polyjuice-include --save
 ```
 
-Or [download as ZIP](https://github.com/Polyjuice/polyjuice-include/archive/gh-pages.zip).
+Or [download as ZIP](https://github.com/Polyjuice/polyjuice-include/archive/master.zip).
 
 ## Usage
 
