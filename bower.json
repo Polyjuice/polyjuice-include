@@ -26,6 +26,6 @@
     "imported-template": "~0.0.9",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
     "juicy-tile-grid": ">=0.1.0",
-    "juicy-tile-editor": "Juicy/juicy-tile-editor#gh-pages",
+    "juicy-tile-editor": "Juicy/juicy-tile-editor#gh-pages"
   }
 }
