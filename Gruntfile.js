@@ -28,10 +28,10 @@ module.exports = function(grunt) {
 
         bump: {
           options: {
-            files: ['package.json', 'bower.json', 'polyjuice-include.html'],
+            files: ['package.json', 'polyjuice-include.html'],
             commit: true,
             commitMessage: '%VERSION%',
-            commitFiles: ['package.json', 'bower.json', 'polyjuice-include.html'],
+            commitFiles: ['package.json', 'polyjuice-include.html'],
             createTag: true,
             tagName: '%VERSION%',
             tagMessage: 'Version %VERSION%',
