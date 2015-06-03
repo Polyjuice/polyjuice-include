@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../polyjuice-include.html">
+  </head>
+  <body>
+
+    <template bind id="root">
+      <polyjuice-include partial="{{Page}}"></polyjuice-include>
+    </template>
+
+    <script>
+var model = {
+      Html: "../templateToInclude.html",
+      doesItWork: "works!"
+    };
+document.getElementById('root').model = {
+    Page: model
+  };
+
+describe('after element was attached to DOM', function () {
+  var include;
+  before(function(done){
+    setTimeout(function(){
+      include = document.querySelector('polyjuice-include');
+      done();
+    })
+  });
+
+  it('should attach `.Html` property as content attribute for `<imported-template>`', function () {
+    expect(include.firstChild.getAttribute("content")).to.equal(model.Html);
+  });
+  it('should attach partial model to `imported-template`', function () {
+    expect(include.firstChild.model).to.equal(model);
+  });
+});
+    </script>
+
+  </body>
+</html>

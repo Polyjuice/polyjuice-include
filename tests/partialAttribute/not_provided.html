@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../polyjuice-include.html">
+  </head>
+  <body>
+
+    <polyjuice-include></polyjuice-include>
+
+    <script>
+var include = document.querySelector('polyjuice-include');
+describe('when created', function () {
+  var createdInclude;
+  beforeEach(function(){
+    createdInclude = document.createElement("polyjuice-include");
+  })
+  it('should add `<template is="imported-template">` as child node', function () {
+    expect(include.firstChild.tagName).to.equal("TEMPLATE");
+    expect(include.firstChild.getAttribute("is").toLowerCase()).to.equal("imported-template");
+  });
+  it('added `<imported-template>` should not have any model attached', function () {
+    expect(include.firstChild.model).to.be.undefined;
+  });
+  it('added `<imported-template>` should not have any content attribute attached', function () {
+    expect(include.firstChild.getAttribute("content")).to.be.null;
+  });
+});
+describe('when attached to DOM without any partial value', function () {
+
+  it('should stamp `<template is="imported-template">` as child node', function () {
+    expect(include.firstChild.tagName).to.equal("TEMPLATE");
+    expect(include.firstChild.getAttribute("is").toLowerCase()).to.equal("imported-template");
+  });
+  it('stamped `<imported-template>` should not have any model attached', function () {
+    expect(include.firstChild.model).to.be.undefined;
+  });
+  it('stamped `<imported-template>` should not have any content attribute attached', function () {
+    expect(include.firstChild.getAttribute("content")).to.be.null;
+  });
+});
+
+    </script>
+
+  </body>
+</html>
