@@ -23,5 +23,8 @@
   ],
   "dependencies": {
     "imported-template": "~0.0.9"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#~3.1.3"
   }
 }

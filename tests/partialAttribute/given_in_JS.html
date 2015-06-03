@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../polyjuice-include.html">
+  </head>
+  <body>
+
+    <polyjuice-include></polyjuice-include>
+
+    <script>
+var include = document.querySelector('polyjuice-include');
+var model = {
+  Html: "../templateToInclude.html",
+  doesItWork: "works!"
+};
+include.partial = model;
+describe('before element was attached to DOM', function () {
+  var createdInclude;
+  beforeEach(function(){
+    createdInclude = document.createElement("polyjuice-include");
+    createdInclude.partial = model;
+  })
+
+  it('should not attach `.Html` property as content attribute for `<imported-template>`', function () {
+    expect(createdInclude.firstChild.getAttribute("content")).to.equal.null;
+  });
+  it('should not attach partial model to `imported-template`', function () {
+    expect(createdInclude.firstChild.model).to.be.undefined;
+  });
+});
+describe('after element was attached to DOM', function () {
+
+  it('should attach `.Html` property as content attribute for `<imported-template>`', function () {
+    expect(include.firstChild.getAttribute("content")).to.equal(model.Html);
+  });
+  it('should attach partial model to `imported-template`', function () {
+    expect(include.firstChild.model).to.equal(model);
+  });
+});
+describe('after element was detached to DOM', function () {
+  var newModel = {
+    Html: "../new_templateToInclude.html",
+    doesItWork: "does NOT work!"
+  };
+  before(function(){
+    //importedTemplate = include.firstChild
+    include.parentNode.removeChild(include);
+    include.partial = newModel;
+  });
+  after(function(){
+    document.body.appendChild(include);
+    include.partial = model;
+  });
+
+  it('should not change content attribute for `<imported-template>`', function () {
+    expect(include.firstChild.getAttribute("content")).to.equal(model.Html);
+  });
+  it('should not change model of `imported-template`', function () {
+    expect(include.firstChild.model).to.equal(model);
+  });
+});
+
+    </script>
+
+  </body>
+</html>
