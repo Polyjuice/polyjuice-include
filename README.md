@@ -93,7 +93,7 @@ Or [download as ZIP](https://github.com/Polyjuice/polyjuice-include/archive/mast
 ## Test suite
 
  - local browser `./tests/index.html`
- - online `http://polyjuice.github.io/polyjuice-include/tests`
+ - [online](http://polyjuice.github.io/polyjuice-include/tests)
 
 ## Contributing
 
