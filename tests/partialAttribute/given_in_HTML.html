@@ -12,7 +12,7 @@
   </head>
   <body>
 
-    <polyjuice-include partial='{"Html": "../templateToInclude.html", "doesItWork": "works!"}'></polyjuice-include>
+    <polyjuice-include partial="{&quot;Html&quot;: &quot;../templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;works!&quot;}"></polyjuice-include>
 
     <script>
 var include = document.querySelector('polyjuice-include');
@@ -26,7 +26,6 @@ describe('after element was attached to DOM', function () {
     expect(include.firstChild.getAttribute("content")).to.equal(model.Html);
   });
   it('should attach partial model to `imported-template`', function () {
-    debugger
     expect( JSON.stringify(include.firstChild.model) ).to.equal( JSON.stringify(model) );
   });
 });
