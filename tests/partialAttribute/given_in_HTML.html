@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../polyjuice-include.html">
+  </head>
+  <body>
+
+    <polyjuice-include partial='{"Html": "../templateToInclude.html", "doesItWork": "works!"}'></polyjuice-include>
+
+    <script>
+var include = document.querySelector('polyjuice-include');
+var model = {
+  "Html": "../templateToInclude.html",
+  "doesItWork": "works!"
+};
+describe('after element was attached to DOM', function () {
+
+  it('should attach `.Html` property as content attribute for `<imported-template>`', function () {
+    expect(include.firstChild.getAttribute("content")).to.equal(model.Html);
+  });
+  it('should attach partial model to `imported-template`', function () {
+    debugger
+    expect( JSON.stringify(include.firstChild.model) ).to.equal( JSON.stringify(model) );
+  });
+});
+describe('after element was detached to DOM', function () {
+  var newModel = {
+    "Html": "../new_templateToInclude.html",
+    "doesItWork": "does NOT work!"
+  };
+  before(function(){
+    //importedTemplate = include.firstChild
+    include.parentNode.removeChild(include);
+    include.setAttribute("partial", JSON.stringify(newModel));
+  });
+  after(function(){
+    document.body.appendChild(include);
+    include.setAttribute("partial", JSON.stringify(model));
+  });
+
+  it('should not change content attribute for `<imported-template>`', function () {
+    expect(include.firstChild.getAttribute("content")).to.equal(model.Html);
+  });
+  it('should not change model of `imported-template`', function () {
+    expect( JSON.stringify(include.firstChild.model) ).to.equal( JSON.stringify(model) );
+  });
+});
+
+    </script>
+
+  </body>
+</html>

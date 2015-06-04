@@ -11,6 +11,15 @@ version: 0.0.2
 
     PolyjuiceIncludePrototype.partial = null;
     PolyjuiceIncludePrototype.isAttached = false;
+
+    function partialAttributeToProperty(element){
+      var attrVal = element.getAttribute("partial");
+      // no value, or Polymer binding
+      if(!attrVal || attrVal.match(/\{\{.*\}\}|\[\[.*\]\]/)){
+        return;
+      }
+      element.partial = JSON.parse(attrVal);
+    }
     /**
      * Define partial setter, stamp inner `imported-template`
      */
@@ -23,7 +32,7 @@ version: 0.0.2
       // so it could be change by VanillaJs without Polymer Template Binding
       Object.defineProperty(this,"partial",{
         set: function(newValue){
-          console.log("partial set");
+          //d console.log("partial set");
           partial = newValue;
           polyjuiceInclude.partialChanged(partial);
         },
@@ -39,6 +48,7 @@ version: 0.0.2
     };
 
     PolyjuiceIncludePrototype.attachedCallback = function () {
+      partialAttributeToProperty(this);
       this.isAttached = true;
       //d console.log("polyjuice-partial attached");
       this.partialChanged();
@@ -50,6 +60,7 @@ version: 0.0.2
     };
 
     PolyjuiceIncludePrototype.attributeChangedCallback = function(name, oldVal, newVal){
+      partialAttributeToProperty(this);
       //d console.log("polyjuice-partial attr changed");
       // if(this.isAttached && (name === "content" || name === "iframe")) {
       //   debugger
