@@ -1,15 +1,15 @@
 {
-  "name": "polyjuice-include",
+  "name": "starcounter-include",
   "authors": [
     "Tomek Wytrebowicz <tomalecpub@gmail.com>"
   ],
   "homepage": "https://github.com/Polyjuice/launcher-include",
-  "description": "Custom Element to include HTML partials/templates from Polyjuice, enhanced witch Launcher layout features.",
-  "main": "polyjuice-include.html",
+  "description": "Custom Element to include HTML partials/templates from Starcounter, enhanced witch Launcher layout features.",
+  "main": "starcounter-include.html",
   "keywords": [
     "template",
     "partial",
-    "polyjuice",
+    "starcounter",
     "include",
     "imported-template"
   ],

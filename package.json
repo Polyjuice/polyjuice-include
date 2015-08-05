@@ -1,8 +1,8 @@
 {
   "name": "launcher-include",
   "version": "0.0.6",
-  "description": "Custom Element to include HTML partials/templates from Polyjuice, enhanced witch Launcher layout features.",
-  "main": "polyjuice-include.html",
+  "description": "Custom Element to include HTML partials/templates from Starcounter, enhanced witch Launcher layout features.",
+  "main": "starcounter-include.html",
   "directories": {
     "test": "tests"
   },

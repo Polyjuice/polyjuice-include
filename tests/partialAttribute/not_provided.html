@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -8,19 +8,19 @@
     <script src="../../../web-component-tester/browser.js"></script>
 
     <!-- Step 1: import the element to test -->
-    <link rel="import" href="../../polyjuice-include.html">
+    <link rel="import" href="../../starcounter-include.html">
   </head>
   <body>
 
-    <polyjuice-include></polyjuice-include>
+    <starcounter-include></starcounter-include>
 
     <script>
-var include = document.querySelector('polyjuice-include');
+var include = document.querySelector('starcounter-include');
 describe('when created', function () {
   var createdInclude;
   beforeEach(function(){
-    createdInclude = document.createElement("polyjuice-include");
-  })
+    createdInclude = document.createElement("starcounter-include");
+  });
   it('should add `<template is="imported-template">` as child node', function () {
     expect(include.firstChild.tagName).to.equal("TEMPLATE");
     expect(include.firstChild.getAttribute("is").toLowerCase()).to.equal("imported-template");

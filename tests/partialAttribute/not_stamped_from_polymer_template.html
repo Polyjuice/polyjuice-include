@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -8,12 +8,12 @@
     <script src="../../../web-component-tester/browser.js"></script>
 
     <!-- Step 1: import the element to test -->
-    <link rel="import" href="../../polyjuice-include.html">
+    <link rel="import" href="../../starcounter-include.html">
   </head>
   <body>
 
     <template bind id="root">
-      <polyjuice-include></polyjuice-include>
+      <starcounter-include></starcounter-include>
     </template>
 
     <script>
@@ -27,7 +27,7 @@ describe('after element was attached to DOM', function () {
   var include;
   before(function(done){
     setTimeout(function(){
-      include = document.querySelector('polyjuice-include');
+      include = document.querySelector('starcounter-include');
       done();
     })
   });
