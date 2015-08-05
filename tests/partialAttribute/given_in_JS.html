@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -8,14 +8,14 @@
     <script src="../../../web-component-tester/browser.js"></script>
 
     <!-- Step 1: import the element to test -->
-    <link rel="import" href="../../polyjuice-include.html">
+    <link rel="import" href="../../starcounter-include.html">
   </head>
   <body>
 
-    <polyjuice-include></polyjuice-include>
+    <starcounter-include></starcounter-include>
 
     <script>
-var include = document.querySelector('polyjuice-include');
+var include = document.querySelector('starcounter-include');
 var model = {
   Html: "../templateToInclude.html",
   doesItWork: "works!"
@@ -24,7 +24,7 @@ include.partial = model;
 describe('before element was attached to DOM', function () {
   var createdInclude;
   beforeEach(function(){
-    createdInclude = document.createElement("polyjuice-include");
+    createdInclude = document.createElement("starcounter-include");
     createdInclude.partial = model;
   })
 
