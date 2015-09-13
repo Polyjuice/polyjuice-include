@@ -12,7 +12,7 @@
   </head>
   <body>
 
-    <template bind id="root">
+    <template is="dom-bind" id="root">
       <starcounter-include></starcounter-include>
     </template>
 
@@ -33,10 +33,10 @@ describe('after element was attached to DOM', function () {
   });
 
   it('should not attach `.Html` property as content attribute for `<imported-template>`', function () {
-    expect(include.firstChild.getAttribute("content")).to.be.null;
+    expect(include.querySelector("template").getAttribute("content")).to.be.null;
   });
   it('should not attach partial model to `imported-template`', function () {
-    expect(include.firstChild.model).to.be.undefined;
+    expect(include.querySelector("template").model).to.be.falsy;
   });
 });
     </script>

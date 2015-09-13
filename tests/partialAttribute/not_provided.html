@@ -21,28 +21,20 @@ describe('when created', function () {
   beforeEach(function(){
     createdInclude = document.createElement("starcounter-include");
   });
-  it('should add `<template is="imported-template">` as child node', function () {
-    expect(include.firstChild.tagName).to.equal("TEMPLATE");
-    expect(include.firstChild.getAttribute("is").toLowerCase()).to.equal("imported-template");
-  });
-  it('added `<imported-template>` should not have any model attached', function () {
-    expect(include.firstChild.model).to.be.undefined;
-  });
-  it('added `<imported-template>` should not have any content attribute attached', function () {
-    expect(include.firstChild.getAttribute("content")).to.be.null;
+  it('should not add any child nodes', function () {
+    expect(createdInclude.children.length).to.equal(0);
   });
 });
 describe('when attached to DOM without any partial value', function () {
-
-  it('should stamp `<template is="imported-template">` as child node', function () {
-    expect(include.firstChild.tagName).to.equal("TEMPLATE");
-    expect(include.firstChild.getAttribute("is").toLowerCase()).to.equal("imported-template");
+  it('should add `<template is="imported-template">` as descendant node', function () {
+    expect(include.querySelector("template")).to.be.not.null;
+    expect(include.querySelector("template").getAttribute("is").toLowerCase()).to.equal("imported-template");
   });
-  it('stamped `<imported-template>` should not have any model attached', function () {
-    expect(include.firstChild.model).to.be.undefined;
+  it('added `<imported-template>` should not have any model attached', function () {
+    expect(include.querySelector("template").model).to.be.falsy;
   });
-  it('stamped `<imported-template>` should not have any content attribute attached', function () {
-    expect(include.firstChild.getAttribute("content")).to.be.null;
+  it('added `<imported-template>` should not have any content attribute attached', function () {
+    expect(include.querySelector("template").getAttribute("content")).to.be.null;
   });
 });
 
