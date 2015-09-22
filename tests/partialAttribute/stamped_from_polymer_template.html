@@ -7,13 +7,14 @@
     <script src="../../../webcomponentsjs/webcomponents.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
 
+    <link rel="import" href="../../../polymer/polymer.html">
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../../starcounter-include.html">
   </head>
   <body>
 
-    <template bind id="root">
-      <starcounter-include partial="{{Page}}"></starcounter-include>
+    <template is="dom-bind" id="root">
+      <starcounter-include partial="{{model.Page}}"></starcounter-include>
     </template>
 
     <script>
@@ -35,10 +36,10 @@ describe('after element was attached to DOM', function () {
   });
 
   it('should attach `.Html` property as content attribute for `<imported-template>`', function () {
-    expect(include.firstChild.getAttribute("content")).to.equal(model.Html);
+    expect(include.querySelector("template").getAttribute("content")).to.equal(model.Html);
   });
   it('should attach partial model to `imported-template`', function () {
-    expect(include.firstChild.model).to.equal(model);
+    expect(include.querySelector("template").model).to.equal(model);
   });
 });
     </script>

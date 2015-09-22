@@ -29,19 +29,19 @@ describe('before element was attached to DOM', function () {
   })
 
   it('should not attach `.Html` property as content attribute for `<imported-template>`', function () {
-    expect(createdInclude.firstChild.getAttribute("content")).to.equal.null;
+    expect(createdInclude.template.getAttribute("content")).to.equal.null;
   });
   it('should not attach partial model to `imported-template`', function () {
-    expect(createdInclude.firstChild.model).to.be.undefined;
+    expect(createdInclude.template.model).to.be.falsy;
   });
 });
 describe('after element was attached to DOM', function () {
 
   it('should attach `.Html` property as content attribute for `<imported-template>`', function () {
-    expect(include.firstChild.getAttribute("content")).to.equal(model.Html);
+    expect(include.querySelector("template").getAttribute("content")).to.equal(model.Html);
   });
   it('should attach partial model to `imported-template`', function () {
-    expect(include.firstChild.model).to.equal(model);
+    expect(include.querySelector("template").model).to.equal(model);
   });
 });
 describe('after element was detached to DOM', function () {
@@ -50,7 +50,7 @@ describe('after element was detached to DOM', function () {
     doesItWork: "does NOT work!"
   };
   before(function(){
-    //importedTemplate = include.firstChild
+    //importedTemplate = include.querySelector("template")
     include.parentNode.removeChild(include);
     include.partial = newModel;
   });
@@ -60,10 +60,10 @@ describe('after element was detached to DOM', function () {
   });
 
   it('should not change content attribute for `<imported-template>`', function () {
-    expect(include.firstChild.getAttribute("content")).to.equal(model.Html);
+    expect(include.querySelector("template").getAttribute("content")).to.equal(model.Html);
   });
   it('should not change model of `imported-template`', function () {
-    expect(include.firstChild.model).to.equal(model);
+    expect(include.querySelector("template").model).to.equal(model);
   });
 });
 
