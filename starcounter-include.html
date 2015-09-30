@@ -3,7 +3,7 @@
 Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tile-grid> and layout editor.
-Uses juicy-tiles setup given from DB as juicyTilesSetup.
+Uses juicy-tiles setup given from DB as layout.
 version: 0.0.8
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
@@ -19,9 +19,11 @@ version: 0.0.8
 
 <template id="partial-template">
     <juicy-tiles-setup-sync
-        api-url="/launcher/juicytilessetup"></juicy-tiles-setup-sync>
+        api-url="/sc/layout"></juicy-tiles-setup-sync>
     <juicy-tile-grid
         defaultTileSetup='{
+            "height": 1,
+            "heightDynamic": true,
             "precalculateHeight": true,
             "width": "100%",
             "widthFlexible": true
@@ -125,10 +127,10 @@ version: 0.0.8
         !this.partial.PartialId && console.warn("partial.PartialId for", this, "is missing.");
         if(this.isAttached && html){
           this.sync.setAttribute("name", this.partial.PartialId);
-          this.sync.storedValue = this.partial.juicyTilesSetup;
+          this.sync.storedValue = this.partial.layout;
           this.grid.setAttribute("name", this.partial.PartialId);
-          if(this.partial.juicyTilesSetup){
-            this.grid.setup = JSON.parse(JSON.stringify(this.partial.juicyTilesSetup));
+          if(this.partial.layout){
+            this.grid.setup = JSON.parse(JSON.stringify(this.partial.layout));
           }
           this.partial.Html && this.template.setAttribute("content", this.partial.Html);
           this.template.model = this.partial;
