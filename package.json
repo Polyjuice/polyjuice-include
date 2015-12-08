@@ -19,12 +19,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Polyjuice/launcher-include.git"
+    "url": "git+https://github.com/StarcounterSamples/launcher-include.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Polyjuice/launcher-include/issues"
+    "url": "https://github.com/StarcounterSamples/launcher-include/issues"
   },
-  "homepage": "https://github.com/Polyjuice/launcher-include#readme"
+  "homepage": "https://github.com/StarcounterSamples/launcher-include#readme"
 }
