@@ -1,3 +1,7 @@
+:neckbeard: This is not a sample app. For the sample app, see [Launcher](https://github.com/StarcounterPrefabs/Launcher).
+ 
+------
+
 Launcher's &lt;starcounter-include&gt;
 ==============
 
