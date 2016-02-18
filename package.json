@@ -16,12 +16,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/StarcounterSamples/launcher-include.git"
+    "url": "git+https://github.com/StarcounterPrefabs/launcher-include.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/StarcounterSamples/launcher-include/issues"
+    "url": "https://github.com/StarcounterPrefabs/launcher-include/issues"
   },
-  "homepage": "https://github.com/StarcounterSamples/launcher-include#readme"
+  "homepage": "https://github.com/StarcounterPrefabs/launcher-include#readme"
 }
