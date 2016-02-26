@@ -68,8 +68,10 @@ version: 0.2.0
       // so it could be change by VanillaJs without Polymer Template Binding
       Object.defineProperty(this,"partial",{
         set: function(newValue){
-          partial = newValue;
-          starcounterInclude.partialChanged(partial);
+          if (partial !== newValue) {
+            partial = newValue;
+            starcounterInclude.partialChanged(partial);
+          }
         },
         get: function(){
           return partial;
