@@ -1,6 +1,8 @@
-﻿<!doctype html>
+
+<!doctype html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
@@ -9,36 +11,44 @@
 
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../../starcounter-include.html">
-  </head>
-  <body>
+</head>
 
-    <starcounter-include></starcounter-include>
+<body>
+    <test-fixture id="starcounter-include">
+        <template><starcounter-include></starcounter-include></template>
+    </test-fixture>
 
     <script>
-var include = document.querySelector('starcounter-include');
-describe('when created', function () {
-  var createdInclude;
-  beforeEach(function(){
-    createdInclude = document.createElement("starcounter-include");
-  });
-  it('should not add any child nodes', function () {
-    expect(createdInclude.children.length).to.equal(0);
-  });
-});
-describe('when attached to DOM without any partial value', function () {
-  it('should add `<template is="imported-template">` as descendant node', function () {
-    expect(include.querySelector("template")).to.be.not.null;
-    expect(include.querySelector("template").getAttribute("is").toLowerCase()).to.equal("imported-template");
-  });
-  it('added `<imported-template>` should not have any model attached', function () {
-    expect(include.querySelector("template").model).to.be.falsy;
-  });
-  it('added `<imported-template>` should not have any content attribute attached', function () {
-    expect(include.querySelector("template").getAttribute("content")).to.be.null;
-  });
-});
-
+        describe('when created programatically with no partial value',
+            testNoPartialValue(function () {
+                return document.createElement("starcounter-include");
+            })
+        );
+        describe('when created with no partial value',
+            testNoPartialValue(function () {
+                return fixture("starcounter-include");
+            })
+        );
+        function testNoPartialValue(createInstance) {
+            return function(){
+                var include;
+                beforeEach(function() {
+                    include = createInstance();
+                });
+                it('should add `<template is="imported-template">` as descendant node', function() {
+                    expect(include.querySelector("template")).to.be.not.null;
+                    expect(include.querySelector("template").getAttribute("is").toLowerCase()).to.equal("imported-template");
+                });
+                it('added `<imported-template>` should not have any model attached', function() {
+                    expect(include.querySelector("template").model).to.be.falsy;
+                });
+                it('added `<imported-template>` should not have content attribute', function() {
+                    expect(include.querySelector("template").hasAttribute("content")).to.be.false;
+                });
+            };
+        }
     </script>
 
-  </body>
+</body>
+
 </html>
