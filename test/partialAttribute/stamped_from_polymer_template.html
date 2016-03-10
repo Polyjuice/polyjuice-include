@@ -55,8 +55,9 @@
             it('should forward Polymer notification to `imported-template`', function() {
                 var importedTemplate = include.querySelector("template");
                 sinon.stub(importedTemplate, "_notifyPath");
-                domBind.set("model.Page.doesItWork", "notification works");
-                expect(importedTemplate._notifyPath).to.be.calledWith("model.doesItWork", "notification works")
+                var newVal = "notification works";
+                domBind.set("model.Page.doesItWork", newVal);
+                expect(importedTemplate._notifyPath).to.be.calledWith("model.doesItWork", newVal)
             });
 
             describe('after `dom-bind`` changed the partial property', function() {
