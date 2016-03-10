@@ -19,7 +19,8 @@
     "bower_components",
     "StaticFiles/sys",
     "Gruntfile.js",
-    "test"
+    "test",
+    "wct.conf.json"
   ],
   "dependencies": {
     "imported-template": ">=1.2.0"
