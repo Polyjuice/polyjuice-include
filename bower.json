@@ -19,8 +19,7 @@
     "bower_components",
     "StaticFiles/sys",
     "Gruntfile.js",
-    "test",
-    "tests"
+    "test"
   ],
   "dependencies": {
     "imported-template": ">=1.2.0"
