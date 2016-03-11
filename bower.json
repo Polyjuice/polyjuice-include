@@ -21,7 +21,7 @@
     "Gruntfile.js",
     "wwwroot/sys",
     "test",
-    "tests"
+    "wct.conf.json"
   ],
   "dependencies": {
     "imported-template": "Juicy/imported-template#gh-pages",
