@@ -1,73 +1,183 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
     <script src="../../../webcomponentsjs/webcomponents.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
 
-    <!-- Step 1: import the element to test -->
     <link rel="import" href="../../starcounter-include.html">
-  </head>
-  <body>
+</head>
 
-    <starcounter-include></starcounter-include>
+<body>
+
+    <test-fixture id="full">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include partial="{&quot;Html&quot;: &quot;../templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;works!&quot;}"></starcounter-include>
+            </div>
+        </template>
+    </test-fixture>
+
+    <test-fixture id="empty">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include partial="{}"></starcounter-include>
+            </div>
+        </template>
+    </test-fixture>
+    <test-fixture id="htmlnull">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include partial="{&quot;Html&quot;: null, &quot;doesItWork&quot;: &quot;works!&quot;}"></starcounter-include>
+            </div>
+        </template>
+    </test-fixture>
+
+    <!-- References: -->
+    <test-fixture id="nothing">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include></starcounter-include>
+            </div>
+        </template>
+    </test-fixture>
+    <test-fixture id="old">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include partial="{&quot;Html&quot;: &quot;../old_templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;worked!&quot;}"></starcounter-include>
+            </div>
+        </template>
+    </test-fixture>
 
     <script>
-var include = document.querySelector('starcounter-include');
-var model = {
-  Html: "../templateToInclude.html",
-  doesItWork: "works!"
-};
-include.partial = model;
-describe('before element was attached to DOM', function () {
-  var createdInclude;
-  beforeEach(function(){
-    createdInclude = document.createElement("starcounter-include");
-    createdInclude.partial = model;
-  })
+    // describe('`partial` attribute is set/updated using HTML methods')
+        var scInclude;
+        describe('with `Html` property', testSettingPartialAttribute('full', {
+            "Html": "../templateToInclude.html",
+            "doesItWork": "works!"
+        }));
+        describe('empty object', testSettingPartialAttribute('empty', {}, null));
+        describe('with `Html` set to null', testSettingPartialAttribute('htmlnull', {
+            "Html": null,
+            "doesItWork": "works!"
+        }));
 
-  it('should not attach `.Html` property as content attribute for this.template', function () {
-    expect(createdInclude.template.getAttribute("content")).to.equal.null;
-  });
-  it('should not attach partial model to this.template', function () {
-    expect(createdInclude.template.model).to.be.falsy;
-  });
-});
-describe('after element was attached to DOM', function () {
+        function testSettingPartialAttribute(fixtureId, model, referenceHtml) {
+            referenceHtml = arguments.length >= 3 ? referenceHtml : model.Html;
+            return function() {
+                var oldModel = {
+                    "Html": "../old_templateToInclude.html",
+                    "doesItWork": "worked!"
+                };
+                describe('once element is created programatically', testAllAttributes(function() {
+                    var scInclude = {};
+                    scInclude.add = document.createElement('starcounter-include');
+                    scInclude.add.partial = clone(model);
+                    scInclude.update = document.createElement('starcounter-include');
+                    scInclude.update.partial = clone(oldModel);
+                    scInclude.update.partial = clone(model);
+                    return scInclude;
+                }));
+                describe('after element was attached', testAllAttributes(function() {
+                    var scInclude = {};
+                    scInclude.add = fixture('nothing').querySelector('starcounter-include');
+                    scInclude.update = fixture('old').querySelector('starcounter-include');
+                    scInclude.add.partial = clone(model);
+                    scInclude.update.partial = clone(model);
+                    return scInclude;
+                }));
+                describe('after element was detached', testAllAttributes(function() {
+                    var scInclude = {};
+                    scInclude.add = fixture('nothing').querySelector('starcounter-include');
+                    scInclude.update = fixture('old').querySelector('starcounter-include');
+                    scInclude.add.parentElement.removeChild(scInclude.add);
+                    scInclude.update.parentElement.removeChild(scInclude.update);
+                    scInclude.add.partial = clone(model);
+                    scInclude.update.partial = clone(model);
+                    return scInclude;
+                }));
 
-  it('should attach `.Html` property as content attribute for `<imported-template>`', function () {
-    expect(include.querySelector("template").getAttribute("content")).to.equal(model.Html);
-  });
-  it('should attach partial model to `imported-template`', function () {
-    expect(include.querySelector("template").model).to.equal(model);
-  });
-});
-describe('after element was detached to DOM', function () {
-  var newModel = {
-    Html: "../new_templateToInclude.html",
-    doesItWork: "does NOT work!"
-  };
-  before(function(){
-    //importedTemplate = include.querySelector("template")
-    include.parentNode.removeChild(include);
-    include.partial = newModel;
-  });
-  after(function(){
-    document.body.appendChild(include);
-    include.partial = model;
-  });
+                function testAllAttributes(createInstances) {
+                    return function() {
+                        var scInclude;
+                        beforeEach(function() {
+                            scInclude = createInstances();
+                        });
 
-  it('should not change content attribute for `<imported-template>`', function () {
-    expect(include.querySelector("template").getAttribute("content")).to.equal(model.Html);
-  });
-  it('should not change model of `imported-template`', function () {
-    expect(include.querySelector("template").model).to.equal(model);
-  });
-});
+                        it('should attach `.Html` property as content attribute for `<imported-template>`', function() {
+                            expect(scInclude.add.querySelector("template").getAttribute("content")).to.equal(referenceHtml);
+                            expect(scInclude.update.querySelector("template").getAttribute("content")).to.equal(referenceHtml);
+                        });
+                        it('should attach partial model to `imported-template`', function() {
+                            expect(JSON.stringify(scInclude.add.querySelector("template").model)).to.equal(JSON.stringify(model));
+                            expect(JSON.stringify(scInclude.update.querySelector("template").model)).to.equal(JSON.stringify(model));
+                        });
 
+                    };
+                }
+            }
+        };
+        describe('when `partial` property is set to', function () {
+            console.warn('or undefined');
+            var values = [null, undefined];
+            for(var key in values){
+                describe('`'+ values[key] +'`', function () {
+                    describe('once element is created programatically', testAllAttributes(function() {
+                        var scInclude;
+                        scInclude = document.createElement('starcounter-include');
+                        scInclude.partial = clone({
+                            "Html": "../templateToInclude.html",
+                            "doesItWork": "works!"
+                        });
+                        scInclude.partial = values[key];
+                        return scInclude;
+                    }));
+                    describe('after element was attached', testAllAttributes(function() {
+                        var scInclude;
+                        scInclude = fixture('old').querySelector('starcounter-include');
+                        scInclude.partial = values[key];
+                        return scInclude;
+                    }));
+                    describe('after element was detached', testAllAttributes(function() {
+                        var scInclude;
+                        scInclude = fixture('old').querySelector('starcounter-include');
+                        scInclude.parentElement.removeChild(scInclude);
+                        scInclude.partial = values[key];
+                        return scInclude;
+                    }));
+                });
+            }
+            function testAllAttributes(createInstance) {
+                return function() {
+                    var scInclude;
+                    beforeEach(function() {
+                        scInclude = createInstance();
+                    });
+
+                    it('should remove content attribute from `<imported-template>`', function() {
+                        expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
+                    });
+                    it('should remove model from `imported-template`', function() {
+                        expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
+                        expect(scInclude.querySelector("template").model).to.be.falsy;
+                    });
+
+                };
+            }
+        });
+        function clone(obj){
+            return JSON.parse(JSON.stringify(obj));
+        }
     </script>
 
-  </body>
+</body>
+
 </html>
