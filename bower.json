@@ -24,9 +24,9 @@
     "wct.conf.json"
   ],
   "dependencies": {
-    "imported-template": "Juicy/imported-template#gh-pages",
+    "imported-template": ">=1.4.0",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
-    "juicy-tile-table": "*"
+    "juicy-tile-table": ">=0.0.4"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#>=4.2.2",
