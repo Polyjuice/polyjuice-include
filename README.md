@@ -1,4 +1,4 @@
-&lt;starcounter-include&gt;
+&lt;starcounter-include&gt; [![Build Status](https://travis-ci.org/Starcounter/starcounter-include.svg?branch=master)](https://travis-ci.org/Starcounter/starcounter-include)
 ==============
 
 `<starcounter-include>` is a custom element that let's you load HTML partials into your Starcounter page, it uses [`<imported-template>`](https://github.com/Juicy/imported-template), so, you can take full control over loaded `<script>`s and `<link rel="import">`s. Thanks to HTML Imports - caching, script execution, etc. is completely native.
