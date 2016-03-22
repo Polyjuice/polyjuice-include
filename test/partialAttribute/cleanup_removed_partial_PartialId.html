@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../starcounter-include.html">
+</head>
+
+<body>
+
+    <test-fixture id="nothing">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include></starcounter-include>
+            </div>
+        </template>
+    </test-fixture>
+
+    <script>
+        describe('cleanup changes of PartialId', function() {
+            var instance;
+            var model = {
+                "Html": "../templateToInclude.html",
+                "Launcher": {
+                    "PartialId": "templateToInclude.html"
+                },
+                "doesItWork": "works!"
+            };
+
+            describe("should remove PartialId when", function() {
+                beforeEach(function() {
+                    instance = fixture('nothing').querySelector('starcounter-include');
+                    instance.partial = clone(model);
+                });
+
+                it('the `partial` attribute is changed to an empty string', function(done) {
+                    expectPartialToBeAttached();
+                    instance.setAttribute("partial", "");
+                    expectPartialToBeCleanedUp();
+                    done();
+                });
+
+                it('when the `partial` property is changed to an empty string', function(done) {
+                    expectPartialToBeAttached();
+                    instance.partial = "";
+                    expectPartialToBeCleanedUp();
+                    done();
+                });
+
+                it('when the `partial` property is changed to null', function(done) {
+                    expectPartialToBeAttached();
+                    instance.partial = null;
+                    expectPartialToBeCleanedUp();
+                    done();
+                });
+
+                it('when the `partial` property is changed to undefined', function(done) {
+                    expectPartialToBeAttached();
+                    instance.partial = undefined;
+                    expectPartialToBeCleanedUp();
+                    done();
+                });
+
+                it('when the `partial` property is changed to empty object', function(done) {
+                    expectPartialToBeAttached();
+                    instance.partial = {};
+                    expectPartialToBeCleanedUp();
+                    done();
+                });
+
+                it('when the `partial` property is changed to a partial without a PartialId', function(done) {
+                    expectPartialToBeAttached();
+                    instance.partial = {
+                        "Html": "../templateToInclude.html",
+                        "doesItWork": "works!"
+                    };
+                    expectPartialToBeCleanedUp();
+                    done();
+                });
+
+                it('when the `partial` property is changed to a partial with empty PartialId', function(done) {
+                    expectPartialToBeAttached();
+                    instance.partial = {
+                        "Html": "../templateToInclude.html",
+                        "Launcher": {
+                            "PartialId": ""
+                        },
+                        "doesItWork": "works!"
+                    };
+                    expectPartialToBeCleanedUp();
+                    done();
+                });
+            });
+
+            function expectPartialToBeAttached() {
+                expect(instance.grid.getAttribute("name")).to.equal(model.Launcher.PartialId);
+                expect(instance.sync.getAttribute("name")).to.equal(model.Launcher.PartialId);
+            }
+
+            function expectPartialToBeCleanedUp() {
+                expect(instance.grid.getAttribute("name")).to.equal(null);
+                expect(instance.sync.getAttribute("name")).to.equal(null);
+            }
+
+            function clone(obj) {
+                return JSON.parse(JSON.stringify(obj));
+            }
+        });
+    </script>
+
+</body>
+
+</html>

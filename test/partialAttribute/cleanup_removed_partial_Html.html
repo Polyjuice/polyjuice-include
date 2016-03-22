@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../starcounter-include.html">
+</head>
+
+<body>
+
+    <test-fixture id="nothing">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include></starcounter-include>
+            </div>
+        </template>
+    </test-fixture>
+
+    <script>
+        describe('cleanup after removed partial', function() {
+            var instance;
+            var model = {
+                "Html": "../templateToInclude.html",
+                "doesItWork": "works!"
+            };
+
+            beforeEach(function() {
+                instance = fixture('nothing').querySelector('starcounter-include');
+                instance.partial = clone(model);
+            });
+
+            it('when the `partial` attribute is changed to an empty string', function(done) {
+                expectPartialToBeAttached();
+                instance.setAttribute("partial", "");
+                expectPartialToBeCleanedUp();
+                done();
+            });
+
+            it('when the `partial` property is changed to an empty string', function(done) {
+                expectPartialToBeAttached();
+                instance.partial = "";
+                expectPartialToBeCleanedUp();
+                done();
+            });
+
+            it('when the `partial` property is changed to null', function(done) {
+                expectPartialToBeAttached();
+                instance.partial = null;
+                expectPartialToBeCleanedUp();
+                done();
+            });
+
+            it('when the `partial` property is changed to undefined', function(done) {
+                expectPartialToBeAttached();
+                instance.partial = undefined;
+                expectPartialToBeCleanedUp();
+                done();
+            });
+
+            it('when the `partial` property is changed to empty object', function(done) {
+                expectPartialToBeAttached();
+                instance.partial = {};
+                expectPartialToBeCleanedUp();
+                done();
+            });
+
+            it('when the `partial` property is changed to an object without Html', function(done) {
+                expectPartialToBeAttached();
+                instance.partial = {
+                    "doesItWork": "works!"
+                };
+                expectPartialToBeCleanedUp();
+                done();
+            });
+
+            it('when the `partial` property is changed to an object with empty Html', function(done) {
+                expectPartialToBeAttached();
+                instance.partial = {
+                    "Html": "",
+                    "doesItWork": "works!"
+                };
+                expectPartialToBeCleanedUp();
+                done();
+            });
+
+            function expectPartialToBeAttached() {
+                expect(instance.template.getAttribute("content")).to.equal(model.Html);
+            }
+
+            function expectPartialToBeCleanedUp() {
+                expect(instance.template.getAttribute("content")).to.equal(null);
+            }
+
+            function clone(obj) {
+                return JSON.parse(JSON.stringify(obj));
+            }
+        });
+    </script>
+
+</body>
+
+</html>
