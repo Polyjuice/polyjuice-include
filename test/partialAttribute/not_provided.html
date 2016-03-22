@@ -39,7 +39,6 @@
                 });
                 it('should add `<template is="imported-template">` as descendant node', function() {
                     console.log('include', include)
-                        debugger
                     expect(include.querySelector("template")).to.be.not.null;
                     expect(include.querySelector("template").getAttribute("is").toLowerCase()).to.equal("imported-template");
                 });
