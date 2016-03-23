@@ -40,52 +40,52 @@
                 });
 
                 it('the `partial` attribute is changed to an empty string', function(done) {
-                    expectPartialToBeAttached();
+                    expect(instance).to.have.layoutAttached;
                     instance.setAttribute("partial", "");
-                    expectPartialToBeCleanedUp();
+                    expect(instance).to.have.layoutCleanedUp;
                     done();
                 });
 
                 it('when the `partial` property is changed to an empty string', function(done) {
-                    expectPartialToBeAttached();
+                    expect(instance).to.have.layoutAttached;
                     instance.partial = "";
-                    expectPartialToBeCleanedUp();
+                    expect(instance).to.have.layoutCleanedUp;
                     done();
                 });
 
                 it('when the `partial` property is changed to null', function(done) {
-                    expectPartialToBeAttached();
+                    expect(instance).to.have.layoutAttached;
                     instance.partial = null;
-                    expectPartialToBeCleanedUp();
+                    expect(instance).to.have.layoutCleanedUp;
                     done();
                 });
 
                 it('when the `partial` property is changed to undefined', function(done) {
-                    expectPartialToBeAttached();
+                    expect(instance).to.have.layoutAttached;
                     instance.partial = undefined;
-                    expectPartialToBeCleanedUp();
+                    expect(instance).to.have.layoutCleanedUp;
                     done();
                 });
 
                 it('when the `partial` property is changed to empty object', function(done) {
-                    expectPartialToBeAttached();
+                    expect(instance).to.have.layoutAttached;
                     instance.partial = {};
-                    expectPartialToBeCleanedUp();
+                    expect(instance).to.have.layoutCleanedUp;
                     done();
                 });
 
                 it('when the `partial` property is changed to a partial without Layout', function(done) {
-                    expectPartialToBeAttached();
+                    expect(instance).to.have.layoutAttached;
                     instance.partial = {
                         "Html": "../templateToInclude.html",
                         "doesItWork": "works!"
                     };
-                    expectPartialToBeCleanedUp();
+                    expect(instance).to.have.layoutCleanedUp;
                     done();
                 });
 
                 it('when the `partial` property is changed to a partial with empty Layout', function(done) {
-                    expectPartialToBeAttached();
+                    expect(instance).to.have.layoutAttached;
                     instance.partial = {
                         "Html": "../templateToInclude.html",
                         "Launcher": {
@@ -93,24 +93,25 @@
                         },
                         "doesItWork": "works!"
                     };
-                    expectPartialToBeCleanedUp();
+                    expect(instance).to.have.layoutCleanedUp;
                     done();
                 });
             });
 
-            function expectPartialToBeAttached() {
-                expect(instance.grid.setup).to.have.property("width");
-                expect(instance.sync.storedValue).to.have.property("width");
-            }
-
-            function expectPartialToBeCleanedUp() {
-                expect(instance.grid.setup).to.equal(null);
-                expect(instance.sync.storedValue).to.equal(null);
-            }
-
             function clone(obj) {
                 return JSON.parse(JSON.stringify(obj));
             }
+        });
+        chai.Assertion.addProperty('layoutAttached', function () {
+          var obj = chai.util.flag(this, 'object');
+          new chai.Assertion(obj.grid.setup).to.have.property("width");
+          new chai.Assertion(obj.sync.storedValue).to.have.property("width");
+        });
+        chai.Assertion.addProperty('layoutCleanedUp', function () {
+          var obj = chai.util.flag(this, 'object');
+          new chai.Assertion(obj.grid).to.respondTo('hasAttribute');
+          new chai.Assertion(obj.grid.hasAttribute('setup')).to.be.false;
+          new chai.Assertion(obj.sync.storedValue).to.be.null;
         });
     </script>
 
