@@ -137,7 +137,12 @@ version: 0.4.1
             }
             if (!layout) {
                 this.sync.storedValue = null;
-                this.grid.setup = null;
+                this.grid.setup = {
+                    gutter: 0,
+                    width: 1200,
+                    direction: "horizontal",
+                    items: []
+                };
             } else {
                 var parsedLayout = JSON.parse(layout);
                 this.sync.storedValue = parsedLayout;
