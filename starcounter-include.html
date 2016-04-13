@@ -115,6 +115,11 @@ version: 0.4.2
             var html;
             if (this.partial) {
                 html = this.partial.Html; //should always be string
+                if (this.partial.Launcher) {
+                    //workaround for https://github.com/StarcounterPrefabs/Launcher/issues/224
+                    //should be removed when the original issue with not patched Html is resolved
+                    html = this.partial.Launcher.MergedHtml;
+                }
             }
             if (html !== this._lastHtml) {
                 if (this._lastHtml) {
