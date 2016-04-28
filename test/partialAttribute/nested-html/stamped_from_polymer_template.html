@@ -1,0 +1,89 @@
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../../polymer/polymer.html">
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../starcounter-include.html">
+</head>
+
+<body>
+    <test-fixture id="root">
+        <template>
+            <div><template is="dom-bind">
+                <starcounter-include partial="{{model.Page}}"></starcounter-include>
+            </template></div>
+        </template>
+    </test-fixture>
+    <script>
+        var partial = {
+            scope1: {
+                Html: "../old_templateToInclude.html",
+                doesItWork: "worked!"
+            },
+            scope2: {
+                Html: "../old_templateToInclude.html",
+                doesItWork: "worked!"
+            },
+            scope3: {
+                doesItWork: "worked!"
+            }
+        };
+        var changedPartial = {}
+
+        describe('after `dom-bind`` was attached to DOM', function() {
+            var container, domBind, include;
+            before(function(done) {
+                container = fixture('root');
+                domBind = container.querySelector('template[is=dom-bind]');
+                domBind.model = {
+                    Page: partial
+                };
+                setTimeout(function() {
+                    include = container.querySelector('starcounter-include');
+                    done();
+                })
+            });
+
+            it('should attach concatenated `Html` properties as content attribute for `<imported-template>`', function() {
+                expect(include.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scope1=scope1Html&scope2Html');
+            });
+            it('should attach partial model to `imported-template`', function() {
+                expect(include.querySelector("template").model).to.equal(model);
+            });
+            it('should forward Polymer notification to `imported-template`', function() {
+                var importedTemplate = include.querySelector("template");
+                sinon.stub(importedTemplate, "_notifyPath");
+                var newVal = "notification works";
+                domBind.set("model.Page.doesItWork", newVal);
+                expect(importedTemplate._notifyPath).to.be.calledWith("model.doesItWork", newVal)
+            });
+
+            describe('after `dom-bind`` changed the partial property', function() {
+                before(function(done) {
+                    domBind.set('model.Page', changedModel);
+                    setTimeout(function() {
+                        done();
+                    })
+                });
+
+                it('should attach new `.Html` property as content attribute for `<imported-template>`', function() {
+                    expect(include.querySelector("template").getAttribute("content")).to.equal(changedModel.Html);
+                });
+                it('should attach new partial model to `imported-template`', function() {
+                    expect(include.querySelector("template").model).to.equal(changedModel);
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

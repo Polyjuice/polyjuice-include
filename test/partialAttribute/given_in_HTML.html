@@ -23,14 +23,6 @@
         </template>
     </test-fixture>
 
-    <test-fixture id="empty">
-        <template>
-            <!-- nest to workaround test-fixture bug -->
-            <div>
-                <starcounter-include partial="{}"></starcounter-include>
-            </div>
-        </template>
-    </test-fixture>
     <test-fixture id="htmlnull">
         <template>
             <!-- nest to workaround test-fixture bug -->
@@ -65,7 +57,6 @@
             "Html": "../templateToInclude.html",
             "doesItWork": "works!"
         }));
-        describe('empty object', testSettingPartialAttribute('empty', {}, null));
         describe('with `Html` set to null', testSettingPartialAttribute('htmlnull', {
             "Html": null,
             "doesItWork": "works!"
