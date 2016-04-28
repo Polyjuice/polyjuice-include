@@ -24,19 +24,28 @@
     </test-fixture>
     <script>
         var partial = {
-            scope1: {
-                Html: "../../old_templateToInclude.html",
-                doesItWork: "worked!"
+            'scope1': {
+                'Html': 'scope1Html',
+                'doesItWork': 'works!'
             },
-            scope2: {
-                Html: "../../old_templateToInclude.html",
-                doesItWork: "worked!"
+            'scope2': {
+                'Html': 'scope2Html;,/?:@&=+$',
+                'doesItWork': 'works!'
             },
-            scope3: {
-                doesItWork: "worked!"
+            'scope3': {
+                'doesItWork': 'works!'
             }
         };
-        var changedPartial = {}
+        var changedPartial = {
+            'scopeA': {
+                'Html': 'scopeAHtml',
+                'doesItWork': 'works!'
+            },
+            'scopeB': {
+                'Html': 'scopeBHtml',
+                'doesItWork': 'works!'
+            }
+        }
 
         describe('after `dom-bind`` was attached to DOM', function() {
             var container, domBind, include;
@@ -49,14 +58,14 @@
                 setTimeout(function() {
                     include = container.querySelector('starcounter-include');
                     done();
-                }, 10);
+                });
             });
 
             it('should attach concatenated `Html` properties as content attribute for `<imported-template>`', function() {
-                expect(include.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scope1=scope1Html&scope2Html');
+                expect(include.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
             });
             it('should attach partial model to `imported-template`', function() {
-                expect(include.querySelector("template").model).to.equal(model);
+                expect(include.querySelector("template").model).to.equal(partial);
             });
             it('should forward Polymer notification to `imported-template`', function() {
                 var importedTemplate = include.querySelector("template");
@@ -68,17 +77,17 @@
 
             describe('after `dom-bind`` changed the partial property', function() {
                 before(function(done) {
-                    domBind.set('model.Page', changedModel);
+                    domBind.set('model.Page', changedPartial);
                     setTimeout(function() {
                         done();
                     })
                 });
 
                 it('should attach new `.Html` property as content attribute for `<imported-template>`', function() {
-                    expect(include.querySelector("template").getAttribute("content")).to.equal(changedModel.Html);
+                    expect(include.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
                 });
                 it('should attach new partial model to `imported-template`', function() {
-                    expect(include.querySelector("template").model).to.equal(changedModel);
+                    expect(include.querySelector("template").model).to.equal(changedPartial);
                 });
             });
         });
