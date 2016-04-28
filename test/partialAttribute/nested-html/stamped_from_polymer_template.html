@@ -6,12 +6,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <script src="../../../webcomponentsjs/webcomponents.js"></script>
-    <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../../web-component-tester/browser.js"></script>
 
-    <link rel="import" href="../../../polymer/polymer.html">
+    <link rel="import" href="../../../../polymer/polymer.html">
     <!-- Step 1: import the element to test -->
-    <link rel="import" href="../../starcounter-include.html">
+    <link rel="import" href="../../../starcounter-include.html">
 </head>
 
 <body>
@@ -25,11 +25,11 @@
     <script>
         var partial = {
             scope1: {
-                Html: "../old_templateToInclude.html",
+                Html: "../../old_templateToInclude.html",
                 doesItWork: "worked!"
             },
             scope2: {
-                Html: "../old_templateToInclude.html",
+                Html: "../../old_templateToInclude.html",
                 doesItWork: "worked!"
             },
             scope3: {
@@ -49,7 +49,7 @@
                 setTimeout(function() {
                     include = container.querySelector('starcounter-include');
                     done();
-                })
+                }, 10);
             });
 
             it('should attach concatenated `Html` properties as content attribute for `<imported-template>`', function() {
