@@ -95,9 +95,15 @@ version: 0.1.0
          * @param  {Mixed} value New value
          */
         StarcounterIncludePrototype._notifyPath = function(path, value) {
-            if (path.indexOf("partial.") == 0) {
-                if (this.template._notifyPath) {
-                    this.template._notifyPath(path.replace("partial.", "model."), value);
+            if (path.indexOf("partial.") === 0) {
+
+                // if(path.match(/^partial\.[^.]+\.Html$/)) {
+                if( (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1){
+                    this.partialChanged(this.partial);
+                } else {
+                    if (this.template._notifyPath) {
+                        this.template._notifyPath(path.replace("partial.", "model."), value);
+                    }
                 }
             }
         };
