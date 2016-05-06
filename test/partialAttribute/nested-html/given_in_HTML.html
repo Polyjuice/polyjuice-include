@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../../web-component-tester/browser.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../../starcounter-include.html">
+</head>
+
+<body>
+    <test-fixture id="nested-html">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include partial="{
+                    &quot;scope1&quot;: {
+                        &quot;Html&quot;: &quot;scope1Html&quot;,
+                        &quot;doesItWork&quot;: &quot;works!&quot;
+                    },
+                    &quot;scope2&quot;: {
+                        &quot;Html&quot;: &quot;scope2Html;,/?:@&amp;=+$&quot;,
+                        &quot;doesItWork&quot;: &quot;works!&quot;
+                    },
+                    &quot;scope3&quot;: {
+                        &quot;doesItWork&quot;: &quot;works!&quot;
+                    }
+                }"></starcounter-include>
+            </div>
+        </template>
+    </test-fixture>
+
+    <!-- References: -->
+    <test-fixture id="nothing">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include></starcounter-include>
+            </div>
+        </template>
+    </test-fixture>
+    <test-fixture id="old">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include partial="{&quot;Html&quot;: &quot;../old_templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;worked!&quot;}"></starcounter-include>
+            </div>
+        </template>
+    </test-fixture>
+
+    <script>
+    describe('starcounter-include with `partial` attribute without `Html` on root level, but with some namespaces', function () {
+        var scInclude;
+        var model = {
+            'scope1': {
+                'Html': 'scope1Html',
+                'doesItWork': 'works!'
+            },
+            'scope2': {
+                'Html': 'scope2Html;,/?:@&=+$',
+                'doesItWork': 'works!'
+            },
+            'scope3': {
+                'doesItWork': 'works!'
+            }
+        };
+        var oldModel = {
+            "Html": "../old_templateToInclude.html",
+            "doesItWork": "worked!"
+        };
+        describe('set', function () {
+
+
+            describe('should attach to `<imported-template>` the partial object as a model, and concatenated `Html`s as content attribute (`/sc/htmlmerger?`+`scope=scope.HTML` for each scope that contains it)', function () {
+
+
+                it('for element created programmatically', function () {
+                    scInclude = document.createElement('starcounter-include');
+                    scInclude.setAttribute('partial', JSON.stringify(model));
+
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                });
+
+                it('for element created and changed programmatically', function () {
+                    scInclude = document.createElement('starcounter-include');
+                    scInclude.setAttribute('partial', JSON.stringify(oldModel));
+                    scInclude.setAttribute('partial', JSON.stringify(model));
+
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                });
+
+                it('for element upgraded (set directly into HTML markup)', function () {
+                    scInclude = fixture('nested-html').querySelector('starcounter-include');
+
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                });
+
+                it('if value was set after element was attached', function () {
+                    scInclude = fixture('nothing').querySelector('starcounter-include');
+                    scInclude.setAttribute('partial', JSON.stringify(model));
+
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                });
+
+                it('if value was changed after element was attached', function () {
+                    scInclude = fixture('old').querySelector('starcounter-include');
+                    scInclude.setAttribute('partial', JSON.stringify(model));
+
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                });
+
+                it('if value was set after element was detached', function () {
+                    scInclude = fixture('nothing').querySelector('starcounter-include');
+                    scInclude.parentElement.removeChild(scInclude);
+                    scInclude.setAttribute('partial', JSON.stringify(model));
+
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                });
+
+                it('if value was changed after element was detached', function () {
+                    scInclude = fixture('old').querySelector('starcounter-include');
+                    scInclude.parentElement.removeChild(scInclude);
+                    scInclude.setAttribute('partial', JSON.stringify(model));
+
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                });
+
+            });
+
+        });
+    });
+    </script>
+
+</body>
+
+</html>

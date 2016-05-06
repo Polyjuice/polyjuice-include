@@ -15,7 +15,7 @@
 
 <body>
     <test-fixture id="starcounter-include">
-        <template><div><starcounter-include></starcounter-include></div></template>
+        <template><starcounter-include></starcounter-include></template>
     </test-fixture>
 
     <script>
@@ -26,19 +26,16 @@
         );
         describe('when created with no partial value',
             testNoPartialValue(function () {
-                return fixture("starcounter-include").querySelector('starcounter-include');
+                return fixture("starcounter-include");
             })
         );
         function testNoPartialValue(createInstance) {
             return function(){
                 var include;
-                beforeEach(function(done) {
+                beforeEach(function() {
                     include = createInstance();
-                    // wait for stamp
-                    setTimeout(done, 500);
                 });
                 it('should add `<template is="imported-template">` as descendant node', function() {
-                    console.log('include', include)
                     expect(include.querySelector("template")).to.be.not.null;
                     expect(include.querySelector("template").getAttribute("is").toLowerCase()).to.equal("imported-template");
                 });

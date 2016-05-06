@@ -63,14 +63,18 @@
                 done();
             });
 
-            it('when the `partial` property is changed to empty object', function(done) {
+            // --
+            // This functionality is being discussed at
+            // https://github.com/Starcounter/starcounter-include/issues/11
+            // https://github.com/Starcounter/starcounter-include/issues/12
+            xit('when the `partial` property is changed to empty object', function(done) {
                 expectPartialToBeAttached();
                 instance.partial = {};
                 expectPartialToBeCleanedUp();
                 done();
             });
 
-            it('when the `partial` property is changed to an object without Html', function(done) {
+            xit('when the `partial` property is changed to an object without Html', function(done) {
                 expectPartialToBeAttached();
                 instance.partial = {
                     "doesItWork": "works!"
@@ -78,6 +82,7 @@
                 expectPartialToBeCleanedUp();
                 done();
             });
+            // --
 
             it('when the `partial` property is changed to an object with empty Html', function(done) {
                 expectPartialToBeAttached();

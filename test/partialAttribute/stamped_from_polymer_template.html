@@ -23,9 +23,11 @@
         </template>
     </test-fixture>
     <script>
-        var model = {
-            Html: "../old_templateToInclude.html",
-            doesItWork: "worked!"
+        function createPartial() {
+            return {
+                Html: "../old_templateToInclude.html",
+                doesItWork: "worked!"
+            };
         };
         var changedModel = {
             Html: "../templateToInclude.html",
@@ -33,12 +35,13 @@
         };
 
         describe('after `dom-bind`` was attached to DOM', function() {
-            var container, domBind, include;
-            before(function(done) {
+            var container, domBind, include, partial;
+            beforeEach(function(done) {
                 container = fixture('root');
+                partial = createPartial();
                 domBind = container.querySelector('template[is=dom-bind]');
                 domBind.model = {
-                    Page: model
+                    Page: partial
                 };
                 setTimeout(function() {
                     include = container.querySelector('starcounter-include');
@@ -47,10 +50,10 @@
             });
 
             it('should attach `.Html` property as content attribute for `<imported-template>`', function() {
-                expect(include.querySelector("template").getAttribute("content")).to.equal(model.Html);
+                expect(include.querySelector("template").getAttribute("content")).to.equal(partial.Html);
             });
             it('should attach partial model to `imported-template`', function() {
-                expect(include.querySelector("template").model).to.equal(model);
+                expect(include.querySelector("template").model).to.equal(partial);
             });
             it('should forward Polymer notification to `imported-template`', function() {
                 var importedTemplate = include.querySelector("template");
@@ -61,7 +64,7 @@
             });
 
             describe('after `dom-bind`` changed the partial property', function() {
-                before(function(done) {
+                beforeEach(function(done) {
                     domBind.set('model.Page', changedModel);
                     setTimeout(function() {
                         done();
@@ -73,6 +76,20 @@
                 });
                 it('should attach new partial model to `imported-template`', function() {
                     expect(include.querySelector("template").model).to.equal(changedModel);
+                });
+            });
+
+            describe('after `dom-bind`` changed the partial.Html property', function() {
+                beforeEach(function(done) {
+                    domBind.set('model.Page.Html', '../templateToInclude.html');
+                    setTimeout(done);
+                });
+
+                it('should attach new `.Html` property as content attribute for `<imported-template>`', function() {
+                    expect(include.querySelector("template").getAttribute("content")).to.equal('../templateToInclude.html');
+                });
+                it('should attach same partial model to `imported-template`', function() {
+                    expect(include.querySelector("template").model).to.equal(partial);
                 });
             });
         });

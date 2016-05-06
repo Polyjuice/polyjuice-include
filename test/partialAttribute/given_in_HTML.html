@@ -23,14 +23,6 @@
         </template>
     </test-fixture>
 
-    <test-fixture id="empty">
-        <template>
-            <!-- nest to workaround test-fixture bug -->
-            <div>
-                <starcounter-include partial="{}"></starcounter-include>
-            </div>
-        </template>
-    </test-fixture>
     <test-fixture id="htmlnull">
         <template>
             <!-- nest to workaround test-fixture bug -->
@@ -59,13 +51,12 @@
     </test-fixture>
 
     <script>
-    // describe('`partial` attribute is set/updated using HTML methods')
+        // describe('`partial` attribute is set/updated using HTML methods')
         var scInclude;
         describe('with `Html` property', testSettingPartialAttribute('full', {
             "Html": "../templateToInclude.html",
             "doesItWork": "works!"
         }));
-        describe('empty object', testSettingPartialAttribute('empty', {}, null));
         describe('with `Html` set to null', testSettingPartialAttribute('htmlnull', {
             "Html": null,
             "doesItWork": "works!"
@@ -131,49 +122,40 @@
                 }
             }
         };
-        describe('when attribute is removed', function () {
 
-            describe('once element is created programatically', testAllAttributes(function() {
-                var scInclude;
+        describe('when attribute is removed, should remove content and model attribute and model property from `<imported-template>`', function () {
+
+            it('from element created programatically', function () {
                 scInclude = document.createElement('starcounter-include');
                 scInclude.setAttribute('partial', JSON.stringify({
                     "Html": "../templateToInclude.html",
                     "doesItWork": "works!"
                 }));
                 scInclude.removeAttribute('partial');
-                return scInclude;
-            }));
-            describe('after element was attached', testAllAttributes(function() {
-                var scInclude;
+
+                expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
+                expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
+                expect(scInclude.querySelector("template").model).to.be.falsy;
+            });
+
+            it('from attached element', function () {
                 scInclude = fixture('old').querySelector('starcounter-include');
                 scInclude.removeAttribute('partial');
-                return scInclude;
-            }));
-            describe('after element was detached', testAllAttributes(function() {
-                var scInclude;
+
+                expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
+                expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
+                expect(scInclude.querySelector("template").model).to.be.falsy;
+            });
+
+            it('from detached element', function () {
                 scInclude = fixture('old').querySelector('starcounter-include');
                 scInclude.parentElement.removeChild(scInclude);
                 scInclude.removeAttribute('partial');
-                return scInclude;
-            }));
 
-            function testAllAttributes(createInstance) {
-                return function() {
-                    var scInclude;
-                    beforeEach(function() {
-                        scInclude = createInstance();
-                    });
-
-                    it('should remove content attribute from `<imported-template>`', function() {
-                        expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
-                    });
-                    it('should remove model from `imported-template`', function() {
-                        expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
-                        expect(scInclude.querySelector("template").model).to.be.falsy;
-                    });
-
-                };
-            }
+                expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
+                expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
+                expect(scInclude.querySelector("template").model).to.be.falsy;
+            });
         });
     </script>
 

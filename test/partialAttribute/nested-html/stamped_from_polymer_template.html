@@ -1,0 +1,135 @@
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+
+    <script src="../../../../web-component-tester/browser.js"></script>
+    <script src="../../helpers/mock-htmlmerger.js"></script>
+
+    <script src="../../../../webcomponentsjs/webcomponents.js"></script>
+
+    <link rel="import" href="../../../../polymer/polymer.html">
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../../starcounter-include.html">
+</head>
+
+<body>
+    <test-fixture id="root">
+        <template>
+            <div><template is="dom-bind">
+                <starcounter-include partial="{{model.Page}}"></starcounter-include>
+            </template></div>
+        </template>
+    </test-fixture>
+    <script>
+        function createPartial() {
+            return {
+                'scope1': {
+                    'Html': 'scope1Html',
+                    'doesItWork': 'works!'
+                },
+                'scope2': {
+                    'Html': 'scope2Html;,/?:@&=+$',
+                    'doesItWork': 'works!'
+                },
+                'scope3': {
+                    'doesItWork': 'works!'
+                }
+            };
+        };
+        var changedPartial = {
+            'scopeA': {
+                'Html': 'scopeAHtml',
+                'doesItWork': 'works!'
+            },
+            'scopeB': {
+                'Html': 'scopeBHtml',
+                'doesItWork': 'works!'
+            }
+        }
+
+        describe('after `dom-bind`` was attached to DOM', function () {
+            var container, domBind, include, partial;
+            beforeEach(function(done) {
+                container = fixture('root');
+                partial = createPartial();
+                domBind = container.querySelector('template[is=dom-bind]');
+                domBind.model = {
+                    Page: partial
+                };
+                setTimeout(function () {
+                    include = container.querySelector('starcounter-include');
+                    done();
+                });
+            });
+
+            it('should attach concatenated `Html` properties as content attribute for `<imported-template>`', function () {
+                expect(include.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+            });
+            it('should attach partial model to `imported-template`', function () {
+                expect(include.querySelector("template").model).to.equal(partial);
+            });
+            it('should forward Polymer notification to `imported-template`', function () {
+                var importedTemplate = include.querySelector("template");
+                sinon.stub(importedTemplate, "_notifyPath");
+                var newVal = "notification works";
+                domBind.set("model.Page.doesItWork", newVal);
+                expect(importedTemplate._notifyPath).to.be.calledWith("model.doesItWork", newVal)
+            });
+
+            describe('after `dom-bind`` changed the partial property', function () {
+                beforeEach(function(done) {
+                    domBind.set('model.Page', changedPartial);
+                    setTimeout(function () {
+                        done();
+                    });
+                });
+
+                it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
+                    expect(include.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
+                });
+                it('should attach new partial model to `imported-template`', function () {
+                    expect(include.querySelector("template").model).to.equal(changedPartial);
+                });
+            });
+
+            describe('after `dom-bind`` changed the inner `Html` property', function () {
+                beforeEach(function(done) {
+                    domBind.set('model.Page.scope1.Html', 'changedHtml');
+                    setTimeout(done);
+                });
+
+                it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
+                    expect(include.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                });
+                it('should attach same partial model to `imported-template`', function () {
+                    expect(include.querySelector("template").model).to.equal(partial);
+                });
+            });
+
+            describe('after `dom-bind`` removed the inner `Html` property', function () {
+                beforeEach(function(done) {
+                    // not realy removing, but Polymer does not support anything better
+                    // https://github.com/Polymer/polymer/issues/2565
+                    domBind.set('model.Page.scope1.Html', null);
+                    domBind.set('model.Page.scope1.Html', undefined);
+                    setTimeout(done);
+                });
+
+                it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
+                    expect(include.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                });
+                it('should attach same partial model to `imported-template`', function () {
+                    expect(include.querySelector("template").model).to.equal(partial);
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
