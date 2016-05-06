@@ -65,9 +65,8 @@
 
             // --
             // This functionality is being discussed at
-            // https://github.com/Starcounter/starcounter-include/issues/11
             // https://github.com/Starcounter/starcounter-include/issues/12
-            xit('when the `partial` property is changed to empty object', function(done) {
+            it('when the `partial` property is changed to empty object', function(done) {
                 expectPartialToBeAttached();
                 instance.partial = {};
                 expectPartialToBeCleanedUp();
