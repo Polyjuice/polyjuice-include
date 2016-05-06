@@ -124,46 +124,6 @@
 
         });
 
-        xdescribe('is set to', function () {
-            [null, undefined].forEach(function (value) {
-                describe('`'+ value +'`', function () {
-                    describe('should remove content and model attribute and model property from `<imported-template>`', function () {
-                        it('for element created programatically', function () {
-                            scInclude = document.createElement('starcounter-include');
-                            scInclude.partial = clone({
-                                "Html": "../templateToInclude.html",
-                                "doesItWork": "works!"
-                            });
-                            scInclude.partial = value;
-
-                            expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
-                            expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
-                            expect(scInclude.querySelector("template").model).to.be.falsy;
-                        });
-
-                        it('after element was attached', function () {
-                            scInclude = fixture('old').querySelector('starcounter-include');
-                            scInclude.partial = value;
-
-                            expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
-                            expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
-                            expect(scInclude.querySelector("template").model).to.be.falsy;
-                        });
-
-                        it('after element was detached', function () {
-                            scInclude = fixture('old').querySelector('starcounter-include');
-                            scInclude.parentElement.removeChild(scInclude);
-                            scInclude.partial = value;
-
-                            expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
-                            expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
-                            expect(scInclude.querySelector("template").model).to.be.falsy;
-                        });
-
-                    });
-                });
-            });
-        });
     });
     function clone(obj) {
         return JSON.parse(JSON.stringify(obj));

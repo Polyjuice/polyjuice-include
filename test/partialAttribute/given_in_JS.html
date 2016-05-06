@@ -142,7 +142,6 @@
                         });
 
                         it('after element was detached', function () {
-                            var scInclude;
                             scInclude = fixture('old').querySelector('starcounter-include');
                             scInclude.parentElement.removeChild(scInclude);
                             scInclude.partial = value;

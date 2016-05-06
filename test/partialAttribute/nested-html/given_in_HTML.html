@@ -139,40 +139,6 @@
             });
 
         });
-        xdescribe('removed, should remove content and model attribute and model property from `<imported-template>`', function () {
-
-            it('from element created programatically', function () {
-                scInclude = document.createElement('starcounter-include');
-                scInclude.setAttribute('partial', JSON.stringify({
-                    "Html": "../../templateToInclude.html",
-                    "doesItWork": "works!"
-                }));
-                scInclude.removeAttribute('partial');
-
-                expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
-                expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
-                expect(scInclude.querySelector("template").model).to.be.falsy;
-            });
-
-            it('from attached element', function () {
-                scInclude = fixture('old').querySelector('starcounter-include');
-                scInclude.removeAttribute('partial');
-
-                expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
-                expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
-                expect(scInclude.querySelector("template").model).to.be.falsy;
-            });
-
-            it('from detached element', function () {
-                scInclude = fixture('old').querySelector('starcounter-include');
-                scInclude.parentElement.removeChild(scInclude);
-                scInclude.removeAttribute('partial');
-
-                expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
-                expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
-                expect(scInclude.querySelector("template").model).to.be.falsy;
-            });
-        });
     });
     </script>
 
