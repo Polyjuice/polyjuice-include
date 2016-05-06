@@ -75,14 +75,14 @@
         describe('set', function () {
 
 
-            describe('should attach to `<imported-template>` the partial object as a model, and concatenated `Html`s as content attribute (`/starcounter/htmlmerger?`+`scope=scope.HTML` for each scope that contains it)', function () {
+            describe('should attach to `<imported-template>` the partial object as a model, and concatenated `Html`s as content attribute (`/sc/htmlmerger?`+`scope=scope.HTML` for each scope that contains it)', function () {
 
 
                 it('for element created programmatically', function () {
                     scInclude = document.createElement('starcounter-include');
                     scInclude.setAttribute('partial', JSON.stringify(model));
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                     expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
                 });
 
@@ -91,14 +91,14 @@
                     scInclude.setAttribute('partial', JSON.stringify(oldModel));
                     scInclude.setAttribute('partial', JSON.stringify(model));
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                     expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
                 });
 
                 it('for element upgraded (set directly into HTML markup)', function () {
                     scInclude = fixture('nested-html').querySelector('starcounter-include');
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                     expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
                 });
 
@@ -106,7 +106,7 @@
                     scInclude = fixture('nothing').querySelector('starcounter-include');
                     scInclude.setAttribute('partial', JSON.stringify(model));
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                     expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
                 });
 
@@ -114,7 +114,7 @@
                     scInclude = fixture('old').querySelector('starcounter-include');
                     scInclude.setAttribute('partial', JSON.stringify(model));
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                     expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
                 });
 
@@ -123,7 +123,7 @@
                     scInclude.parentElement.removeChild(scInclude);
                     scInclude.setAttribute('partial', JSON.stringify(model));
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                     expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
                 });
 
@@ -132,7 +132,7 @@
                     scInclude.parentElement.removeChild(scInclude);
                     scInclude.setAttribute('partial', JSON.stringify(model));
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                     expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
                 });
 

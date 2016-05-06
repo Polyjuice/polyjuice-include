@@ -68,7 +68,7 @@
             });
 
             it('should attach concatenated `Html` properties as content attribute for `<imported-template>`', function () {
-                expect(include.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                expect(include.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
             });
             it('should attach partial model to `imported-template`', function () {
                 expect(include.querySelector("template").model).to.equal(partial);
@@ -90,7 +90,7 @@
                 });
 
                 it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
-                    expect(include.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
+                    expect(include.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
                 });
                 it('should attach new partial model to `imported-template`', function () {
                     expect(include.querySelector("template").model).to.equal(changedPartial);
@@ -104,7 +104,7 @@
                 });
 
                 it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
-                    expect(include.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(include.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                 });
                 it('should attach same partial model to `imported-template`', function () {
                     expect(include.querySelector("template").model).to.equal(partial);
@@ -121,7 +121,7 @@
                 });
 
                 it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
-                    expect(include.querySelector("template").getAttribute("content")).to.equal('/starcounter/htmlmerger?scope1=&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(include.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                 });
                 it('should attach same partial model to `imported-template`', function () {
                     expect(include.querySelector("template").model).to.equal(partial);

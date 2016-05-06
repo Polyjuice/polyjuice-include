@@ -81,12 +81,12 @@
 
             describe('after `dom-bind`` changed the partial.Html property', function() {
                 beforeEach(function(done) {
-                    domBind.set('model.Page.Html', 'changedHtml');
+                    domBind.set('model.Page.Html', '../templateToInclude.html');
                     setTimeout(done);
                 });
 
                 it('should attach new `.Html` property as content attribute for `<imported-template>`', function() {
-                    expect(include.querySelector("template").getAttribute("content")).to.equal('changedHtml');
+                    expect(include.querySelector("template").getAttribute("content")).to.equal('../templateToInclude.html');
                 });
                 it('should attach same partial model to `imported-template`', function() {
                     expect(include.querySelector("template").model).to.equal(partial);
