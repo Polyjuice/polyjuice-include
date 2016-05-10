@@ -134,7 +134,10 @@ version: 0.2.1
                             );
                         }
                     }
-                    return prefix + htmls.join('&');
+                    // Workaround for https://github.com/Starcounter/Starcounter/issues/3072
+                    // as described in https://github.com/Starcounter/starcounter-include/issues/12
+                    return htmls.length && (prefix + htmls.join('&')) || undefined;
+                    // return prefix + htmls.join('&');
                 }
             } else {
                 return undefined;

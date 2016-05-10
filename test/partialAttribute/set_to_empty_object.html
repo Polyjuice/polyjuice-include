@@ -1,0 +1,56 @@
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../helpers/chainable-methods-for-partial.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../starcounter-include.html">
+</head>
+
+<body>
+    <test-fixture id="starcounter-include">
+        <template><starcounter-include partial="{}"></starcounter-include></template>
+    </test-fixture>
+
+    <script>
+    describe('`{}` behaves as `null` to workaround server-side limitation', function () {
+        var include;
+        describe('when created programatically and partial attribute is set to `"{}"`', function () {
+            beforeEach(function () {
+                include = document.createElement("starcounter-include");
+                include.setAttribute('partial', '{}');
+            });
+            it('should clear inner `imported-template`', function () {
+                expect(include).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
+            });
+        });
+        describe('when created programatically and partial property is set to `{}`', function () {
+            beforeEach(function () {
+                include =  document.createElement("starcounter-include");
+                include.partial = {};
+            });
+            it('should clear inner `imported-template`', function () {
+                expect(include).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
+            });
+        });
+        describe('when created in HTML with partial="{}"', function () {
+            beforeEach(function () {
+                include = fixture("starcounter-include");
+            });
+            it('should clear inner `imported-template`', function () {
+                expect(include).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
+            });
+        });
+    });
+    </script>
+
+</body>
+
+</html>
