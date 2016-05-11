@@ -40,7 +40,7 @@
                 expect(include).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
             });
         });
-        describe('when created in HTML with partial="{}"', function () {
+        describe('when created in HTML with `partial="{}"`', function () {
             beforeEach(function () {
                 include = fixture("starcounter-include");
             });

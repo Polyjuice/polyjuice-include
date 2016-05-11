@@ -13,7 +13,8 @@ chai.Assertion.addChainableMethod('descendant', function (selector) {
 chai.Assertion.addProperty('clearImportedTemplate', function () {
     var obj = chai.util.flag(this, 'object');
 
-    new chai.Assertion(obj.model, '`imported-template` should have falsy model property').to.be.falsy;
+    expect(obj.model, '`imported-template` should have falsy model property').to.be.falsy;
+    expect(obj.hasAttribute("content"), '`imported-template` should not have `model` attribute set').to.be.falsy;
     expect(obj.hasAttribute("content"), '`imported-template` should not have `content` attribute set').to.be.false;
     // new chai.Assertion(obj.content, 'should have falsy content property').to.be.falsy;
 });
