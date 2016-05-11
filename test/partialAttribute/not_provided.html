@@ -8,6 +8,7 @@
 
     <script src="../../../webcomponentsjs/webcomponents.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../helpers/chainable-methods-for-partial.js"></script>
 
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../../starcounter-include.html">
@@ -19,34 +20,25 @@
     </test-fixture>
 
     <script>
-        describe('when created programatically with no partial value',
-            testNoPartialValue(function () {
-                return document.createElement("starcounter-include");
-            })
-        );
-        describe('when created with no partial value',
-            testNoPartialValue(function () {
-                return fixture("starcounter-include");
-            })
-        );
-        function testNoPartialValue(createInstance) {
-            return function(){
-                var include;
-                beforeEach(function() {
-                    include = createInstance();
-                });
-                it('should add `<template is="imported-template">` as descendant node', function() {
-                    expect(include.querySelector("template")).to.be.not.null;
-                    expect(include.querySelector("template").getAttribute("is").toLowerCase()).to.equal("imported-template");
-                });
-                it('added `<imported-template>` should not have any model attached', function() {
-                    expect(include.querySelector("template").model).to.be.falsy;
-                });
-                it('added `<imported-template>` should not have content attribute', function() {
-                    expect(include.querySelector("template").hasAttribute("content")).to.be.false;
-                });
-            };
-        }
+        var scInclude;
+        describe('when created programatically with no partial value', function () {
+            beforeEach(function () {
+                scInclude = document.createElement("starcounter-include");
+            });
+
+            it('should have clear `imported-template`', function () {
+                expect(scInclude).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
+            });
+        });
+        describe('when created with no partial value', function () {
+            beforeEach(function () {
+                scInclude = fixture("starcounter-include");
+            });
+
+            it('should have clear `imported-template`', function () {
+                expect(scInclude).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
+            });
+        });
     </script>
 
 </body>

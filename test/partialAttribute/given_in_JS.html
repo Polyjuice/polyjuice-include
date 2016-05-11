@@ -7,6 +7,7 @@
 
     <script src="../../../webcomponentsjs/webcomponents.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../helpers/chainable-methods-for-partial.js"></script>
 
     <link rel="import" href="../../starcounter-include.html">
 </head>
@@ -127,18 +128,14 @@
                             });
                             scInclude.partial = value;
 
-                            expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
-                            expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
-                            expect(scInclude.querySelector("template").model).to.be.falsy;
+                            expect(scInclude).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
                         });
 
                         it('after element was attached', function () {
                             scInclude = fixture('old').querySelector('starcounter-include');
                             scInclude.partial = value;
 
-                            expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
-                            expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
-                            expect(scInclude.querySelector("template").model).to.be.falsy;
+                            expect(scInclude).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
                         });
 
                         it('after element was detached', function () {
@@ -146,9 +143,7 @@
                             scInclude.parentElement.removeChild(scInclude);
                             scInclude.partial = value;
 
-                            expect(scInclude.querySelector("template").hasAttribute("content")).to.be.false;
-                            expect(scInclude.querySelector("template").hasAttribute('model')).to.be.false;
-                            expect(scInclude.querySelector("template").model).to.be.falsy;
+                            expect(scInclude).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
                         });
 
                     });

@@ -6,6 +6,7 @@
 
     <script src="../../../webcomponentsjs/webcomponents.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../helpers/chainable-methods-for-partial.js"></script>
 
     <link rel="import" href="../../../polymer/polymer.html">
     <!-- Step 1: import the element to test -->
@@ -19,26 +20,23 @@
 
     <script>
 var model = {
-      Html: "../templateToInclude.html",
-      doesItWork: "works!"
-    };
+    Html: "../templateToInclude.html",
+    doesItWork: "works!"
+};
 document.getElementById('root').model = model;
 
 describe('after element was attached to DOM', function () {
-  var include;
-  before(function(done){
-    setTimeout(function(){
-      include = document.querySelector('starcounter-include');
-      done();
-    })
-  });
+    var include;
+    before(function (done) {
+        setTimeout(function () {
+            include = document.querySelector('starcounter-include');
+            done();
+        })
+    });
 
-  it('should not attach `.Html` property as content attribute for `<imported-template>`', function () {
-    expect(include.querySelector("template").getAttribute("content")).to.be.null;
-  });
-  it('should not attach partial model to `imported-template`', function () {
-    expect(include.querySelector("template").model).to.be.falsy;
-  });
+    it('should have clear `imported-template`', function () {
+        expect(include).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
+    });
 });
     </script>
 
