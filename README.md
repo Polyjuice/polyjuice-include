@@ -85,3 +85,7 @@ Or [download as ZIP](https://github.com/StarcounterPrefabs/launcher-include/arch
 ## History
 
 For detailed changelog, check [Releases](https://github.com/StarcounterPrefabs/launcher-include/releases).
+
+## License
+
+MIT
