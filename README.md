@@ -110,3 +110,7 @@ Or [download as ZIP](https://github.com/Starcounter/starcounter-include/archive/
 ## History
 
 For detailed changelog, check [Releases](https://github.com/Starcounter/starcounter-include/releases).
+
+## License
+
+MIT
