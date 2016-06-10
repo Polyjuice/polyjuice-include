@@ -60,7 +60,7 @@
                     }, 500);
                 });
 
-                it('should apply layout hints loaded from original partial', function(done) {
+                it('should forward juicy-style attributes from original partial', function(done) {
                     expectLayoutHintsFromOldPartial();
                     domBind.set('model.Page', changedModel);
                     setTimeout(function() {
@@ -86,7 +86,7 @@
                     }, 500);
                 });
 
-                it('should apply layout hints loaded from original partial', function(done) {
+                it('should forward juicy-style attributes from original partial', function(done) {
                     expectLayoutHintsFromOldPartial();
                     domBind.set('model.Page', changedModelWithEmptyLayout);
                     setTimeout(function() {
@@ -97,13 +97,13 @@
             });
 
             function expectLayoutHintsFromOldPartial() {
-                expect(include.grid.setup.items[0].background).to.equal("red");
-                expect(include.grid.setup.items[1].background).to.equal(undefined);
+                expect(include.compositionElement.children[0 + 1].getAttribute('juicy-style')).to.equal("background: red");
+                expect(include.compositionElement.children[1 + 1].getAttribute('juicy-style')).to.equal(null);
             }
 
             function expectLayoutHintsFromNewPartial() {
-                expect(include.grid.setup.items[0].background).to.equal(undefined);
-                expect(include.grid.setup.items[1].background).to.equal("green");
+                expect(include.compositionElement.children[0 + 1].getAttribute('juicy-style')).to.equal(null);
+                expect(include.compositionElement.children[1 + 1].getAttribute('juicy-style')).to.equal("background: green");
             }
         });
     </script>

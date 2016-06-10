@@ -99,13 +99,11 @@
             });
 
             function expectPartialToBeAttached() {
-                expect(instance.grid.getAttribute("name")).to.equal(model.Launcher.PartialId);
-                expect(instance.sync.getAttribute("name")).to.equal(model.Launcher.PartialId);
+                expect(instance.compositionElement.getAttribute("name")).to.equal(model.Launcher.PartialId);
             }
 
             function expectPartialToBeCleanedUp() {
-                expect(instance.grid.getAttribute("name")).to.equal(null);
-                expect(instance.sync.getAttribute("name")).to.equal(null);
+                expect(instance.compositionElement.getAttribute("name")).to.equal(null);
             }
 
             function clone(obj) {

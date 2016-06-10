@@ -28,7 +28,7 @@
             var model = {
                 "Html": "../templateToInclude.html",
                 "Launcher": {
-                    "Layout": '{"width":1000,"items":[]}'
+                    "Layout": 'cleaned Layout'
                 },
                 "doesItWork": "works!"
             };
@@ -104,14 +104,12 @@
         });
         chai.Assertion.addProperty('layoutAttached', function () {
           var obj = chai.util.flag(this, 'object');
-          new chai.Assertion(obj.grid.setup).to.have.property("width");
-          new chai.Assertion(obj.sync.storedValue).to.have.property("width");
+          new chai.Assertion(obj.compositionElement.composition).to.be.instanceof(DocumentFragment);
         });
         chai.Assertion.addProperty('layoutCleanedUp', function () {
           var obj = chai.util.flag(this, 'object');
-          new chai.Assertion(obj.grid).to.respondTo('hasAttribute');
-          new chai.Assertion(obj.grid.hasAttribute('setup')).to.be.false;
-          new chai.Assertion(obj.sync.storedValue).to.be.null;
+          new chai.Assertion(obj.compositionElement).to.be.instanceof(HTMLElement);
+          new chai.Assertion(obj.compositionElement.shadowRoot.innerHTML).to.equal('cleaned Layout');
         });
     </script>
 
