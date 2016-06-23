@@ -7,6 +7,7 @@
 
     <script src="../../../webcomponentsjs/webcomponents.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../helpers/chainable-methods-for-partial.js"></script>
 
     <link rel="import" href="../../starcounter-include.html">
 </head>
@@ -33,7 +34,7 @@
                 "doesItWork": "works!"
             };
 
-            describe("should remove PartialId when", function() {
+            describe("should remove `PartialId` property and `partial-id` attribute when", function() {
                 beforeEach(function() {
                     instance = fixture('nothing').querySelector('starcounter-include');
                     instance.partial = clone(model);
@@ -99,11 +100,13 @@
             });
 
             function expectPartialToBeAttached() {
-                expect(instance.compositionElement.getAttribute("name")).to.equal(model.Launcher.PartialId);
+                expect(instance).to.have.HTMLAttribute('partial-id').equal(model.Launcher.PartialId);
+                expect(instance.partialId).to.be.equal(model.Launcher.PartialId);
             }
 
             function expectPartialToBeCleanedUp() {
-                expect(instance.compositionElement.getAttribute("name")).to.equal(null);
+                expect(instance).to.have.HTMLAttribute('partial-id').equal(null);
+                expect(instance.partialId).to.be.equal(null);
             }
 
             function clone(obj) {
