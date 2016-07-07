@@ -23,77 +23,77 @@
     </test-fixture>
 
     <script>
-        describe('cleanup changes of Layout', function() {
+        describe('cleanup changes of Composition', function() {
             var instance;
             var model = {
                 "Html": "../templateToInclude.html",
                 "Launcher": {
-                    "Layout": 'cleaned Layout'
+                    "Composition": 'a Composition'
                 },
                 "doesItWork": "works!"
             };
 
-            describe("should remove Layout when", function() {
+            describe("should remove Composition when", function() {
                 beforeEach(function() {
                     instance = fixture('nothing').querySelector('starcounter-include');
                     instance.partial = clone(model);
                 });
 
                 it('the `partial` attribute is changed to an empty string', function(done) {
-                    expect(instance).to.have.layoutAttached;
+                    expect(instance).to.have.compositionAttached;
                     instance.setAttribute("partial", "");
-                    expect(instance).to.have.layoutCleanedUp;
+                    expect(instance).to.have.compositionCleanedUp;
                     done();
                 });
 
                 it('when the `partial` property is changed to an empty string', function(done) {
-                    expect(instance).to.have.layoutAttached;
+                    expect(instance).to.have.compositionAttached;
                     instance.partial = "";
-                    expect(instance).to.have.layoutCleanedUp;
+                    expect(instance).to.have.compositionCleanedUp;
                     done();
                 });
 
                 it('when the `partial` property is changed to null', function(done) {
-                    expect(instance).to.have.layoutAttached;
+                    expect(instance).to.have.compositionAttached;
                     instance.partial = null;
-                    expect(instance).to.have.layoutCleanedUp;
+                    expect(instance).to.have.compositionCleanedUp;
                     done();
                 });
 
                 it('when the `partial` property is changed to undefined', function(done) {
-                    expect(instance).to.have.layoutAttached;
+                    expect(instance).to.have.compositionAttached;
                     instance.partial = undefined;
-                    expect(instance).to.have.layoutCleanedUp;
+                    expect(instance).to.have.compositionCleanedUp;
                     done();
                 });
 
                 it('when the `partial` property is changed to empty object', function(done) {
-                    expect(instance).to.have.layoutAttached;
+                    expect(instance).to.have.compositionAttached;
                     instance.partial = {};
-                    expect(instance).to.have.layoutCleanedUp;
+                    expect(instance).to.have.compositionCleanedUp;
                     done();
                 });
 
-                it('when the `partial` property is changed to a partial without Layout', function(done) {
-                    expect(instance).to.have.layoutAttached;
+                it('when the `partial` property is changed to a partial without Composition', function(done) {
+                    expect(instance).to.have.compositionAttached;
                     instance.partial = {
                         "Html": "../templateToInclude.html",
                         "doesItWork": "works!"
                     };
-                    expect(instance).to.have.layoutCleanedUp;
+                    expect(instance).to.have.compositionCleanedUp;
                     done();
                 });
 
-                it('when the `partial` property is changed to a partial with empty Layout', function(done) {
-                    expect(instance).to.have.layoutAttached;
+                it('when the `partial` property is changed to a partial with empty Composition', function(done) {
+                    expect(instance).to.have.compositionAttached;
                     instance.partial = {
                         "Html": "../templateToInclude.html",
                         "Launcher": {
-                            "Layout": ""
+                            "Composition": ""
                         },
                         "doesItWork": "works!"
                     };
-                    expect(instance).to.have.layoutCleanedUp;
+                    expect(instance).to.have.compositionCleanedUp;
                     done();
                 });
             });
@@ -102,14 +102,14 @@
                 return JSON.parse(JSON.stringify(obj));
             }
         });
-        chai.Assertion.addProperty('layoutAttached', function () {
+        chai.Assertion.addProperty('compositionAttached', function () {
           var obj = chai.util.flag(this, 'object');
           new chai.Assertion(obj.compositionElement.composition).to.be.instanceof(DocumentFragment);
         });
-        chai.Assertion.addProperty('layoutCleanedUp', function () {
+        chai.Assertion.addProperty('compositionCleanedUp', function () {
           var obj = chai.util.flag(this, 'object');
           new chai.Assertion(obj.compositionElement).to.be.instanceof(HTMLElement);
-          new chai.Assertion(obj.compositionElement.shadowRoot.innerHTML).to.equal('cleaned Layout');
+          new chai.Assertion(obj.compositionElement.shadowRoot.innerHTML).to.equal('');
         });
     </script>
 
