@@ -68,14 +68,15 @@
                     domBind.set('model.Page', changedModel);
                     setTimeout(function() {
                         done();
-                    })
+                    },10)
                 });
 
                 it('should attach new `.Html` property as content attribute for `<imported-template>`', function() {
                     expect(include.querySelector("template").getAttribute("content")).to.equal(changedModel.Html);
                 });
                 it('should attach new partial model to `imported-template`', function() {
-                    expect(include.querySelector("template").model).to.equal(changedModel);
+                    var template = include.querySelector("template");
+                    expect(template.model).to.equal(changedModel);
                 });
             });
 
