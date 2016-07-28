@@ -208,13 +208,12 @@ version: 0.6.0
          */
         function buildURL(partial, prefix, defaultURL) {
             if(partial){
-                if (partial.LauncherLayoutInfo) {
+                if(partial.Html !== undefined){
+                    return partial.Html;
+                } else if (partial.LauncherLayoutInfo) {
                     //workaround for https://github.com/StarcounterPrefabs/Launcher/issues/224
                     //should be removed when the original issue with not patched Html is resolved
                     return partial.LauncherLayoutInfo.MergedHtml;
-                }
-                if(partial.Html !== undefined){
-                    return partial.Html;
                 } else {
                     var htmls = [];
                     for (var key in partial){
