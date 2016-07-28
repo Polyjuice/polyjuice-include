@@ -11,6 +11,7 @@
 
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../../starcounter-include.html">
+    <script src="../helpers/WCT-Polyfill_bugs_workaround.js"></script>
 </head>
 
 <body>
@@ -58,6 +59,10 @@
                     "Html": "../old_templateToInclude.html",
                     "doesItWork": "worked!"
                 };
+                afterEach(function (done) {
+                    // give more time to polyfill cleanup
+                    setTimeout(done);
+                });
                 describe('once element is created programatically', testAllAttributes(function() {
                     var scInclude = {};
                     scInclude.add = document.createElement('starcounter-include');
@@ -99,12 +104,12 @@
                         });
 
                         it('should attach `.Html` property as content attribute for `<imported-template>`', function() {
-                            expect(scInclude.add.querySelector("template").getAttribute("content")).to.equal(referenceHtml);
-                            expect(scInclude.update.querySelector("template").getAttribute("content")).to.equal(referenceHtml);
+                            expect(scInclude.add.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal(referenceHtml);
+                            expect(scInclude.update.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal(referenceHtml);
                         });
                         it('should attach partial model to `imported-template`', function() {
-                            expect(JSON.stringify(scInclude.add.querySelector("template").model)).to.equal(JSON.stringify(model));
-                            expect(JSON.stringify(scInclude.update.querySelector("template").model)).to.equal(JSON.stringify(model));
+                            expect(JSON.stringify(scInclude.add.querySelector_template_for_buggy_polyfill().model)).to.equal(JSON.stringify(model));
+                            expect(JSON.stringify(scInclude.update.querySelector_template_for_buggy_polyfill().model)).to.equal(JSON.stringify(model));
                         });
 
                     };

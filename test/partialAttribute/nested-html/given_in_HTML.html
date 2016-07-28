@@ -10,6 +10,7 @@
 
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../../../starcounter-include.html">
+    <script src="../../helpers/WCT-Polyfill_bugs_workaround.js"></script>
 </head>
 
 <body>
@@ -45,6 +46,10 @@
 
     <script>
     describe('starcounter-include with `partial` attribute without `Html` on root level, but with some namespaces', function () {
+        afterEach(function (done) {
+            // give more time to polyfill cleanup
+            setTimeout(done);
+        });
         var scInclude;
         var model = {
             'scope1': {
@@ -73,8 +78,8 @@
                     scInclude = document.createElement('starcounter-include');
                     scInclude.setAttribute('partial', JSON.stringify(model));
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                    expect(scInclude.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector_template_for_buggy_polyfill().model)).to.equal(JSON.stringify(model));
                 });
 
                 it('for element created and changed programmatically', function () {
@@ -82,31 +87,31 @@
                     scInclude.setAttribute('partial', JSON.stringify(oldModel));
                     scInclude.setAttribute('partial', JSON.stringify(model));
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                    expect(scInclude.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector_template_for_buggy_polyfill().model)).to.equal(JSON.stringify(model));
                 });
 
                 it('for element upgraded (set directly into HTML markup)', function () {
                     scInclude = fixture('nested-html');
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                    expect(scInclude.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector_template_for_buggy_polyfill().model)).to.equal(JSON.stringify(model));
                 });
 
                 it('if value was set after element was attached', function () {
                     scInclude = fixture('nothing');
                     scInclude.setAttribute('partial', JSON.stringify(model));
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                    expect(scInclude.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector_template_for_buggy_polyfill().model)).to.equal(JSON.stringify(model));
                 });
 
                 it('if value was changed after element was attached', function () {
                     scInclude = fixture('old');
                     scInclude.setAttribute('partial', JSON.stringify(model));
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                    expect(scInclude.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector_template_for_buggy_polyfill().model)).to.equal(JSON.stringify(model));
                 });
 
                 it('if value was set after element was detached', function () {
@@ -114,8 +119,8 @@
                     scInclude.parentElement.removeChild(scInclude);
                     scInclude.setAttribute('partial', JSON.stringify(model));
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                    expect(scInclude.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector_template_for_buggy_polyfill().model)).to.equal(JSON.stringify(model));
                 });
 
                 it('if value was changed after element was detached', function () {
@@ -123,8 +128,8 @@
                     scInclude.parentElement.removeChild(scInclude);
                     scInclude.setAttribute('partial', JSON.stringify(model));
 
-                    expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                    expect(JSON.stringify(scInclude.querySelector("template").model)).to.equal(JSON.stringify(model));
+                    expect(scInclude.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(JSON.stringify(scInclude.querySelector_template_for_buggy_polyfill().model)).to.equal(JSON.stringify(model));
                 });
 
             });

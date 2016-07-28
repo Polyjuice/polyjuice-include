@@ -21,6 +21,10 @@
 
     <script>
         describe('cleanup changes of Composition', function() {
+            afterEach(function (done) {
+                // give more time to polyfill cleanup
+                setTimeout(done);
+            });
             var instance;
             var model = {
                 "Html": "../templateToInclude.html",

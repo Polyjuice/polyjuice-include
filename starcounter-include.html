@@ -66,7 +66,7 @@ version: 0.6.0
             this.template = this.compositionElement.firstElementChild; // .getElementsByTagName("TEMPLATE");
             var that = this;
             this.template.addEventListener('stamping', function fetchCompositions(event) {
-                var mergedComposition = new DocumentFragment();
+                var mergedComposition = document.createDocumentFragment();
                 var templates = event.detail.querySelectorAll('template[is="starcounter-composition"]');
                 Array.prototype.forEach.call(templates, function mergeContents(individualComposition) {
                     mergedComposition.appendChild(individualComposition.content);

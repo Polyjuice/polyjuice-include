@@ -10,6 +10,7 @@
     <script src="../helpers/chainable-methods-for-partial.js"></script>
 
     <link rel="import" href="../../starcounter-include.html">
+    <script src="../helpers/WCT-Polyfill_bugs_workaround.js"></script>
 </head>
 
 <body>
@@ -92,12 +93,12 @@
                         });
 
                         it('should attach `.Html` property as content attribute for `<imported-template>`', function () {
-                            expect(scInclude.add.querySelector("template").getAttribute("content")).to.equal(referenceHtml);
-                            expect(scInclude.update.querySelector("template").getAttribute("content")).to.equal(referenceHtml);
+                            expect(scInclude.add.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal(referenceHtml);
+                            expect(scInclude.update.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal(referenceHtml);
                         });
                         it('should attach partial model to `imported-template`', function () {
-                            expect(JSON.stringify(scInclude.add.querySelector("template").model)).to.equal(JSON.stringify(model));
-                            expect(JSON.stringify(scInclude.update.querySelector("template").model)).to.equal(JSON.stringify(model));
+                            expect(JSON.stringify(scInclude.add.querySelector_template_for_buggy_polyfill().model)).to.equal(JSON.stringify(model));
+                            expect(JSON.stringify(scInclude.update.querySelector_template_for_buggy_polyfill().model)).to.equal(JSON.stringify(model));
                         });
 
                     };
@@ -108,6 +109,10 @@
             [null, undefined].forEach(function (value) {
                 describe('`'+ value +'`', function () {
                     describe('should remove content and model attribute and model property from `<imported-template>`', function () {
+                        afterEach(function (done) {
+                            // give more time to polyfill cleanup
+                            setTimeout(done);
+                        });
                         it('for element created programatically', function () {
                             scInclude = document.createElement('starcounter-include');
                             scInclude.partial = clone({

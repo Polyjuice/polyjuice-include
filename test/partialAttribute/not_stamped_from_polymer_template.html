@@ -26,6 +26,10 @@ var model = {
 document.getElementById('root').model = model;
 
 describe('after element was attached to DOM', function () {
+    afterEach(function (done) {
+        // give more time to polyfill cleanup
+        setTimeout(done);
+    });
     var include;
     before(function (done) {
         setTimeout(function () {
