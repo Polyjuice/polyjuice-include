@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../helpers/chainable-methods-for-partial.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../starcounter-include.html">
+</head>
+
+<body>
+    <test-fixture id="default-composition">
+        <template>
+            <starcounter-include partial="{
+                &quot;LauncherLayoutInfo&quot;: {
+                    &quot;PartialId&quot;: &quot;given PartialId&quot;
+                },
+                &quot;Html&quot;: &quot;../template_w_composition.html&quot;,
+                &quot;doesItWork&quot;: &quot;works!&quot;
+            }"></starcounter-include>
+        </template>
+    </test-fixture>
+    <template id="reference-composition">
+        <h2>Custom Shadow DOM composition</h2>
+		<content select='[slot="my-slot"]'></content>
+    </template>
+
+
+    <script>
+    describe('starcounter-include when imports a template that contains <code>template is="imported-template"</code>', function () {
+
+        var scInclude;
+        var partial = {
+            "LauncherLayoutInfo": {
+                "PartialId": "given PartialId"
+            },
+            "Html": "../template_w_composition.html",
+            "doesItWork": "works!"
+        };
+        beforeEach(function(done) {
+            scInclude = fixture('default-composition');
+            // scInclude.partial = JSON.parse(JSON.stringify(partial));
+            setTimeout(done, 100);
+        });
+        it('should use it as it\'s composition', function () {
+            expect(scInclude.querySelector('juicy-composition')).to.be.not.null;
+            expect(scInclude.querySelector('juicy-composition').composition).to.be.not.null;
+            expect(scInclude.querySelector('juicy-composition').composition.innerHTML.trim()).to.be
+                .equal(document.querySelector('#reference-composition').innerHTML.trim());
+        });
+
+    });
+    </script>
+
+</body>
+
+</html>
