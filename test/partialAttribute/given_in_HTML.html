@@ -17,37 +17,25 @@
 
     <test-fixture id="full">
         <template>
-            <!-- nest to workaround test-fixture bug -->
-            <div>
-                <starcounter-include partial="{&quot;Html&quot;: &quot;../templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;works!&quot;}"></starcounter-include>
-            </div>
+            <starcounter-include partial="{&quot;Html&quot;: &quot;../templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;works!&quot;}"></starcounter-include>
         </template>
     </test-fixture>
 
     <test-fixture id="htmlnull">
         <template>
-            <!-- nest to workaround test-fixture bug -->
-            <div>
-                <starcounter-include partial="{&quot;Html&quot;: null, &quot;doesItWork&quot;: &quot;works!&quot;}"></starcounter-include>
-            </div>
+            <starcounter-include partial="{&quot;Html&quot;: null, &quot;doesItWork&quot;: &quot;works!&quot;}"></starcounter-include>
         </template>
     </test-fixture>
 
     <!-- References: -->
     <test-fixture id="nothing">
         <template>
-            <!-- nest to workaround test-fixture bug -->
-            <div>
-                <starcounter-include></starcounter-include>
-            </div>
+            <starcounter-include></starcounter-include>
         </template>
     </test-fixture>
     <test-fixture id="old">
         <template>
-            <!-- nest to workaround test-fixture bug -->
-            <div>
-                <starcounter-include partial="{&quot;Html&quot;: &quot;../old_templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;worked!&quot;}"></starcounter-include>
-            </div>
+            <starcounter-include partial="{&quot;Html&quot;: &quot;../old_templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;worked!&quot;}"></starcounter-include>
         </template>
     </test-fixture>
 
@@ -81,21 +69,21 @@
                 }));
                 describe('before element was upgraded (directly into HTML markup)', testAllAttributes(function() {
                     var scInclude = {};
-                    scInclude.add = scInclude.update = fixture(fixtureId).querySelector('starcounter-include');
+                    scInclude.add = scInclude.update = fixture(fixtureId);
                     return scInclude;
                 }));
                 describe('after element was attached', testAllAttributes(function() {
                     var scInclude = {};
-                    scInclude.add = fixture('nothing').querySelector('starcounter-include');
-                    scInclude.update = fixture('old').querySelector('starcounter-include');
+                    scInclude.add = fixture('nothing');
+                    scInclude.update = fixture('old');
                     scInclude.add.setAttribute('partial', JSON.stringify(model));
                     scInclude.update.setAttribute('partial', JSON.stringify(model));
                     return scInclude;
                 }));
                 describe('after element was detached', testAllAttributes(function() {
                     var scInclude = {};
-                    scInclude.add = fixture('nothing').querySelector('starcounter-include');
-                    scInclude.update = fixture('old').querySelector('starcounter-include');
+                    scInclude.add = fixture('nothing');
+                    scInclude.update = fixture('old');
                     scInclude.add.parentElement.removeChild(scInclude.add);
                     scInclude.update.parentElement.removeChild(scInclude.update);
                     scInclude.add.setAttribute('partial', JSON.stringify(model));
@@ -139,7 +127,7 @@
             });
 
             it('from attached element', function () {
-                scInclude = fixture('old').querySelector('starcounter-include');
+                scInclude = fixture('old');
                 scInclude.removeAttribute('partial');
 
 
@@ -147,7 +135,7 @@
             });
 
             it('from detached element', function () {
-                scInclude = fixture('old').querySelector('starcounter-include');
+                scInclude = fixture('old');
                 scInclude.parentElement.removeChild(scInclude);
                 scInclude.removeAttribute('partial');
 

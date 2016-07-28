@@ -15,40 +15,31 @@
 <body>
     <test-fixture id="nested-html">
         <template>
-            <!-- nest to workaround test-fixture bug -->
-            <div>
-                <starcounter-include partial="{
-                    &quot;scope1&quot;: {
-                        &quot;Html&quot;: &quot;scope1Html&quot;,
-                        &quot;doesItWork&quot;: &quot;works!&quot;
-                    },
-                    &quot;scope2&quot;: {
-                        &quot;Html&quot;: &quot;scope2Html&quot;,
-                        &quot;doesItWork&quot;: &quot;works!&quot;
-                    },
-                    &quot;scope3&quot;: {
-                        &quot;doesItWork&quot;: &quot;works!&quot;
-                    }
-                }"></starcounter-include>
-            </div>
+            <starcounter-include partial="{
+                &quot;scope1&quot;: {
+                    &quot;Html&quot;: &quot;scope1Html&quot;,
+                    &quot;doesItWork&quot;: &quot;works!&quot;
+                },
+                &quot;scope2&quot;: {
+                    &quot;Html&quot;: &quot;scope2Html&quot;,
+                    &quot;doesItWork&quot;: &quot;works!&quot;
+                },
+                &quot;scope3&quot;: {
+                    &quot;doesItWork&quot;: &quot;works!&quot;
+                }
+            }"></starcounter-include>
         </template>
     </test-fixture>
 
     <!-- References: -->
     <test-fixture id="nothing">
         <template>
-            <!-- nest to workaround test-fixture bug -->
-            <div>
-                <starcounter-include></starcounter-include>
-            </div>
+            <starcounter-include></starcounter-include>
         </template>
     </test-fixture>
     <test-fixture id="old">
         <template>
-            <!-- nest to workaround test-fixture bug -->
-            <div>
-                <starcounter-include partial="{&quot;Html&quot;: &quot;../old_templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;worked!&quot;}"></starcounter-include>
-            </div>
+            <starcounter-include partial="{&quot;Html&quot;: &quot;../old_templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;worked!&quot;}"></starcounter-include>
         </template>
     </test-fixture>
 
@@ -87,7 +78,7 @@
                 });
 
                 it('if value was set after element was attached', function () {
-                    scInclude = fixture('nothing').querySelector('starcounter-include');
+                    scInclude = fixture('nothing');
                     scInclude.partial = clone(model);
 
                     expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
@@ -95,7 +86,7 @@
                 });
 
                 it('if value was changed after element was attached', function () {
-                    scInclude = fixture('old').querySelector('starcounter-include');
+                    scInclude = fixture('old');
                     scInclude.partial = clone(model);
 
                     expect(scInclude.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
@@ -103,7 +94,7 @@
                 });
 
                 it('if value was set after element was detached', function () {
-                    scInclude = fixture('nothing').querySelector('starcounter-include');
+                    scInclude = fixture('nothing');
                     scInclude.parentElement.removeChild(scInclude);
                     scInclude.partial = clone(model);
 
@@ -112,7 +103,7 @@
                 });
 
                 it('if value was changed after element was detached', function () {
-                    scInclude = fixture('old').querySelector('starcounter-include');
+                    scInclude = fixture('old');
                     scInclude.parentElement.removeChild(scInclude);
                     scInclude.partial = clone(model);
 

@@ -16,10 +16,7 @@
 
     <test-fixture id="nothing">
         <template>
-            <!-- nest to workaround test-fixture bug -->
-            <div>
-                <starcounter-include></starcounter-include>
-            </div>
+            <starcounter-include></starcounter-include>
         </template>
     </test-fixture>
 
@@ -36,7 +33,7 @@
 
             describe("should remove `PartialId` property and `partial-id` attribute when", function() {
                 beforeEach(function() {
-                    instance = fixture('nothing').querySelector('starcounter-include');
+                    instance = fixture('nothing');
                     instance.partial = clone(model);
                 });
 
