@@ -45,12 +45,13 @@
         beforeEach(function(done) {
             scInclude = fixture('default-composition');
             // scInclude.partial = JSON.parse(JSON.stringify(partial));
-            setTimeout(done, 100);
+            setTimeout(done, 500);
         });
         it('should use it as it\'s composition', function () {
-            expect(scInclude.querySelector('juicy-composition')).to.be.not.null;
-            expect(scInclude.querySelector('juicy-composition').composition).to.be.not.null;
-            expect(scInclude.querySelector('juicy-composition').composition.innerHTML.trim()).to.be
+            debugger
+            expect(document.querySelector('juicy-composition')).to.be.not.null;
+            expect(document.querySelector('juicy-composition').composition).to.be.not.null;
+            expect(document.querySelector('juicy-composition').composition.innerHTML.trim()).to.be
                 .equal(document.querySelector('#reference-composition').innerHTML.trim());
         });
 
