@@ -81,24 +81,25 @@
     <script>
     describe('starcounter-include `partial` attribute without `Html` on root level, but with some namespaces', function () {
         var scInclude;
-        var fullPartial = {
-            "LauncherLayoutInfo": {
-                "PartialId": "given PartialId"
-            },
-            "Html": "../templateToInclude.html",
-            "doesItWork": "works!"
-        };
-        var newPartial = {
+        function getFullPartial() {
+          return {
+              "LauncherLayoutInfo": {
+                  "PartialId": "given PartialId"
+              },
+              "Html": "../templateToInclude.html",
+              "doesItWork": "works!"
+          };
+        }
+        function getNewPartial() {
+          return {
             "LauncherLayoutInfo": {
                 "PartialId": "new PartialId"
             },
             "Html": "../templateToInclude.html",
             "doesItWork": "works!"
-        };
-        var oldModel = {
-            "Html": "../old_templateToInclude.html",
-            "doesItWork": "worked!"
-        };
+          };
+        }
+
         it('for element created programmatically property should be null, and there should bo no attribute', function () {
             scInclude = document.createElement('starcounter-include');
 
@@ -108,7 +109,7 @@
 
         it('when `partialId` property is assigned (inside `partial` attribute), `partial-id` attribute should reflect this change', function () {
             scInclude = document.createElement('starcounter-include');
-            scInclude.setAttribute('partial', JSON.stringify(fullPartial));
+            scInclude.setAttribute('partial', JSON.stringify(getFullPartial()));
 
             expect(scInclude.partialId).to.equal('given PartialId');
             expect(scInclude).to.have.HTMLAttribute('partial-id').equal('given PartialId');
@@ -116,17 +117,38 @@
 
         it('when it was set directly in HTML, then changed (entire `partial` attribute), should reflect this change', function () {
             scInclude = fixture('reflected-partial-id').querySelector('starcounter-include');
-            scInclude.setAttribute('partial', JSON.stringify(newPartial));
+            scInclude.setAttribute('partial', JSON.stringify(getNewPartial()));
 
             expect(scInclude.partialId).to.equal('new PartialId');
             expect(scInclude).to.have.HTMLAttribute('partial-id').equal('new PartialId');
+        });
+
+        it('when it was set, then changed with Polymer dom-bind (`LauncherLayoutInfo` object), should reflect this change', function (done) {
+            var domBind;
+            container = fixture('dom-bind');
+            domBind = container.querySelector('[is="dom-bind"]');
+            domBind.partial = getFullPartial();
+
+            setTimeout(function onceDomBindStamped() {
+                scInclude = container.querySelector('starcounter-include');
+                expect(scInclude.partialId).to.equal('given PartialId');
+                expect(scInclude).to.have.HTMLAttribute('partial-id').equal('given PartialId');
+
+                // change .PartialId
+                domBind.set('partial.LauncherLayoutInfo', {PartialId: "new PartialId"});
+                setTimeout(function oncePolymerNotificationPropagated() {
+                    expect(scInclude.partialId).to.equal('new PartialId');
+                    expect(scInclude).to.have.HTMLAttribute('partial-id').equal('new PartialId');
+                    done();
+                });
+            }, 100);
         });
 
         it('when it was set, then changed with Polymer dom-bind (just `LauncherLayoutInfo.PartialId` property), should reflect this change', function (done) {
             var domBind;
             container = fixture('dom-bind');
             domBind = container.querySelector('[is="dom-bind"]');
-            domBind.partial = fullPartial;
+            domBind.partial = getFullPartial();
 
             setTimeout(function onceDomBindStamped() {
                 scInclude = container.querySelector('starcounter-include');

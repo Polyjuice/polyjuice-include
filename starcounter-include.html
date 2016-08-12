@@ -182,7 +182,7 @@ version: 1.0.0
             if (path.indexOf("partial.") == 0) {
                 if (
                     path === "partial.Html" ||
-                    path.indexOf("partial.LauncherLayoutInfo.") === 0 ||
+                    path.indexOf("partial.LauncherLayoutInfo") === 0 ||
                     // path.match(/^partial\.[^.]+\.Html$/)
                     (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1
                 ) {
