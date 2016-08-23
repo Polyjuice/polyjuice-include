@@ -246,7 +246,7 @@ version: 1.0.1
             // FIXME: temporary workaround for servers not accepting JSON-Patch
             // from juicy-tiles-setup-sync
             var req = new XMLHttpRequest();
-            req.open("POST", this.compositionAPI + "?key=" + this.partialId + '&ver=', true);
+            req.open("POST", this.compositionAPI + "?key=" + encodeURIComponent(this.partialId) + '&ver=', true);
             req.onreadystatechange = function () {
                 if (req.readyState == 4) {
                     if (!(req.status >= 200 && req.status <= 299)) {
