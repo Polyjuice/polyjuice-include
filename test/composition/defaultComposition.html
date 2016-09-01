@@ -32,7 +32,7 @@
 
 
     <script>
-    describe('starcounter-include when imports a template that contains <code>template is="imported-template"</code>', function () {
+    describe('starcounter-include when imports a template that contains <code>template is="starcounter-composition"</code>', function () {
 
         var scInclude;
         var partial = {
@@ -42,17 +42,32 @@
             "Html": "../template_w_composition.html",
             "doesItWork": "works!"
         };
-        beforeEach(function(done) {
+        afterEach(function (done) {
+            // give more time to polyfill cleanup
+            setTimeout(done);
+        });
+        beforeEach(function (done) {
             scInclude = fixture('default-composition');
             // scInclude.partial = JSON.parse(JSON.stringify(partial));
             setTimeout(done, 500);
         });
         it('should use it as it\'s composition', function () {
-            debugger
             expect(document.querySelector('juicy-composition')).to.be.not.null;
             expect(document.querySelector('juicy-composition').composition).to.be.not.null;
             expect(document.querySelector('juicy-composition').composition.innerHTML.trim()).to.be
                 .equal(document.querySelector('#reference-composition').innerHTML.trim());
+        });
+        describe('after partial property is replaced with the partial that also does contain default composition', function () {
+            beforeEach(function (done) {
+                scInclude.partial = JSON.parse(JSON.stringify(partial));
+                setTimeout(done, 500);
+            });
+            it('should use it as it\'s composition', function () {
+                expect(document.querySelector('juicy-composition')).to.be.not.null;
+                expect(document.querySelector('juicy-composition').composition).to.be.not.null;
+                expect(document.querySelector('juicy-composition').composition.innerHTML.trim()).to.be
+                    .equal(document.querySelector('#reference-composition').innerHTML.trim());
+            });
         });
 
     });
