@@ -161,7 +161,7 @@ version: 1.2.0
             if (!composition || composition !== this._lastLayout || this._forceLayoutChange) {
                 if (!composition) {
                     this.storedLayout = null;
-                    this.compositionElement.composition = this.defaultComposition;
+                    this.compositionElement.composition = this.defaultComposition && this.defaultComposition.cloneNode(true);
                     // this.compositionElement.composition = '<div style="min-width: 1200px;"><content></content></div>';
                 } else {
                     this.storedLayout = composition;
