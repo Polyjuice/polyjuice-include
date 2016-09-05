@@ -18,3 +18,8 @@ chai.Assertion.addProperty('clearImportedTemplate', function () {
     expect(obj.hasAttribute("content"), '`imported-template` should not have `content` attribute set').to.be.false;
     // new chai.Assertion(obj.content, 'should have falsy content property').to.be.falsy;
 });
+chai.Assertion.addChainableMethod('HTMLAttribute', function (str) {
+    var obj = chai.util.flag(this, 'object');
+    new chai.Assertion(obj).to.respondTo('getAttribute');
+    chai.util.flag(this, 'object', obj.getAttribute(str));
+});

@@ -1,7 +1,9 @@
-<link rel="import" href="../../polymer/polymer.html">
+<!-- Do not import Polymer to workaround
+	https://github.com/Polymer/web-component-tester/issues/354 -->
+<!-- <link rel="import" href="../../polymer/polymer.html"> -->
 <template>
 	<h1>Template included</h1>
 	<template is="dom-bind">
-		<p juicy-style="background: green">Polymer's data binding {{model.doesItWork}}.</p>
+		<p>Polymer's data binding {{model.doesItWork}}.</p>
 	</template>
 </template>
