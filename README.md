@@ -1,7 +1,10 @@
 &lt;starcounter-include&gt; [![Build Status](https://travis-ci.org/Starcounter/starcounter-include.svg?branch=gh-pages)](https://travis-ci.org/Starcounter/starcounter-include)
 ==============
 
-`<starcounter-include>` is a custom element that let's you load HTML partials into your Starcounter page, it uses [`<imported-template>`](https://github.com/Juicy/imported-template), so, you can take full control over loaded `<script>`s and `<link rel="import">`s. Thanks to HTML Imports - caching, script execution, etc. is completely native.
+`<starcounter-include>` is a custom element that let's you load HTML partials into your Starcounter page, it uses  
+
+- [`<imported-template>`](https://github.com/Juicy/imported-template) - You can take full control over loaded `<script>`s and `<link rel="import">`s. Thanks to HTML Imports - caching, script execution, etc. is completely native.
+- [`<juicy-composition>`](https://github.com/Juicy/juicy-composition) - You can use Shadow DOM v1 features to apply Document Fragment with custom HTML composition and slots to tune the layout of HTML Elements given by partial. It lets you blend and apply your desired look & feel to elements given by your and even other apps - which were mixed due to Starcounter mappings.
 
 ### Small sample
 
@@ -37,13 +40,9 @@ To produce
 
 ## Related custom elements
 
- - [`<starcounter-include>`](https://github.com/Starcounter/starcounter-include) - includes Starcounter Partial,
  - [`<imported-template>`](https://github.com/Juicy/imported-template) - includes HTML Template,
- - [`<juicy-tile-grid>`](https://github.com/Juicy/juicy-tile-grid),
-   - x-browser fallback [`<juicy-tile-table>`](https://github.com/Juicy/juicy-tile-table),
- - [`<juicy-tile-list>`](https://github.com/Juicy/juicy-tile-list),
- - [`<juicy-tile-editor>`](https://github.com/Juicy/juicy-tile-editor),
- - [`<juicy-tiles-setup-sync>`](https://github.com/Juicy/juicy-tiles-setup-sync)
+ - [`<juicy-composition>`](https://github.com/Juicy/juicy-composition) - applies Document Fragment to Shadow DOM,
+ - [`<starcounter-layout-html-editor>`](https://github.com/Starcounter/starcounter-layout-html-editor) - editor for Document Fragments
 
 ## Features
 
