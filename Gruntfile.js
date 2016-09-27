@@ -9,9 +9,9 @@ module.exports = function(grunt) {
                 files: [
                     '*.html',
                     'examples/**/*.html',
-                    'tests/*.js',
-                    'tests/*.html',
-                    'tests/**/*.html'
+                    'test/*.js',
+                    'test/*.html',
+                    'test/**/*.html'
                 ],
                 // tasks: ['jshint'],
             },
@@ -19,7 +19,7 @@ module.exports = function(grunt) {
         // Mocha
 		mocha: {
 		  all: {
-		    src: ['tests/index.html'],
+		    src: ['test/index.html'],
 		  },
 		  options: {
 		    run: true

@@ -4,7 +4,7 @@
   "description": "Custom Element to include HTML partials/templates from Starcounter",
   "main": "starcounter-include.html",
   "directories": {
-    "test": "tests"
+    "test": "test"
   },
   "dependencies": {
     "grunt": "^0.4.5",

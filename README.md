@@ -33,7 +33,7 @@ To produce
 
 ### [`<imported-template>` Demo/Example](https://github.com/Juicy/imported-template#demoexamples)
 
-### [Test/Use cases](http://starcounter.github.io/starcounter-include/tests)
+### [Test/Use cases](http://starcounter.github.io/starcounter-include/test)
 
 ## Features
 
@@ -96,8 +96,8 @@ Or [download as ZIP](https://github.com/Starcounter/starcounter-include/archive/
 
 ## Test suite
 
- - local browser `./tests/index.html`
- - [online](http://starcounter.github.io/starcounter-include/tests)
+ - local browser `./test/index.html`
+ - [online](http://starcounter.github.io/starcounter-include/test)
 
 ## Contributing
 
