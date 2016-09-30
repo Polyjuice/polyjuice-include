@@ -15,6 +15,7 @@
     <link rel="import" href="../../../../polymer/polymer.html">
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../../../starcounter-include.html">
+    <script src="../../helpers/WCT-Polyfill_bugs_workaround.js"></script>
 </head>
 
 <body>
@@ -53,6 +54,10 @@
         }
 
         describe('after `dom-bind`` was attached to DOM', function () {
+            afterEach(function (done) {
+                // give more time to polyfill cleanup
+                setTimeout(done);
+            });
             var container, domBind, include, partial;
             beforeEach(function(done) {
                 container = fixture('root');
@@ -68,13 +73,13 @@
             });
 
             it('should attach concatenated `Html` properties as content attribute for `<imported-template>`', function () {
-                expect(include.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                expect(include.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
             });
             it('should attach partial model to `imported-template`', function () {
-                expect(include.querySelector("template").model).to.equal(partial);
+                expect(include.querySelector_template_for_buggy_polyfill().model).to.equal(partial);
             });
             it('should forward Polymer notification to `imported-template`', function () {
-                var importedTemplate = include.querySelector("template");
+                var importedTemplate = include.querySelector_template_for_buggy_polyfill();
                 sinon.stub(importedTemplate, "_notifyPath");
                 var newVal = "notification works";
                 domBind.set("model.Page.doesItWork", newVal);
@@ -90,10 +95,10 @@
                 });
 
                 it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
-                    expect(include.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
+                    expect(include.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
                 });
                 it('should attach new partial model to `imported-template`', function () {
-                    expect(include.querySelector("template").model).to.equal(changedPartial);
+                    expect(include.querySelector_template_for_buggy_polyfill().model).to.equal(changedPartial);
                 });
             });
 
@@ -104,10 +109,10 @@
                 });
 
                 it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
-                    expect(include.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(include.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                 });
                 it('should attach same partial model to `imported-template`', function () {
-                    expect(include.querySelector("template").model).to.equal(partial);
+                    expect(include.querySelector_template_for_buggy_polyfill().model).to.equal(partial);
                 });
             });
 
@@ -121,10 +126,10 @@
                 });
 
                 it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
-                    expect(include.querySelector("template").getAttribute("content")).to.equal('/sc/htmlmerger?scope1=&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(include.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal('/sc/htmlmerger?scope1=&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                 });
                 it('should attach same partial model to `imported-template`', function () {
-                    expect(include.querySelector("template").model).to.equal(partial);
+                    expect(include.querySelector_template_for_buggy_polyfill().model).to.equal(partial);
                 });
             });
         });

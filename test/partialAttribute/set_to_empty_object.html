@@ -21,6 +21,10 @@
 
     <script>
     describe('`{}` behaves as `null` to workaround server-side limitation', function () {
+        afterEach(function (done) {
+            // give more time to polyfill cleanup
+            setTimeout(done);
+        });
         var include;
         describe('when created programatically and partial attribute is set to `"{}"`', function () {
             beforeEach(function () {

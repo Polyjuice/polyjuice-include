@@ -24,7 +24,8 @@ In order to develop it locally we suggest to use [polyserve](https://npmjs.com/p
 1. Install [bower](http://bower.io/) & [polyserve](https://npmjs.com/polyserve): `$ npm install -g bower polyserve`
 2. Install local dependencies: `$ bower install`
 3. Start development server `$ polyserve -p 8000`
-4. Open the test suite: [http://localhost:8000/components/starcounter-include/test/](http://localhost:8000/components/starcounter-include/test/)
+4. Open the demo/preview: [http://localhost:8000/components/starcounter-include/demo/](http://localhost:8000/components/starcounter-include/demo/)
+5. Open the test suite: [http://localhost:8000/components/starcounter-include/test/](http://localhost:8000/components/starcounter-include/test/)
 
 ## Contributing Pull Requests
 
