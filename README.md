@@ -88,10 +88,10 @@ Starcounter has it already pre-installed, under `/sys/starcounter-include/starco
 Install the component using [Bower](http://bower.io/):
 
 ```sh
-$ bower install Starcounter/starcounter-include --save
+$ bower install starcounter-include --save
 ```
 
-Or [download as ZIP](https://github.com/Starcounter/starcounter-include/archive/master.zip).
+Or [download as ZIP](https://github.com/Starcounter/starcounter-include/archive/gh-pages.zip).
 
 ## Usage
 
