@@ -27,7 +27,7 @@
   ],
   "dependencies": {
     "imported-template": ">=1.4.3",
-    "juicy-composition": ">=0.0.6"
+    "juicy-composition": ">=0.0.7"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#>=4.2.2",
