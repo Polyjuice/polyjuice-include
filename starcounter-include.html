@@ -76,7 +76,6 @@ version: 2.0.1
                     Array.prototype.forEach.call(templates, function mergeContents(individualComposition) {
                         mergedComposition.appendChild(individualComposition.content);
                     });
-                    mergedComposition = mergedComposition.firstChild
                 }
                 that.defaultComposition = mergedComposition;
                 // notify composition property
