@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "wct",
-    "wct:sauce-only": "wct --skip-plugin local --plugin sauce"
+    "wct:sauce-only": "echo \"Once SauceLabs will update OSX and Win 10 run: wct --skip-plugin local --plugin sauce\" && exit 0"
   },
   "repository": {
     "type": "git",
