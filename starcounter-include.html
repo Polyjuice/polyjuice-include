@@ -69,11 +69,15 @@ version: 2.0.1
             this.template = this.compositionElement.firstElementChild; // .getElementsByTagName("TEMPLATE");
             var that = this;
             this.template.addEventListener('stamping', function fetchCompositions(event) {
-                var mergedComposition = document.createDocumentFragment();
+                var mergedComposition;
                 var templates = event.detail.querySelectorAll('template[is="starcounter-composition"]');
-                Array.prototype.forEach.call(templates, function mergeContents(individualComposition) {
-                    mergedComposition.appendChild(individualComposition.content);
-                });
+                if(templates.length){
+                    mergedComposition = document.createDocumentFragment()
+                    Array.prototype.forEach.call(templates, function mergeContents(individualComposition) {
+                        mergedComposition.appendChild(individualComposition.content);
+                    });
+                    mergedComposition = mergedComposition.firstChild
+                }
                 that.defaultComposition = mergedComposition;
                 // notify composition property
                 // TODO: consider moving entire partialChanged or appendChild here
