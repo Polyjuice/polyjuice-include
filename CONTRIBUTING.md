@@ -67,7 +67,7 @@ information on configuring the tool.
 
 ## Releasing a new version
 
-**The release is done from `gh-pages` branch.**
+**The release is done from `master` branch.**
 
 1. Make sure that the browser tests pass in Chrome, Firefox, Edge and IE. This can be done manually or using `wct` (see instructions above).
 2. Call `git status` to verify that there are no uncommited files in the directory
@@ -75,6 +75,6 @@ information on configuring the tool.
  - increments the version number in the relevant files
  - commits changes to Git with the version number as the commit message
  - creates a Git tag wit the version
-4. Call `git push` to push the changes to `origin gh-pages`
-5. Call `git push --tags` to push the tag to `origin gh-pages`
+4. Call `git push` to push the changes to `origin master`
+5. Call `git push --tags` to push the tag to `origin master`
 6. Explain the changes (at least an summary of the commit log) in [GitHub Releases](https://github.com/StarcounterPrefabs/starcounter-include/releases).

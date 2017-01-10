@@ -1,4 +1,4 @@
-&lt;starcounter-include&gt; [![Build Status](https://travis-ci.org/Starcounter/starcounter-include.svg?branch=gh-pages)](https://travis-ci.org/Starcounter/starcounter-include)
+&lt;starcounter-include&gt; [![Build Status](https://travis-ci.org/Starcounter/starcounter-include.svg?branch=master)](https://travis-ci.org/Starcounter/starcounter-include)
 ==============
 
 `<starcounter-include>` is a custom element that let's you load HTML partials into your Starcounter page, it uses  
@@ -91,7 +91,7 @@ Install the component using [Bower](http://bower.io/):
 $ bower install starcounter-include --save
 ```
 
-Or [download as ZIP](https://github.com/Starcounter/starcounter-include/archive/gh-pages.zip).
+Or [download as ZIP](https://github.com/Starcounter/starcounter-include/archive/master.zip).
 
 ## Usage
 
