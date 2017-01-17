@@ -4,6 +4,9 @@
 <template>
 	<h1>Template included</h1>
 	<template is="dom-bind">
-		<p>Polymer's data binding {{model.doesItWork}}.</p>
+		<p class="bound-text">Polymer's data binding {{model.doesItWork}}.</p>
+		<template is="dom-if" if="{{model.showConditional}}">
+			<p class="conditional-text">Conditional text</p>
+		</template>
 	</template>
 </template>

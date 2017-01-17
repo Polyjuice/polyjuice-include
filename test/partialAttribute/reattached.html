@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../../polymer/polymer.html">
+    <link rel="import" href="../../starcounter-include.html">
+</head>
+
+<body>
+
+    <test-fixture id="nothing">
+        <template>
+            <starcounter-include></starcounter-include>
+        </template>
+    </test-fixture>
+
+    <script>
+        describe('stamp out correctly in DOM after reattachment', function() {
+            afterEach(function (done) {
+                // give more time to polyfill cleanup
+                setTimeout(done);
+            });
+            var instance;
+            var model = {
+                "Html": "../templateToInclude.html",
+                "doesItWork": "works!",
+                "showConditional": true
+            };
+
+            beforeEach(function(done) {
+                instance = fixture('nothing');
+                instance.partial = clone(model);
+                // give more time to Polymer dom-bind stamp
+                setTimeout(done, 100);
+            });
+
+            it('when the `partial` attribute contains a dom-if', function(done) {
+                expectPartialToBeAttached();
+                var parent = instance.parentNode;
+                parent.removeChild(instance);
+                parent.appendChild(instance);
+                // give more time to Polymer dom-bind stamp
+                setTimeout(() => {
+                  expectPartialToBeAttached();
+                  done();
+                }, 100);
+            });
+
+            function expectPartialToBeAttached() {
+                expect(instance.template.getAttribute("content")).to.equal(model.Html);
+                expect(instance.querySelectorAll(".bound-text").length).to.equal(1);
+                expect(instance.querySelectorAll(".conditional-text").length).to.equal(1);
+            }
+
+            function clone(obj) {
+                return JSON.parse(JSON.stringify(obj));
+            }
+        });
+    </script>
+
+</body>
+
+</html>
