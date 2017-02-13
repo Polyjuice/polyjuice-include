@@ -1,0 +1,7 @@
+<template>
+	<h1 slot="my-slot">Template included</h1>
+	<template is="declarative-shadow-dom">
+		<h2>Custom Shadow DOM composition</h2>
+		<content select='[slot="my-slot"]'></content>
+	</template>
+</template>

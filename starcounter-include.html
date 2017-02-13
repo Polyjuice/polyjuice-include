@@ -70,7 +70,7 @@ version: 2.0.1
             var that = this;
             this.template.addEventListener('stamping', function fetchCompositions(event) {
                 var mergedComposition;
-                var templates = event.detail.querySelectorAll('template[is="starcounter-composition"]');
+                var templates = event.detail.querySelectorAll('template[is="starcounter-composition"],template[is="declarative-shadow-dom"]');
                 if(templates.length){
                     mergedComposition = document.createDocumentFragment()
                     Array.prototype.forEach.call(templates, function mergeContents(individualComposition) {
