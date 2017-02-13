@@ -74,8 +74,7 @@ version: 2.1.0
                 if(templates.length){
                     mergedComposition = document.createDocumentFragment()
                     Array.prototype.forEach.call(templates, function mergeContents(individualComposition) {
-                        let newContent = replaceSlotsWithContent(individualComposition.content);
-                        mergedComposition.appendChild(newContent);
+                        mergedComposition.appendChild(replaceSlotsWithContent(individualComposition.content));
                     });
                 }
                 that.defaultComposition = mergedComposition;
