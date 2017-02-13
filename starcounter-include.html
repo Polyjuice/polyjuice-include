@@ -74,7 +74,8 @@ version: 2.1.0
                 if(templates.length){
                     mergedComposition = document.createDocumentFragment()
                     Array.prototype.forEach.call(templates, function mergeContents(individualComposition) {
-                        mergedComposition.appendChild(individualComposition.content);
+                        let newContent = replaceSlotsWithContent(individualComposition.content);
+                        mergedComposition.appendChild(newContent);
                     });
                 }
                 that.defaultComposition = mergedComposition;
@@ -172,7 +173,7 @@ version: 2.1.0
                 } else {
                     this.storedLayout = composition;
                     // make clone to avoid direct binding
-                    this.compositionElement.composition = this.stringToDocumentFragment(composition);
+                    this.compositionElement.composition = this.stringToDocumentFragment(replaceSlotsWithContentInString(composition));
                 }
                 this._forceLayoutChange = false;
                 this._lastLayout = composition;
@@ -287,6 +288,60 @@ version: 2.1.0
             }
             return range.createContextualFragment(htmlStr);
         }
+
+        /**
+         * Replaces all <slot> tags with <content>,
+         *  preserves all attributes, translates selector to slot name
+         * @param  {String} string stringified HTML
+         * @return {String}        translated HTML
+         */
+        function replaceSlotsWithContentInString(string){
+            return string.replace(/<\/slot(\s*)>/gi,'</content$1>')
+                    .replace(/<slot([^>]+)(name=(?:"([^"]*)"|'([^']*)'))([^>]*)>/gi,'<content$1$2$5 select=\"[slot=\'$3$4\']\">')
+                    .replace(/<slot(\s*|\s+[^>]*)>/gi,'<content$1>');
+        }
+        /**
+         * Replaces single SlotElement with ContentElement,
+         *  preserves all attributes, translates selector to slot name
+         * @param  {SlotElement} slot
+         * @return {ContentElement}
+         */
+        function replaceSlotWithContent(slot) {
+            var content = slot.ownerDocument.createElement('content');
+            while (slot.firstChild) {
+                content.appendChild(slot.firstChild);
+            }
+            var attrs = slot.attributes;
+            for (var i=0; i<attrs.length; i++) {
+                var attr = attrs[i];
+                content.setAttribute(attr.name, attr.value);
+            }
+            var name = slot.getAttribute('name');
+            if (name) {
+                content.setAttribute('select', '[slot=\'' + name + '\']');
+            }
+            slot.parentNode.replaceChild(content, slot);
+            return content;
+        }
+        /**
+         * Replace all <slot> elements with <content> elements i given document fragment
+         * @param  {Documentfragment|Node} root scope. Will be changed.
+         * @return {Documentfragment|Node}      modified scope
+         */
+        function replaceSlotsWithContent(root) {
+            if (root.firstChild) {
+                var node = root.firstChild;
+                while (node) {
+                    var next = node.nextSibling;
+                    if (node.localName == 'slot') {
+                        node = replaceSlotWithContent(node);
+                    }
+                    node = next;
+                }
+            }
+            return root;
+        }
+
 
         document.registerElement('starcounter-include', {
             prototype: LauncherPartialPrototype
