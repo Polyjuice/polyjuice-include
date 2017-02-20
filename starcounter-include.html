@@ -96,6 +96,14 @@ version: 2.1.0
                         return partial;
                     }
                 },
+                viewModel: {
+                    set: function(newValue) {
+                        this.partial = newValue;
+                    },
+                    get: function() {
+                        return this.partial;
+                    }
+                },
                 partialId: {
                     set: function(newValue) {
                         // do nothing if value is the same or null is being changed to undefined
@@ -124,7 +132,7 @@ version: 2.1.0
          * @see Starcounter/starcounter-include#attributeChangedCallback It's just a copy
          */
         LauncherPartialPrototype.attributeChangedCallback = function(name, oldVal, newVal) {
-            if (name === "partial") {
+            if (name === "partial" || name === "view-model") {
                 this.partial = partialAttributeToProperty(this, newVal);
                 //d console.log("starcounter-partial attr changed");
             }
