@@ -35,7 +35,7 @@ version: 2.1.0
          * @see Starcounter/starcounter-include - partialAttributeToProperty It's just a copy
          */
         function partialAttributeToProperty(element, attrVal) {
-            var attrVal = element.getAttribute("partial");
+            var attrVal = element.getAttribute("partial") || element.getAttribute("view-model");
             if(!attrVal){
                 // no value
                 return undefined;
