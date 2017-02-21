@@ -35,7 +35,7 @@ version: 2.1.0
          * @see Starcounter/starcounter-include - partialAttributeToProperty It's just a copy
          */
         function partialAttributeToProperty(element, attrVal) {
-            var attrVal = element.getAttribute("partial");
+            var attrVal = element.getAttribute("partial") || element.getAttribute("view-model");
             if(!attrVal){
                 // no value
                 return undefined;
@@ -96,6 +96,14 @@ version: 2.1.0
                         return partial;
                     }
                 },
+                viewModel: {
+                    set: function(newValue) {
+                        this.partial = newValue;
+                    },
+                    get: function() {
+                        return this.partial;
+                    }
+                },
                 partialId: {
                     set: function(newValue) {
                         // do nothing if value is the same or null is being changed to undefined
@@ -124,7 +132,7 @@ version: 2.1.0
          * @see Starcounter/starcounter-include#attributeChangedCallback It's just a copy
          */
         LauncherPartialPrototype.attributeChangedCallback = function(name, oldVal, newVal) {
-            if (name === "partial") {
+            if (name === "partial" || name === "view-model") {
                 this.partial = partialAttributeToProperty(this, newVal);
                 //d console.log("starcounter-partial attr changed");
             }
@@ -185,7 +193,7 @@ version: 2.1.0
          * @param  {Mixed} value New value
          */
         LauncherPartialPrototype._notifyPath = function(path, value) {
-            if (path.indexOf("partial.") == 0) {
+            if (path.indexOf("partial.") === 0 || path.indexOf("viewModel.") === 0) {
                 if (
                     path === "partial.Html" ||
                     path.indexOf("partial.LauncherLayoutInfo") === 0 ||
@@ -193,9 +201,19 @@ version: 2.1.0
                     (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1
                 ) {
                     this.partialChanged(this.partial);
+                } else if (
+                    path === "viewModel.Html" ||
+                    path.indexOf("viewModel.LauncherLayoutInfo") === 0 ||
+                    // path.match(/^viewModel\.[^.]+\.Html$/)
+                    (path.indexOf('.Html') === path.length - 5) && path.slice(10, -5).indexOf('.') === -1
+                ) {
+                    this.partialChanged(this.partial);
                 } else {
                     if (this.template._notifyPath) {
-                        this.template._notifyPath(path.replace("partial.", "model."), value);
+                        this.template._notifyPath(
+                            path.replace("partial.", "model.")
+                                .replace("viewModel.", "model."),
+                             value);
                     }
                 }
             }
