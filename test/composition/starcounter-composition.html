@@ -20,7 +20,7 @@
                 &quot;LauncherLayoutInfo&quot;: {
                     &quot;PartialId&quot;: &quot;given PartialId&quot;
                 },
-                &quot;Html&quot;: &quot;../template_w_composition.html&quot;,
+                &quot;Html&quot;: &quot;../template_w_starcounter-composition.html&quot;,
                 &quot;doesItWork&quot;: &quot;works!&quot;
             }"></starcounter-include>
         </template>
@@ -39,14 +39,16 @@
             "LauncherLayoutInfo": {
                 "PartialId": "given PartialId"
             },
-            "Html": "../template_w_composition.html",
+            "Html": "../template_w_starcounter-composition.html",
             "doesItWork": "works!"
         };
         afterEach(function (done) {
+            console.warn.restore();
             // give more time to polyfill cleanup
             setTimeout(done);
         });
         beforeEach(function (done) {
+            sinon.spy(console, 'warn');
             scInclude = fixture('default-composition');
             // scInclude.partial = JSON.parse(JSON.stringify(partial));
             setTimeout(done, 500);
@@ -56,6 +58,11 @@
             expect(document.querySelector('juicy-composition').composition).to.be.not.null;
             expect(document.querySelector('juicy-composition').composition.innerHTML.trim()).to.be
                 .equal(document.querySelector('#reference-composition').innerHTML.trim());
+        });
+        it('should call console warn with new name', function () {
+            expect(console.warn).to.be.called;
+            expect(console.warn).to.be.calledOnce;
+            expect(console.warn.args[0][0]).to.contain('declarative-shadow-dom');
         });
         describe('after partial property is replaced with the partial that also does contain default composition', function () {
             beforeEach(function (done) {
