@@ -70,10 +70,13 @@ version: 2.2.0
             var that = this;
             this.template.addEventListener('stamping', function fetchCompositions(event) {
                 var mergedComposition;
-                var templates = event.detail.querySelectorAll('template[is="starcounter-composition"],template[is="declarative-shadow-dom"]');
+                var templates = event.detail.querySelectorAll('template[is="declarative-shadow-dom"],template[is="starcounter-composition"]');
                 if(templates.length){
                     mergedComposition = document.createDocumentFragment()
                     Array.prototype.forEach.call(templates, function mergeContents(individualComposition) {
+                        if(individualComposition.getAttribute('is') === 'starcounter-composition'){
+                            console.warn('`starcounter-composition` was renamed to `declarative-shadow-dom`! Please update your markup, as the old name is likely to be not supported soon (in V1).')
+                        }
                         mergedComposition.appendChild(individualComposition.content);
                     });
                 }
