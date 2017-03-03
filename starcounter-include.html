@@ -4,7 +4,7 @@ Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-composition> bindable by layout editor.
 Uses juicy-composition.composition given from DB as `Starcounter.MergedPartial.Composition$`.
-version: 2.1.0
+version: 2.2.1
 
 -->
 <!-- Import dependencies -->
@@ -35,7 +35,7 @@ version: 2.1.0
          * @see Starcounter/starcounter-include - partialAttributeToProperty It's just a copy
          */
         function partialAttributeToProperty(element, attrVal) {
-            var attrVal = element.getAttribute("partial");
+            var attrVal = element.getAttribute("partial") || element.getAttribute("view-model");
             if(!attrVal){
                 // no value
                 return undefined;
@@ -70,10 +70,13 @@ version: 2.1.0
             var that = this;
             this.template.addEventListener('stamping', function fetchCompositions(event) {
                 var mergedComposition;
-                var templates = event.detail.querySelectorAll('template[is="starcounter-composition"],template[is="declarative-shadow-dom"]');
+                var templates = event.detail.querySelectorAll('template[is="declarative-shadow-dom"],template[is="starcounter-composition"]');
                 if(templates.length){
                     mergedComposition = document.createDocumentFragment()
                     Array.prototype.forEach.call(templates, function mergeContents(individualComposition) {
+                        if(individualComposition.getAttribute('is') === 'starcounter-composition'){
+                            console.warn('`starcounter-composition` was renamed to `declarative-shadow-dom`! Please update your markup, as the old name is likely to be not supported soon (in V1).')
+                        }
                         mergedComposition.appendChild(replaceSlotsWithContent(individualComposition.content));
                     });
                 }
@@ -94,6 +97,14 @@ version: 2.1.0
                     },
                     get: function() {
                         return partial;
+                    }
+                },
+                viewModel: {
+                    set: function(newValue) {
+                        this.partial = newValue;
+                    },
+                    get: function() {
+                        return this.partial;
                     }
                 },
                 partialId: {
@@ -124,7 +135,7 @@ version: 2.1.0
          * @see Starcounter/starcounter-include#attributeChangedCallback It's just a copy
          */
         LauncherPartialPrototype.attributeChangedCallback = function(name, oldVal, newVal) {
-            if (name === "partial") {
+            if (name === "partial" || name === "view-model") {
                 this.partial = partialAttributeToProperty(this, newVal);
                 //d console.log("starcounter-partial attr changed");
             }
@@ -185,7 +196,7 @@ version: 2.1.0
          * @param  {Mixed} value New value
          */
         LauncherPartialPrototype._notifyPath = function(path, value) {
-            if (path.indexOf("partial.") == 0) {
+            if (path.indexOf("partial.") === 0 || path.indexOf("viewModel.") === 0) {
                 if (
                     path === "partial.Html" ||
                     path.indexOf("partial.LauncherLayoutInfo") === 0 ||
@@ -193,9 +204,19 @@ version: 2.1.0
                     (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1
                 ) {
                     this.partialChanged(this.partial);
+                } else if (
+                    path === "viewModel.Html" ||
+                    path.indexOf("viewModel.LauncherLayoutInfo") === 0 ||
+                    // path.match(/^viewModel\.[^.]+\.Html$/)
+                    (path.indexOf('.Html') === path.length - 5) && path.slice(10, -5).indexOf('.') === -1
+                ) {
+                    this.partialChanged(this.partial);
                 } else {
                     if (this.template._notifyPath) {
-                        this.template._notifyPath(path.replace("partial.", "model."), value);
+                        this.template._notifyPath(
+                            path.replace("partial.", "model.")
+                                .replace("viewModel.", "model."),
+                             value);
                     }
                 }
             }

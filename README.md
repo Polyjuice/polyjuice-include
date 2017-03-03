@@ -127,6 +127,7 @@ Attribute     | Options  | Default      | Description
 ---           | ---      | ---          | ---
 `partial`     | *JSON*   |              | Set to provide a partial. It's also a `partial` property.
 `partial-id`  | *String* |              | **Read-only** attribute that represents `PartialID` fetched from `partial` JSON. It's also a `partialId` property.
+`view-model`  | *JSON*   |              | Alias for `partial`
 
 ## Properties
 
@@ -134,6 +135,7 @@ Property   | Options           | Default | Description
 ---         | ---               | ---     | ---
 `partial`   | *Object*          |         | Object containing partial view-model, bindable with Polymer
 `partialId` | *String*          |         | Partial Id used to identify partial, usually it's fetched from `partial.LauncherLayoutInfo.PartialId`.
+`viewModel` | *Object*          |         | Alias for `partial`
 
 ## Events
 
