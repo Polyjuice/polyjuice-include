@@ -10,6 +10,8 @@ version: 2.2.1
 <!-- Import dependencies -->
 <link rel="import" href="../imported-template/imported-template.html">
 <link rel="import" href="../juicy-composition/juicy-composition.html">
+<!-- Load translate-shadowdom.js via HTML imports, so Starcounter apps could import it again and get de-duped -->
+<link rel="import" href="../translate-shadowdom/translate-shadowdom.html">
 <!-- <link rel="import" href="/sys/console-log/console-log.html"> -->
 
 <template id="partial-template">
@@ -77,7 +79,7 @@ version: 2.2.1
                         if(individualComposition.getAttribute('is') === 'starcounter-composition'){
                             console.warn('`starcounter-composition` was renamed to `declarative-shadow-dom`! Please update your markup, as the old name is likely to be not supported soon (in V1).')
                         }
-                        mergedComposition.appendChild(replaceSlotsWithContent(individualComposition.content));
+                        mergedComposition.appendChild(TranslateShadowDOM.v1tov0.fragment(individualComposition.content, true));
                     });
                 }
                 that.defaultComposition = mergedComposition;
@@ -183,7 +185,7 @@ version: 2.2.1
                 } else {
                     this.storedLayout = composition;
                     // make clone to avoid direct binding
-                    this.compositionElement.composition = this.stringToDocumentFragment(replaceSlotsWithContentInString(composition));
+                    this.compositionElement.composition = TranslateShadowDOM.v1tov0.fragment(this.stringToDocumentFragment(composition), true);
                 }
                 this._forceLayoutChange = false;
                 this._lastLayout = composition;
@@ -309,40 +311,6 @@ version: 2.2.1
             return range.createContextualFragment(htmlStr);
         }
 
-        /**
-         * Replaces all <slot> tags with <content>,
-         *  preserves all attributes, translates selector to slot name
-         * @param  {String} string stringified HTML
-         * @return {String}        translated HTML
-         */
-        function replaceSlotsWithContentInString(string){
-            return string.replace(/<\/slot(\s*)>/gi,'</content$1>')
-                    .replace(/<slot([^>]+)(name=(?:"([^"]*)"|'([^']*)'))([^>]*)>/gi,'<content$1$2$5 select=\"[slot=\'$3$4\']\">')
-                    .replace(/<slot(\s*|\s+[^>]*)>/gi,'<content$1>');
-        }
-        /**
-         * Replaces single SlotElement with ContentElement,
-         *  preserves all attributes, translates selector to slot name
-         * @param  {SlotElement} slot
-         * @return {ContentElement}
-         */
-        function replaceSlotWithContent(slot) {
-            var content = slot.ownerDocument.createElement('content');
-            while (slot.firstChild) {
-                content.appendChild(slot.firstChild);
-            }
-            var attrs = slot.attributes;
-            for (var i=0; i<attrs.length; i++) {
-                var attr = attrs[i];
-                content.setAttribute(attr.name, attr.value);
-            }
-            var name = slot.getAttribute('name');
-            if (name) {
-                content.setAttribute('select', '[slot=\'' + name + '\']');
-            }
-            slot.parentNode.replaceChild(content, slot);
-            return content;
-        }
         /**
          * Replace all <slot> elements with <content> elements i given document fragment
          * @param  {Documentfragment|Node} root scope. Will be changed.

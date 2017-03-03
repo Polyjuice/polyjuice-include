@@ -71,7 +71,6 @@
             expect(document.querySelector('juicy-composition').composition).to.be.not.null;
             expect(document.querySelector('juicy-composition').composition.innerHTML.trim()).to.be
                 .equal(document.querySelector('#reference-composition').innerHTML.trim());
-                debugger
         });
         describe('after partial property is replaced with the partial that also does contain default composition and slots', function () {
             beforeEach(function (done) {
