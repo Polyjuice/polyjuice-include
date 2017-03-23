@@ -23,7 +23,8 @@
     "wwwroot/sys",
     "test",
     "wct.conf.json",
-    "demo"
+    "demo",
+    "sc"
   ],
   "dependencies": {
     "imported-template": ">=1.4.4",
