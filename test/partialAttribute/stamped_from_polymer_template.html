@@ -16,13 +16,12 @@
 </head>
 
 <body>
-    <test-fixture id="root">
-        <template>
-            <div><template is="dom-bind">
-                <starcounter-include partial="{{model.Page}}"></starcounter-include>
-            </template></div>
+    <template id="fixture">
+        <template is="dom-bind">
+            <starcounter-include partial="{{model.Page}}"></starcounter-include>
         </template>
-    </test-fixture>
+    </template>
+    <better-test-fixture id="container"></better-test-fixture>
     <script>
         function createPartial() {
             return {
@@ -36,23 +35,29 @@
         };
 
         describe('after `dom-bind`` was attached to DOM', function() {
+            var container = document.querySelector('#container'),
+                domBind, include, partial, importedTemplate;
             afterEach(function (done) {
+                container.innerHTML = '';
                 // give more time to polyfill cleanup
                 setTimeout(done);
             });
-            var container, domBind, include, partial, importedTemplate;
             beforeEach(function(done) {
-                container = fixture('root');
+                var fixture = document.querySelector('#fixture');
+                var clone = document.importNode(fixture.content, true);
+                domBind = clone.querySelector('template[is=dom-bind]');
                 partial = createPartial();
-                domBind = container.querySelector('template[is=dom-bind]');
                 domBind.model = {
                     Page: partial
                 };
-                setTimeout(function() {
+                domBind.addEventListener('dom-change', function(){
                     include = container.querySelector('starcounter-include');
                     importedTemplate = include.querySelector_template_for_buggy_polyfill();
                     done();
                 })
+
+                container.appendChild(clone);
+
             });
 
             it('should attach `.Html` property as content attribute for `<imported-template>`', function() {
@@ -76,10 +81,11 @@
 
             describe('after `dom-bind`` changed the partial property', function() {
                 beforeEach(function(done) {
-                    domBind.set('model.Page', changedModel);
-                    setTimeout(function() {
+                    importedTemplate.addEventListener('stamping', function onceStamped(){
+                        importedTemplate.removeEventListener('stamping', onceStamped);
+                        domBind.set('model.Page', changedModel);
                         done();
-                    })
+                    });
                 });
 
                 it('should attach new `.Html` property as content attribute for `<imported-template>`', function() {
@@ -98,14 +104,40 @@
 
             describe('after `dom-bind`` changed the partial.Html property', function() {
                 beforeEach(function(done) {
-                    domBind.set('model.Page.Html', '../templateToInclude.html');
-                    setTimeout(done);
+                    importedTemplate.addEventListener('stamping', function onceStamped(){
+                        importedTemplate.removeEventListener('stamping', onceStamped);
+                        domBind.set('model.Page.Html', '../templateToInclude.html');
+                        done();
+                    });
                 });
 
                 it('should attach new `.Html` property as content attribute for `<imported-template>`', function() {
                     expect(importedTemplate.getAttribute("content")).to.equal('../templateToInclude.html');
                 });
+                it('should NOT attach same partial model to `imported-template`', function() {
+                    expect(importedTemplate.model).to.equal(partial);
+                });
                 it('should attach same partial model to `imported-template`', function() {
+                    expect(importedTemplate.model).to.equal(partial);
+                });
+            });
+
+            describe('after `dom-bind`` removed the inner `Html` property', function () {
+                beforeEach(function(done) {
+                    importedTemplate.addEventListener('stamping', function onceStamped(){
+                        importedTemplate.removeEventListener('stamping', onceStamped);
+                        // not realy removing, but Polymer does not support anything better
+                        // https://github.com/Polymer/polymer/issues/2565
+                        domBind.set('model.Page.Html', null);
+                        // domBind.set('model.Page.Html', undefined);
+                        done();
+                    });
+                });
+
+                it('should attach `null` property as content attribute for `<imported-template>`', function () {
+                    expect(importedTemplate.getAttribute("content")).to.equal(null);
+                });
+                it('should attach same partial model to `imported-template`', function () {
                     expect(importedTemplate.model).to.equal(partial);
                 });
             });
