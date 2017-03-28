@@ -40,71 +40,173 @@
     </test-fixture>
 
     <script>
-        var scInclude;
-        describe('with `Html` property', testSettingPartialAttribute('full', {
-            "Html": "../templateToInclude.html",
-            "doesItWork": "works!"
-        }));
-        describe('with `Html` set to null', testSettingPartialAttribute('htmlnull', {
-            "Html": null,
-            "doesItWork": "works!"
-        }));
-
-        function testSettingPartialAttribute(fixtureId, model, referenceHtml) {
-            referenceHtml = arguments.length >= 3 ? referenceHtml : model.Html;
-            return function () {
-                var oldModel = {
-                    "Html": "../old_templateToInclude.html",
-                    "doesItWork": "worked!"
-                };
-                describe('once element is created programatically', testAllAttributes(function () {
-                    var scInclude = {};
-                    scInclude.add = document.createElement('starcounter-include');
-                    scInclude.add.partial = clone(model);
-                    scInclude.update = document.createElement('starcounter-include');
-                    scInclude.update.partial = clone(oldModel);
-                    scInclude.update.partial = clone(model);
-                    return scInclude;
-                }));
-                describe('after element was attached', testAllAttributes(function () {
-                    var scInclude = {};
-                    scInclude.add = fixture('nothing');
-                    scInclude.update = fixture('old');
-                    scInclude.add.partial = clone(model);
-                    scInclude.update.partial = clone(model);
-                    return scInclude;
-                }));
-                describe('after element was detached', testAllAttributes(function () {
-                    var scInclude = {};
-                    scInclude.add = fixture('nothing');
-                    scInclude.update = fixture('old');
-                    scInclude.add.parentElement.removeChild(scInclude.add);
-                    scInclude.update.parentElement.removeChild(scInclude.update);
-                    scInclude.add.partial = clone(model);
-                    scInclude.update.partial = clone(model);
-                    return scInclude;
-                }));
-
-                function testAllAttributes(createInstances) {
-                    return function () {
-                        var scInclude;
-                        beforeEach(function () {
-                            scInclude = createInstances();
-                        });
-
-                        it('should attach `.Html` property as content attribute for `<imported-template>`', function () {
-                            expect(scInclude.add.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal(referenceHtml);
-                            expect(scInclude.update.querySelector_template_for_buggy_polyfill().getAttribute("content")).to.equal(referenceHtml);
-                        });
-                        it('should attach partial model to `imported-template`', function () {
-                            expect(JSON.stringify(scInclude.add.querySelector_template_for_buggy_polyfill().model)).to.equal(JSON.stringify(model));
-                            expect(JSON.stringify(scInclude.update.querySelector_template_for_buggy_polyfill().model)).to.equal(JSON.stringify(model));
-                        });
-
-                    };
+        var scInclude, importedTemplate, previousModel;
+        describe('with `Html` property', function(){
+            afterEach(function(){
+                if(scInclude.parentElement){
+                    scInclude.parentElement.removeChild(scInclude);
                 }
+            });
+            var fixtureId = 'full',
+                model = {
+                    "Html": "../templateToInclude.html",
+                    "doesItWork": "works!"
+                };
+
+            function testAllAttributes(){
+                beforeEach(function(){
+                     importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
+                });
+                it('should attach `.Html` property as content attribute for `imported-template`', function () {
+                    expect(importedTemplate.getAttribute("content")).to.equal(scInclude.partial.Html);
+                });
+                it('should NOT attach partial model to `imported-template` immediately', function () {
+                    expect((importedTemplate.model)).to.equal(previousModel || null);
+                });
+                it('should attach same partial model to `imported-template` on `stamping` (after connected to DOM)', function (done) {
+                    // attach element if not attached yet.
+                    if(!document.contains(scInclude)){
+                        console.info('attaching');
+                        document.body.appendChild(scInclude);
+                    }
+                    importedTemplate.addEventListener('stamping', function onceStamped(){
+                        expect(importedTemplate.model).to.equal(scInclude.partial);
+                        done();
+                    });
+                });
             }
-        };
+            describe('set once element is created programatically', function(){
+                beforeEach(function(){
+                     scInclude = document.createElement('starcounter-include');
+                     previousModel = null;
+                     scInclude.partial = clone(model);
+                });
+                testAllAttributes();
+            });
+
+            describe('set after element was attached', function(){
+                beforeEach(function(){
+                     scInclude = fixture('nothing');
+                     previousModel = null;
+                     scInclude.partial = clone(model);
+                });
+                testAllAttributes();
+            });
+            describe('changed after element was attached', function(){
+                beforeEach(function(done){
+                     scInclude = fixture('old');
+                     previousModel = scInclude.partial;
+                     scInclude.querySelector_template_for_buggy_polyfill().addEventListener('stamping', function afterStamped(){
+                         scInclude.querySelector_template_for_buggy_polyfill().removeEventListener('stamping', afterStamped);
+                         scInclude.partial = clone(model);
+                         done();
+                     });
+
+                });
+                testAllAttributes();
+            });
+
+            describe('set after element was detached', function(){
+                beforeEach(function(){
+                     scInclude = fixture('nothing');
+                     previousModel = null;
+                     scInclude.parentElement.removeChild(scInclude);
+                     scInclude.partial = clone(model);
+                });
+                testAllAttributes();
+            });
+            describe('chnaged after element was detached', function(){
+                beforeEach(function(done){
+                     scInclude = fixture('old');
+                     previousModel = scInclude.partial;
+                     scInclude.querySelector_template_for_buggy_polyfill().addEventListener('stamping', function afterStamped(){
+                         scInclude.querySelector_template_for_buggy_polyfill().removeEventListener('stamping', afterStamped);
+                         scInclude.parentElement.removeChild(scInclude);
+                         scInclude.partial = clone(model);
+                         done();
+                     });
+                });
+                testAllAttributes();
+            });
+        });
+        describe('with `Html` set to null', function(){
+            afterEach(function(){
+                if(scInclude.parentElement){
+                    scInclude.parentElement.removeChild(scInclude);
+                }
+            });
+            var fixtureId = 'htmlnull',
+                model = {
+                    "Html": null,
+                    "doesItWork": "works!"
+                };
+
+            function testAllAttributes(){
+                beforeEach(function(){
+                     importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
+                });
+                it('should attach `.Html` property as content attribute for `imported-template`', function () {
+                    expect(importedTemplate.getAttribute("content")).to.equal(scInclude.partial.Html);
+                });
+                it('should attach partial model to `imported-template` immediately', function () {
+                    expect((importedTemplate.model)).to.equal(scInclude.partial);
+                });
+            }
+            describe('set once element is created programatically', function(){
+                beforeEach(function(){
+                     scInclude = document.createElement('starcounter-include');
+                     previousModel = null;
+                     scInclude.partial = clone(model);
+                });
+                testAllAttributes();
+            });
+
+            describe('set after element was attached', function(){
+                beforeEach(function(){
+                     scInclude = fixture('nothing');
+                     previousModel = null;
+                     scInclude.partial = clone(model);
+                });
+                testAllAttributes();
+            });
+            describe('changed after element was attached', function(){
+                beforeEach(function(done){
+                     scInclude = fixture('old');
+                     previousModel = scInclude.partial;
+                     scInclude.querySelector_template_for_buggy_polyfill().addEventListener('stamping', function afterStamped(){
+                         scInclude.querySelector_template_for_buggy_polyfill().removeEventListener('stamping', afterStamped);
+                         scInclude.partial = clone(model);
+                         done();
+                     });
+
+                });
+                testAllAttributes();
+            });
+
+            describe('set after element was detached', function(){
+                beforeEach(function(){
+                     scInclude = fixture('nothing');
+                     previousModel = null;
+                     scInclude.parentElement.removeChild(scInclude);
+                     scInclude.partial = clone(model);
+                });
+                testAllAttributes();
+            });
+            describe('chnaged after element was detached', function(){
+                beforeEach(function(done){
+                     scInclude = fixture('old');
+                     previousModel = scInclude.partial;
+                     scInclude.querySelector_template_for_buggy_polyfill().addEventListener('stamping', function afterStamped(){
+                         scInclude.querySelector_template_for_buggy_polyfill().removeEventListener('stamping', afterStamped);
+                         scInclude.parentElement.removeChild(scInclude);
+                         scInclude.partial = clone(model);
+                         done();
+                     });
+                });
+                testAllAttributes();
+            });
+        });
+
         describe('when `partial` property is set to', function () {
             [null, undefined].forEach(function (value) {
                 describe('`'+ value +'`', function () {

@@ -67,7 +67,7 @@ version: 2.2.1
             var clone = document.importNode(templ.content, true);
             this.compositionElement = clone.children[0]; // .getElementsByTagName("juicy-composition");
             this.template = this.compositionElement.firstElementChild; // .getElementsByTagName("TEMPLATE");
-            var that = this;
+
             this.template.addEventListener('stamping', function fetchCompositions(event) {
                 var mergedComposition;
                 var templates = event.detail.querySelectorAll('template[is="declarative-shadow-dom"],template[is="starcounter-composition"]');
@@ -80,10 +80,14 @@ version: 2.2.1
                         mergedComposition.appendChild(individualComposition.content);
                     });
                 }
-                that.defaultComposition = mergedComposition;
+                starcounterInclude.defaultComposition = mergedComposition;
+
+                if (this.model != starcounterInclude.partial) {
+                    this.model = starcounterInclude.partial
+                }
                 // notify composition property
                 // TODO: consider moving entire partialChanged or appendChild here
-                that._compositionChanged();
+                starcounterInclude._compositionChanged();
             });
             html && this.template.setAttribute('content', html);
 
@@ -158,14 +162,14 @@ version: 2.2.1
                 }
                 if (!html) {
                     this.template.removeAttribute("content");
+                    if (this.template.model != this.partial) {
+                        this.template.model = this.partial
+                    }
                 } else {
                     this.template.setAttribute("content", html);
                 }
                 this._forceLayoutChange = true;
                 this._lastHtml = html;
-            }
-            if (this.template.model != this.partial) {
-                this.template.model = this.partial
             }
         };
         LauncherPartialPrototype._compositionChanged = function(composition) {
