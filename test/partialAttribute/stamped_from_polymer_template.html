@@ -102,6 +102,29 @@
                 });
             });
 
+            describe('after `dom-bind`` changed the partial property to new one with the same Html', function () {
+                var changedPartialWithSameHtml;
+                beforeEach(function(done) {
+                    // IDEA: promisify juicy-html
+                    importedTemplate.addEventListener('stamping', function onceStamped(){
+                        importedTemplate.removeEventListener('stamping', onceStamped);
+                        changedPartialWithSameHtml = {
+                            Html: "../old_templateToInclude.html",
+                            doesItWork: "works!"
+                        };
+                        domBind.set('model.Page', changedPartialWithSameHtml);
+                        done();
+                    });
+                });
+
+                it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
+                    expect(importedTemplate.getAttribute("content")).to.equal('../old_templateToInclude.html');
+                });
+                it('should attach new partial model to `imported-template` immediately', function () {
+                    expect(importedTemplate.model).to.equal(changedPartialWithSameHtml);
+                });
+            });
+
             describe('after `dom-bind`` changed the partial.Html property', function() {
                 beforeEach(function(done) {
                     importedTemplate.addEventListener('stamping', function onceStamped(){
