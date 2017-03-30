@@ -170,6 +170,8 @@ version: 2.3.0
                 }
                 this._forceLayoutChange = true;
                 this._lastHtml = html;
+            } else if (this.template.model != this.partial) {
+                this.template.model = this.partial
             }
         };
         LauncherPartialPrototype._compositionChanged = function(composition) {

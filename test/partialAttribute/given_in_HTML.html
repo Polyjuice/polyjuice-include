@@ -108,6 +108,28 @@
                 testAllAttributes();
             });
 
+            describe('changed after element was attached and stamped to the new object, with the same Html, model should be attached immediately', function (done) {
+                beforeEach(function(done){
+                    scInclude = fixture('full');
+                    importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
+
+                    importedTemplate.addEventListener('stamping', function afterAttached(){
+                        importedTemplate.removeEventListener('stamping', afterAttached);
+                        setTimeout(function(){
+                            let oldModel = scInclude.partial;
+                            scInclude.setAttribute('partial', JSON.stringify(oldModel));
+                            done();
+                        });
+                    });
+                });
+                it('should attach `.Html` property as content attribute for `imported-template`', function () {
+                    expect(importedTemplate.getAttribute("content")).to.equal(scInclude.partial.Html);
+                });
+                it('should attach partial model to `imported-template` immediately', function () {
+                    expect(importedTemplate.model).to.equal(scInclude.partial);
+                });
+            });
+
             describe('set after element was detached', function(){
                 beforeEach(function(){
                      scInclude = fixture('nothing');

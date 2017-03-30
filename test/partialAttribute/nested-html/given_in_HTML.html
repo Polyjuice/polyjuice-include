@@ -172,6 +172,22 @@
                     });
                 });
 
+                it('if value was changed after element was attached and stamped to the new object, with the same Html, model should be attached immediately', function (done) {
+                    scInclude = fixture('nested-html');
+                    let importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
+
+                    importedTemplate.addEventListener('stamping', function afterAttached(){
+                        importedTemplate.removeEventListener('stamping', afterAttached);
+                        setTimeout(function(){
+                            let oldModel = scInclude.partial;
+                            scInclude.setAttribute('partial', JSON.stringify(oldModel));
+
+                            expect(importedTemplate.getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                            expect(importedTemplate.model).to.equal(scInclude.partial);
+                            done();
+                        });
+                    });
+                });
 
                 it('if value was set after element was detached (model not yet attached)', function () {
                     scInclude = fixture('nothing');
