@@ -1,0 +1,14 @@
+<template>
+	<h1 slot="my-slot">Template included</h1>
+	<template is="declarative-shadow-dom">
+		<style>
+			.foo,
+			::slotted(p),
+			.bar{
+				color: green;
+			}
+		</style>
+		<h2>Shadow DOM prepared for V1</h2>
+		<slot name="my-slot"></slot>
+	</template>
+</template>
