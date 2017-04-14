@@ -151,7 +151,7 @@ version: 2.3.1
          */
         LauncherPartialPrototype.partialChanged = function(newVal) {
             this._htmlChanged();
-            var compositionProvider = this.partial && findCompositionProvider(this.partial);
+            const compositionProvider = this.partial && findCompositionProvider(this.partial);
             this.partialId = compositionProvider && compositionProvider.PartialId; //should always be string
             this._compositionChanged();
         };
@@ -177,7 +177,7 @@ version: 2.3.1
         };
         LauncherPartialPrototype._compositionChanged = function(composition) {
             if (this.partial && composition === undefined) {
-                var compositionProvider = findCompositionProvider(this.partial);
+                const compositionProvider = findCompositionProvider(this.partial);
                 if (compositionProvider) {
                     composition = compositionProvider.Composition$; //should always be string
                 }
@@ -317,12 +317,13 @@ version: 2.3.1
             return range.createContextualFragment(htmlStr);
         }
 
+        /**
+         * Find composition provider scope in given marged/namespaced view-model
+         * @param  {Object} obj namespaced view-model
+         * @return {Object}     Composition Provider scope
+         */
         function findCompositionProvider(obj) {
-            for (var i in obj) {
-                if (obj.hasOwnProperty(i) && obj[i] != null && obj[i].hasOwnProperty("PartialId")) {
-                    return obj[i];
-                }
-            }
+            return obj.LauncherLayoutInfo || obj.CompositionProvider || obj.CompositionProvider_0;
         };
 
         document.registerElement('starcounter-include', {
