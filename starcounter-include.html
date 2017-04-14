@@ -151,7 +151,8 @@ version: 2.3.1
          */
         LauncherPartialPrototype.partialChanged = function(newVal) {
             this._htmlChanged();
-            this.partialId = this.partial && this.partial.LauncherLayoutInfo && this.partial.LauncherLayoutInfo.PartialId; //should always be string
+            const compositionProvider = this.partial && findCompositionProvider(this.partial);
+            this.partialId = compositionProvider && compositionProvider.PartialId; //should always be string
             this._compositionChanged();
         };
         LauncherPartialPrototype._htmlChanged = function() {
@@ -176,8 +177,9 @@ version: 2.3.1
         };
         LauncherPartialPrototype._compositionChanged = function(composition) {
             if (this.partial && composition === undefined) {
-                if (this.partial.LauncherLayoutInfo) {
-                    composition = this.partial.LauncherLayoutInfo.Composition$; //should always be string
+                const compositionProvider = findCompositionProvider(this.partial);
+                if (compositionProvider) {
+                    composition = compositionProvider.Composition$; //should always be string
                 }
             }
             // do not change if there is one, it's same as before, and we are not forced
@@ -290,7 +292,7 @@ version: 2.3.1
                 }
                 // FIXME: bellow is required for save button not to overwrite with old value, but it fails due to puppet error
                 console.info('Direct change to model is required for save button not to overwrite with old value, but it fails due to puppet error.');
-                this.partial.LauncherLayoutInfo.Composition$ = this.storedLayout;
+                findCompositionProvider(this.partial).Composition$ = this.storedLayout;
                 this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: this.storedLayout}));
                 // trigger polymer-notification-protocol-compilant event
                 this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.LauncherLayoutInfo.Composition$'}}));
@@ -314,6 +316,15 @@ version: 2.3.1
             }
             return range.createContextualFragment(htmlStr);
         }
+
+        /**
+         * Find composition provider scope in given marged/namespaced view-model
+         * @param  {Object} obj namespaced view-model
+         * @return {Object}     Composition Provider scope
+         */
+        function findCompositionProvider(obj) {
+            return obj.LauncherLayoutInfo || obj.CompositionProvider || obj.CompositionProvider_0;
+        };
 
         document.registerElement('starcounter-include', {
             prototype: LauncherPartialPrototype
