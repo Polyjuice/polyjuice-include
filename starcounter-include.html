@@ -254,7 +254,7 @@ version: 2.3.2
                     for (var key in partial){
                         if (partial.hasOwnProperty(key)) {
                             htmls.push(
-                                key +
+                                encodeURIComponent(key) +
                                 '=' +
                                 (partial[key].Html && encodeURIComponent(partial[key].Html) || defaultURL)
                             );

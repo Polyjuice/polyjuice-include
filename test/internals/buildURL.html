@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../starcounter-include.html">
+    <script src="../helpers/WCT-Polyfill_bugs_workaround.js"></script>
+</head>
+
+<body>
+    <script>
+    describe('starcounter-include should build a URL to the Htmls', function () {
+        afterEach(function (done) {
+            // give more time to polyfill cleanup
+            setTimeout(done);
+        });
+        var scInclude;
+        var model = {
+            'scope;,/?:@&=+$': {
+                'Html': 'scopeHtml;,/?:@&=+$',
+                'doesItWork': 'works!'
+            }
+        };
+
+        it('should properly escape keys and values in the query string', function (done) {
+            scInclude = document.createElement('starcounter-include');
+            scInclude.partial = clone(model);
+            let importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
+
+            expect(importedTemplate.getAttribute("content")).to.equal('/sc/htmlmerger?scope%3B%2C%2F%3F%3A%40%26%3D%2B%24=scopeHtml%3B%2C%2F%3F%3A%40%26%3D%2B%24');
+            expect(importedTemplate.model).to.equal(null);
+
+            document.body.appendChild(scInclude);
+
+            importedTemplate.addEventListener('stamping', function onceStamped(){
+                expect(importedTemplate.model).to.equal(scInclude.partial);
+                done();
+            });
+        });
+
+    });
+    function clone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+    }
+    </script>
+
+</body>
+
+</html>
