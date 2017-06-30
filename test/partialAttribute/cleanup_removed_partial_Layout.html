@@ -28,7 +28,7 @@
             var instance;
             var model = {
                 "Html": "../templateToInclude.html",
-                "LauncherLayoutInfo": {
+                "CompositionProvider": {
                     "Composition$": 'a Composition',
                     "PartialId": "given PartialId"
                 },
@@ -90,7 +90,7 @@
                     expect(instance).to.have.compositionAttached;
                     instance.partial = {
                         "Html": "../templateToInclude.html",
-                        "LauncherLayoutInfo": {
+                        "CompositionProvider": {
                             "Composition$": "",
                             "PartialId": ""
                         },

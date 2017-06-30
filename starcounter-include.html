@@ -3,7 +3,7 @@
 Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-composition> bindable by layout editor.
-Uses juicy-composition.composition given from DB as `Starcounter.MergedPartial.Composition$`.
+Uses juicy-composition.composition given from DB as `Starcounter.MergedPartial.(CompositionProvider|CompositionProvider_0).Composition$`.
 version: 2.3.2
 
 -->
@@ -207,20 +207,25 @@ version: 2.3.2
             if (path.indexOf("partial.") === 0 || path.indexOf("viewModel.") === 0) {
                 if (
                     path === "partial.Html" ||
-                    path.indexOf("partial.LauncherLayoutInfo") === 0 ||
                     // path.match(/^partial\.[^.]+\.Html$/)
                     (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1
                 ) {
                     this.partialChanged(this.partial);
                 } else if (
                     path === "viewModel.Html" ||
-                    path.indexOf("viewModel.LauncherLayoutInfo") === 0 ||
                     // path.match(/^viewModel\.[^.]+\.Html$/)
                     (path.indexOf('.Html') === path.length - 5) && path.slice(10, -5).indexOf('.') === -1
                 ) {
                     this.partialChanged(this.partial);
                 } else {
-                    if (this.template._notifyPath) {
+                    const compositionProviderPath = findCompositionProviderPath(this.partial);
+                    if (path === 'partial.' + compositionProviderPath || path === 'viewModel.' + compositionProviderPath) {
+                        // .Composition$ and .PartialId may have changed, also CompositionProvider theoretically could provide it's .Html as well
+                        this.partialChanged();
+                    } else if (path === 'partial.' + compositionProviderPath + '.PartialId' || path === 'viewModel.' + compositionProviderPath + '.PartialId') {
+                        const compositionProvider = findCompositionProvider(this.partial);
+                        this.partialId = compositionProvider && compositionProvider.PartialId; //should always be string
+                    } else if (this.template._notifyPath) {
                         this.template._notifyPath(
                             path.replace("partial.", "model.")
                                 .replace("viewModel.", "model."),
@@ -245,10 +250,6 @@ version: 2.3.2
             if(partial){
                 if(partial.Html !== undefined){
                     return partial.Html;
-                } else if (partial.LauncherLayoutInfo) {
-                    //workaround for https://github.com/StarcounterPrefabs/Launcher/issues/224
-                    //should be removed when the original issue with not patched Html is resolved
-                    return partial.LauncherLayoutInfo.MergedHtml;
                 } else {
                     var htmls = [];
                     for (var key in partial){
@@ -295,7 +296,8 @@ version: 2.3.2
                 findCompositionProvider(this.partial).Composition$ = this.storedLayout;
                 this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: this.storedLayout}));
                 // trigger polymer-notification-protocol-compilant event
-                this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.LauncherLayoutInfo.Composition$'}}));
+                this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.' + findCompositionProviderPath(this.partial) + '.Composition$'}}));
+                this.dispatchEvent(new CustomEvent("view-model-changed", {detail: {value: this.storedLayout, path: 'viewModel.' + findCompositionProviderPath(this.partial) + '.Composition$'}}));
             }.bind(this);
             return req.send(this.storedLayout);
 
@@ -323,7 +325,15 @@ version: 2.3.2
          * @return {Object}     Composition Provider scope
          */
         function findCompositionProvider(obj) {
-            return obj.LauncherLayoutInfo || obj.CompositionProvider || obj.CompositionProvider_0;
+            return obj.CompositionProvider || obj.CompositionProvider_0;
+        };
+        /**
+         * Find composition provider path in given marged/namespaced view-model
+         * @param  {Object} obj namespaced view-model
+         * @return {String}     path to Composition Provider scope
+         */
+        function findCompositionProviderPath(obj) {
+            return obj.CompositionProvider && 'CompositionProvider'|| obj.CompositionProvider_0 && 'CompositionProvider_0';
         };
 
         document.registerElement('starcounter-include', {
