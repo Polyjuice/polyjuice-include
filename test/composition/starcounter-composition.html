@@ -8,6 +8,7 @@
         window.JuicyComposition = {shadow: 'v0'};
     </script>
     <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../document-register-element/build/document-register-element.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
     <script src="../helpers/chainable-methods-for-partial.js"></script>
 
@@ -29,12 +30,18 @@
     </test-fixture>
     <template id="reference-composition">
         <h2>Custom Shadow DOM composition</h2>
-		<content select='[slot="my-slot"]'></content>
+		<slot name="my-slot"></slot>
+    </template>
+    <template id="reference-composition-v1-to-v0">
+        <h2>Custom Shadow DOM composition</h2>
+		<content name="my-slot" select="[slot='my-slot']"></content>
     </template>
 
 
     <script>
     describe('starcounter-include when imports a template that contains <code>template is="starcounter-composition"</code>', function () {
+        const useShadowDOMV1 = Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
+        const REFERENCE_COMPOSITION = useShadowDOMV1 ? '#reference-composition' : '#reference-composition-v1-to-v0'
 
         var scInclude;
         var partial = {
@@ -56,10 +63,9 @@
             setTimeout(done, 500);
         });
         it('should use it as it\'s composition', function () {
-            expect(document.querySelector('juicy-composition')).to.be.not.null;
-            expect(document.querySelector('juicy-composition').composition).to.be.not.null;
-            expect(document.querySelector('juicy-composition').composition.innerHTML.trim()).to.be
-                .equal(document.querySelector('#reference-composition').innerHTML.trim());
+            expect(scInclude.shadowRoot).to.be.not.null;
+            expect(scInclude.shadowRoot.innerHTML.trim()).to.be
+                .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML.trim());
         });
         it('should call console warn with new name', function () {
             expect(console.warn).to.be.called;
@@ -71,10 +77,9 @@
                 setTimeout(done, 500);
             });
             it('should use it as it\'s composition', function () {
-                expect(document.querySelector('juicy-composition')).to.be.not.null;
-                expect(document.querySelector('juicy-composition').composition).to.be.not.null;
-                expect(document.querySelector('juicy-composition').composition.innerHTML.trim()).to.be
-                    .equal(document.querySelector('#reference-composition').innerHTML.trim());
+                expect(scInclude.shadowRoot).to.be.not.null;
+                expect(scInclude.shadowRoot.innerHTML.trim()).to.be
+                    .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML.trim());
             });
         });
 

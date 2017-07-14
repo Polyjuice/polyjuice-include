@@ -12,6 +12,8 @@
     "starcounter",
     "web-components",
     "include",
+    "shadow-dom",
+    "distribution",
     "imported-template"
   ],
   "license": "MIT",
@@ -28,10 +30,11 @@
   ],
   "dependencies": {
     "imported-template": ">=1.4.4",
-    "juicy-composition": ">=0.0.7"
+    "translate-shadowdom": ">=0.0.4"
   },
   "devDependencies": {
-    "web-component-tester": "Polymer/web-component-tester#>=5.0.0",
-    "polymer": "^1.9.1"
+    "web-component-tester": ">=5.0.0",
+    "polymer": "^1.9.1",
+    "document-register-element": "^1.5.0"
   }
 }

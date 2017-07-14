@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
     <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../document-register-element/build/document-register-element.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
 
     <link rel="import" href="../../starcounter-include.html">
@@ -20,6 +21,8 @@
     </test-fixture>
 
     <script>
+        const useShadowDOMV1 = Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
+        const DEFAULT_COMPOSITION = useShadowDOMV1 ? '<style>:host{display:block;}</style><slot></slot>' : '<style>:host{display:block;}</style><content></content>';
         describe('cleanup changes of Composition$', function() {
             afterEach(function (done) {
                 // give more time to polyfill cleanup
@@ -107,12 +110,13 @@
         });
         chai.Assertion.addProperty('compositionAttached', function () {
           var obj = chai.util.flag(this, 'object');
-          new chai.Assertion(obj.compositionElement.composition).to.be.instanceof(DocumentFragment);
+          new chai.Assertion(obj.shadowRoot).to.be.instanceof(DocumentFragment);
+          new chai.Assertion(obj.shadowRoot.innerHTML).to.be.ok;
         });
         chai.Assertion.addProperty('compositionCleanedUp', function () {
           var obj = chai.util.flag(this, 'object');
-          new chai.Assertion(obj.compositionElement).to.be.instanceof(HTMLElement);
-          new chai.Assertion(obj.compositionElement.shadowRoot.innerHTML).to.equal('');
+          new chai.Assertion(obj).to.be.instanceof(HTMLElement);
+          new chai.Assertion(obj.shadowRoot.innerHTML).to.equal(DEFAULT_COMPOSITION);
         });
     </script>
 
