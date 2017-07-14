@@ -29,7 +29,7 @@
             var instance;
             var model = {
                 "Html": "../templateToInclude.html",
-                "LauncherLayoutInfo": {
+                "CompositionProvider": {
                     "PartialId": "templateToInclude.html"
                 },
                 "doesItWork": "works!"
@@ -90,7 +90,7 @@
                     expectPartialToBeAttached();
                     instance.partial = {
                         "Html": "../templateToInclude.html",
-                        "LauncherLayoutInfo": {
+                        "CompositionProvider": {
                             "PartialId": ""
                         },
                         "doesItWork": "works!"
@@ -101,8 +101,8 @@
             });
 
             function expectPartialToBeAttached() {
-                expect(instance).to.have.HTMLAttribute('partial-id').equal(model.LauncherLayoutInfo.PartialId);
-                expect(instance.partialId).to.be.equal(model.LauncherLayoutInfo.PartialId);
+                expect(instance).to.have.HTMLAttribute('partial-id').equal(model.CompositionProvider.PartialId);
+                expect(instance.partialId).to.be.equal(model.CompositionProvider.PartialId);
             }
 
             function expectPartialToBeCleanedUp() {

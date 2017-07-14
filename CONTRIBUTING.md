@@ -20,7 +20,7 @@ If you would like to start to fiddle with element's code, here is the flow we us
 
 In order to develop it locally we suggest to use [polyserve](https://npmjs.com/polyserve) tool to handle bower paths gently.
 
-0. Go to the repo's directory: `cd launcher-include`
+0. Go to the repo's directory: `cd starcounter-include`
 1. Install [bower](http://bower.io/) & [polyserve](https://npmjs.com/polyserve): `$ npm install -g bower polyserve`
 2. Install local dependencies: `$ bower install`
 3. Start development server `$ polyserve -p 8000`
