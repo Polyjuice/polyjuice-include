@@ -4,7 +4,7 @@ Custom Element (w/ Polymer's TemplateBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within Shadow Root for `declarative-shadow-dom` bindable by layout editor.
 Uses Shadow DOM given from DB as `Starcounter.MergedPartial.(CompositionProvider|CompositionProvider_0).Composition$`.
-version: 2.3.2
+version: 2.4.1
 
 -->
 <!-- Import dependencies -->
@@ -297,11 +297,15 @@ version: 2.3.2
                     var htmls = [];
                     for (var key in partial){
                         if (partial.hasOwnProperty(key)) {
-                            htmls.push(
-                                encodeURIComponent(key) +
-                                '=' +
-                                (partial[key].Html && encodeURIComponent(partial[key].Html) || defaultURL)
-                            );
+                            // quick fix for https://github.com/Starcounter/starcounter-include/issues/37
+                            // just to unblock https://github.com/Starcounter/level1/issues/4061
+                            if (key !== '_ver#s' && key !== '_ver#c$') {
+                                htmls.push(
+                                    encodeURIComponent(key) +
+                                    '=' +
+                                    (partial[key].Html && encodeURIComponent(partial[key].Html) || defaultURL)
+                                );
+                            }
                         }
                     }
                     // Workaround for https://github.com/Starcounter/Starcounter/issues/3072

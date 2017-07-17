@@ -45,6 +45,25 @@
             });
         });
 
+        it('should ignore `_ver#s` and `_ver#c$` properties', function (done) {
+            scInclude = document.createElement('starcounter-include');
+            let clonedModel = clone(model);
+            clonedModel['_ver#s'] = 10;
+            clonedModel['_ver#c$'] = 77;
+            scInclude.partial = clonedModel;
+            let importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
+
+            expect(importedTemplate.getAttribute("content")).to.equal('/sc/htmlmerger?scope%3B%2C%2F%3F%3A%40%26%3D%2B%24=scopeHtml%3B%2C%2F%3F%3A%40%26%3D%2B%24');
+            expect(importedTemplate.model).to.equal(null);
+
+            document.body.appendChild(scInclude);
+
+            importedTemplate.addEventListener('stamping', function onceStamped(){
+                expect(importedTemplate.model).to.equal(scInclude.partial);
+                done();
+            });
+        });
+
     });
     function clone(obj) {
         return JSON.parse(JSON.stringify(obj));
