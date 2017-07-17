@@ -254,11 +254,15 @@ version: 2.4.0
                     var htmls = [];
                     for (var key in partial){
                         if (partial.hasOwnProperty(key)) {
-                            htmls.push(
-                                encodeURIComponent(key) +
-                                '=' +
-                                (partial[key].Html && encodeURIComponent(partial[key].Html) || defaultURL)
-                            );
+                            // quick fix for https://github.com/Starcounter/starcounter-include/issues/37
+                            // just to unblock https://github.com/Starcounter/level1/issues/4061
+                            if(key !== '_ver#s' && key !== '_ver#c$'){
+                                htmls.push(
+                                    encodeURIComponent(key) +
+                                    '=' +
+                                    (partial[key].Html && encodeURIComponent(partial[key].Html) || defaultURL)
+                                );
+                            }
                         }
                     }
                     // Workaround for https://github.com/Starcounter/Starcounter/issues/3072
