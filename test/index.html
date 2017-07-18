@@ -1,40 +1,64 @@
 <!doctype html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
     <script src="../../webcomponentsjs/webcomponents.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
+</head>
 
-  </head>
-  <body>
+<body>
     <script>
-      // Load and run all tests (.html, .js):
-      WCT.loadSuites([
-        'partialAttribute/not_provided.html',
-        'partialAttribute/given_in_HTML.html',
-        'partialAttribute/given_in_JS.html',
-        'partialAttribute/given_in_JS_before_upgrade.html',
-        'partialAttribute/not_stamped_from_polymer_template.html',
-        'partialAttribute/stamped_from_polymer_template.html',
-        'partialAttribute/cleanup_removed_partial_Html.html',
-        'partialAttribute/cleanup_removed_partial_PartialId.html',
-        'partialAttribute/cleanup_removed_partial_Layout.html',
-        // {} -> null workaround
-        'partialAttribute/set_to_empty_object.html',
-        // scoped partials
-        'partialAttribute/nested-html/given_in_HTML.html',
-        'partialAttribute/nested-html/given_in_JS.html',
-        'partialAttribute/nested-html/stamped_from_polymer_template.html',
-        // partialId reflection
-        'partialId-property/reflect-partialId-to-attribute.html',
-        // compositions
-        'composition/declarative-shadow-dom.html',
-        'composition/starcounter-composition.html',
-        //internals
-        'internals/buildURL.html'
-      ]);
+        // Load and run all tests (.html, .js):
+        var suites = [
+            'partialAttribute/not_provided.html',
+            'partialAttribute/given_in_HTML.html',
+            'partialAttribute/given_in_JS.html',
+            'partialAttribute/given_in_JS_before_upgrade.html',
+            'partialAttribute/not_stamped_from_polymer_template.html',
+            'partialAttribute/stamped_from_polymer_template.html',
+            'partialAttribute/cleanup_removed_partial_Html.html',
+            'partialAttribute/cleanup_removed_partial_PartialId.html',
+            'partialAttribute/cleanup_removed_partial_Layout.html',
+            // {} -> null workaround
+            'partialAttribute/set_to_empty_object.html',
+            // scoped partials
+            'partialAttribute/nested-html/given_in_HTML.html',
+            'partialAttribute/nested-html/given_in_JS.html',
+            'partialAttribute/nested-html/stamped_from_polymer_template.html',
+            // partialId reflection
+            'partialId-property/reflect-partialId-to-attribute.html',
+            // compositions
+            'composition/declarative-shadow-dom.html',
+            'composition/starcounter-composition.html',
+            //internals
+            'internals/buildURL.html'
+        ];
+        var v0suites = [
+            'v0/basic.html',
+            'v0/translate/v1-to-v0.html', // translate between v0 and v1
+            'v0/smoke/webcomponents-webcomponentsjs-issues-648.html' // add missing slots
+        ];
+        var v1suites = [
+            'v1/basic.html',
+            'v1/translate/v0-to-v1.html', // translate between v0 and v1
+            'v1/smoke/webcomponents-webcomponentsjs-issues-648.html' // add missing slots
+        ];
+        // in v1 environment
+        if (Element.prototype.attachShadow && Node.prototype.getRootNode) {
+            // test also forced v0
+            // v0suites = v0suites.map(function(url) {
+            //     return url + '?juicy-composition-shadow=v0'
+            // });
+            suites = suites.concat(v1suites);
+        } else {
+            suites = suites.concat(v0suites);
+        }
+        WCT.loadSuites(suites);
+
     </script>
-  </body>
+</body>
+
 </html>

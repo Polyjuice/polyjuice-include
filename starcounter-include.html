@@ -262,9 +262,15 @@ version: 2.4.1
                     this.partialChanged(this.partial);
                 } else {
                     const compositionProviderPath = findCompositionProviderPath(this.partial);
-                    if (path === 'partial.' + compositionProviderPath || path === 'viewModel.' + compositionProviderPath) {
+                    if (path === 'partial.' + compositionProviderPath ||
+                        path === 'viewModel.' + compositionProviderPath) {
                         // .Composition$ and .PartialId may have changed, also CompositionProvider theoretically could provide it's .Html as well
                         this.partialChanged();
+                    } else if(
+                    path === 'partial.' + compositionProviderPath  + '.Composition$'||
+                        path === 'viewModel.' + compositionProviderPath + '.Composition$') {
+                        // .Composition$ have changed
+                        this._compositionChanged();
                     } else if (path === 'partial.' + compositionProviderPath + '.PartialId' || path === 'viewModel.' + compositionProviderPath + '.PartialId') {
                         const compositionProvider = findCompositionProvider(this.partial);
                         this.partialId = compositionProvider && compositionProvider.PartialId; //should always be string
@@ -392,7 +398,7 @@ version: 2.4.1
          * @param {DocumentFragment} givenComposition
          */
         StarcounterIncludePrototype.stampComposition = function(givenComposition){
-            console.log('stamp', this.partialId, this);
+            // console.log('stamp', this.partialId, this);
             // document.importNode(givenComposition, true);
             // create shadowRoot if none
             const shadowRoot = this.shadowRoot;
