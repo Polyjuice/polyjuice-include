@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>starcounter-include basic test</title>
+    <script src="../../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../../document-register-element/build/document-register-element.js"></script>
+    <script src="../../../../web-component-tester/browser.js"></script>
+    <script src="../../helpers/pre-config.js"></script>
+
+    <link rel="import" href="../../../starcounter-include.html">
+</head>
+
+<body>
+    <template id="composition"><div style="background: green;"><content select="[slot='something']"></content><content select="[slot='else']"></content></div></template>
+    <test-fixture id="element">
+        <template>
+            <starcounter-include>
+        </starcounter-include>
+        </template>
+    </test-fixture>
+</body>
+<script>
+    var scInclude, compositionTemplate;
+    describe('starcounter-include', function () {
+
+
+        describe('when `.composition` property is set, then `.stamp` method is called, an element is added, another element is added asynchronously', function () {
+            beforeEach(function (done) {
+                scInclude = fixture('element');
+                compositionTemplate = document.querySelector('#composition');
+    			scInclude.viewModel = {
+    				CompositionProvider:{
+    					Composition$: compositionTemplate.innerHTML
+    				}
+    			};
+                // scInclude.stamp();
+                const div = document.createElement('div');
+                div.setAttribute('slot', 'something');
+                div.innerHTML = 'Am I green?';
+                scInclude.appendChild(div);
+
+                setTimeout(function(){
+
+                    const div = document.createElement('div');
+                    div.setAttribute('slot', 'else');
+                    div.innerHTML = 'Am I green?';
+                    scInclude.appendChild(div);
+                    // expect(scInclude.shadowRoot.innerHTML).to.equal(compositionTemplate.innerHTML);
+                    setTimeout(function(){
+                        done();
+                    });
+                });
+            });
+            it('eventually it should have shadowRoot with given Document Fragment', function () {
+                expect(scInclude.shadowRoot.innerHTML).to.equal(compositionTemplate.innerHTML);
+            });
+        });
+    });
+</script>
+
+</html>

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
     <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../document-register-element/build/document-register-element.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
     <script src="../helpers/chainable-methods-for-partial.js"></script>
 
@@ -26,11 +27,28 @@
                 scInclude = document.createElement("starcounter-include");
             });
 
-            it('should have clear `imported-template`', function () {
+            it('should not have any children (CEv1 limitation)', function () {
+                expect(scInclude.children).to.be.empty;
+            });
+            it('once stamped imperatively by `.stampImportedTemplate()`, should have clear `imported-template`', function () {
+                scInclude.stampImportedTemplate();
                 expect(scInclude).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
             });
+            describe('once connected to the DOM', function(){
+                beforeEach(function(done){
+                    document.body.appendChild(scInclude);
+                    // wait for connectedCallback polyfill
+                    setTimeout(done);
+                });
+                afterEach(function(){
+                    scInclude.parentNode.removeChild(scInclude);
+                });
+                it('once connected to DOM, should have clear `imported-template`', function () {
+                    expect(scInclude).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
+                });
+            });
         });
-        describe('when created with no partial value', function () {
+        describe('when created in HTML with no partial value', function () {
             beforeEach(function () {
                 scInclude = fixture("starcounter-include");
             });
