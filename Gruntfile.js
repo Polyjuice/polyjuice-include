@@ -38,7 +38,7 @@ module.exports = function(grunt) {
             push: false,
             // pushTo: 'origin',
             globalReplace: false,
-            prereleaseName: false,
+            prereleaseName: 'rc',
             regExp: false
           }
         }
