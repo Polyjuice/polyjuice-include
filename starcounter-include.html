@@ -249,27 +249,34 @@ version: 3.0.0-rc.0
         StarcounterIncludePrototype._notifyPath = function(path, value) {
             if (path.indexOf("partial.") === 0 || path.indexOf("viewModel.") === 0) {
                 if (
-                    path === "partial.Html" ||
-                    // path.match(/^partial\.[^.]+\.Html$/)
-                    (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1
-                ) {
-                    this.partialChanged(this.partial);
-                } else if (
-                    path === "viewModel.Html" ||
+                    // path === "viewModel.Html" || // covered by  viewModel._whatever_
                     // path.match(/^viewModel\.[^.]+\.Html$/)
                     (path.indexOf('.Html') === path.length - 5) && path.slice(10, -5).indexOf('.') === -1
                 ) {
                     this.partialChanged(this.partial);
+                } else if (
+                    // path === "partial.Html" || // covered by  partial._whatever_
+                    // path.match(/^partial\.[^.]+\.Html$/)
+                    (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1
+                ) {
+                    this.partialChanged(this.partial);
+                } else if(
+                    // if viewModel|partial._whatever_, but not _ver - scope changed
+                    path.split('.').length === 2 && path.indexOf('_ver#s') === -1 && path.indexOf('_ver#c$') === -1
+                ){
+                    this.partialChanged(this.partial);
                 } else {
                     const compositionProviderPath = findCompositionProviderPath(this.partial);
-                    if (path === 'partial.' + compositionProviderPath ||
-                        path === 'viewModel.' + compositionProviderPath) {
-                        // .Composition$ and .PartialId may have changed, also CompositionProvider theoretically could provide it's .Html as well
-                        this.partialChanged();
-                    } else if(
-                    path === 'partial.' + compositionProviderPath  + '.Composition$'||
-                        path === 'viewModel.' + compositionProviderPath + '.Composition$') {
+                    // if (path === 'partial.' + compositionProviderPath ||
+                    //     path === 'viewModel.' + compositionProviderPath) {
+                    //     // .Composition$ and .PartialId may have changed, also CompositionProvider theoretically could provide it's .Html as well
+                    //     this.partialChanged();
+                    // } else
+                    if(
                         // .Composition$ have changed
+                        path === 'partial.' + compositionProviderPath  + '.Composition$'||
+                        path === 'viewModel.' + compositionProviderPath + '.Composition$'
+                    ) {
                         this._compositionChanged();
                     } else if (path === 'partial.' + compositionProviderPath + '.PartialId' || path === 'viewModel.' + compositionProviderPath + '.PartialId') {
                         const compositionProvider = findCompositionProvider(this.partial);
