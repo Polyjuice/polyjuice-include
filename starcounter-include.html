@@ -260,10 +260,10 @@ version: 2.4.1
                     (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1
                 ) {
                     this.partialChanged(this.partial);
-                } else
-
-                // if viewModel|partial._whatever_, but not _ver - scope changed
-                if(path.split('.').length === 2 && path.indexOf('_ver#s') === -1 && path.indexOf('_ver#c$') === -1){
+                } else if(
+                    // if viewModel|partial._whatever_, but not _ver - scope changed
+                    path.split('.').length === 2 && path.indexOf('_ver#s') === -1 && path.indexOf('_ver#c$') === -1
+                ){
                     this.partialChanged(this.partial);
                 } else {
                     const compositionProviderPath = findCompositionProviderPath(this.partial);
@@ -273,9 +273,10 @@ version: 2.4.1
                     //     this.partialChanged();
                     // } else
                     if(
-                    path === 'partial.' + compositionProviderPath  + '.Composition$'||
-                        path === 'viewModel.' + compositionProviderPath + '.Composition$') {
                         // .Composition$ have changed
+                        path === 'partial.' + compositionProviderPath  + '.Composition$'||
+                        path === 'viewModel.' + compositionProviderPath + '.Composition$'
+                    ) {
                         this._compositionChanged();
                     } else if (path === 'partial.' + compositionProviderPath + '.PartialId' || path === 'viewModel.' + compositionProviderPath + '.PartialId') {
                         const compositionProvider = findCompositionProvider(this.partial);
