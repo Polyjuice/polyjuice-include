@@ -33,7 +33,7 @@
     "translate-shadowdom": ">=0.0.4"
   },
   "devDependencies": {
-    "web-component-tester": ">=5.0.0",
+    "web-component-tester": "^6.0.0",
     "polymer": "^1.9.1",
     "document-register-element": "^1.5.0"
   }
