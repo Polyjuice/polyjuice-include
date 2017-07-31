@@ -48,11 +48,7 @@ version: 3.0.0-rc.0
                     const starcounterInclude = this;
                     const importedTemplate = document.createElement('template', 'imported-template');
 
-                    var partial = partialAttributeToProperty(this);
-                    if(partial === undefined && this.partial){
-                        partial = this.partial;
-                    }
-                    var html = buildURL(partial, this.mergedHtmlPrefix, this.defaultHtml);
+                    var html = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
 
                     importedTemplate.addEventListener('stamping', function fetchCompositions(event) {
                         var mergedComposition;
@@ -115,7 +111,7 @@ version: 3.0.0-rc.0
         StarcounterIncludePrototype.created = function StarcounterIncludeCreated() {
             var starcounterInclude = this;
             var partialId = this.partialId;
-            var partial = this.partial;
+            var partial = this.viewModel || this.partial || undefined;
 
             // build shadow DOM
             if(useShadowDOMV1){
