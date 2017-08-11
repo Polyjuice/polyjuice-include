@@ -418,6 +418,8 @@ version: 3.0.0-rc.1
                 }
 
                 shadowRoot.appendChild(givenComposition);
+                // polyfill `polyfill-next-selector` if needed
+                WebComponents && WebComponents.ShadowCSS && WebComponents.ShadowCSS.shimStyling(shadowRoot);
                 this.isStamped = true;
             } else if(shadowRoot){
                 shadowRoot.innerHTML = defaultShadowCSS + defaultShadowDOM;
