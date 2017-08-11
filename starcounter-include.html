@@ -419,7 +419,11 @@ version: 3.0.0-rc.1
 
                 shadowRoot.appendChild(givenComposition);
                 // polyfill `polyfill-next-selector` if needed
-                WebComponents && WebComponents.ShadowCSS && WebComponents.ShadowCSS.shimStyling(shadowRoot);
+                WebComponents && WebComponents.ShadowCSS &&
+                    WebComponents.ShadowCSS.replaceTextInStyles(
+                        WebComponents.ShadowCSS.findStyles(shadowRoot),
+                        WebComponents.ShadowCSS.insertDirectives
+                    );
                 this.isStamped = true;
             } else if(shadowRoot){
                 shadowRoot.innerHTML = defaultShadowCSS + defaultShadowDOM;

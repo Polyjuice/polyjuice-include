@@ -51,14 +51,14 @@
 <script>
 describe('starcounter-include when stamps a composition which contains `polyfill-next-selector`', function () {
 
-	var scInclude, shimStyling;
+	var scInclude, replaceTextInStyles;
 	afterEach(function (done) {
 		// give more time to polyfill cleanup
 		setTimeout(done);
 	});
 	beforeEach(function (done) {
         if(WebComponents && WebComponents.ShadowCSS){
-            shimStyling = sinon.spy(WebComponents.ShadowCSS, 'shimStyling');
+            replaceTextInStyles = sinon.spy(WebComponents.ShadowCSS, 'replaceTextInStyles');
         }
 		scInclude = fixture('element');
 		scInclude.viewModel = {
@@ -71,11 +71,14 @@ describe('starcounter-include when stamps a composition which contains `polyfill
 		// done();
 	});
     afterEach(function(){
-        shimStyling.restore();
+        replaceTextInStyles.restore();
     });
-	it('should call `WebComponents.ShadowCSS.shimStyling(shadowRoot);` on it\'s shadowRoot', function () {
-		expect(shimStyling).to.have.been.called;
-		expect(shimStyling).to.be.calledWith(scInclude.shadowRoot);
+	it('should call `WebComponents.ShadowCSS.replaceTextInStyles(styles, insertDirectives);` on it\'s shadowRoot', function () {
+		expect(replaceTextInStyles).to.have.been.called;
+		expect(replaceTextInStyles).to.be.calledWith(
+            WebComponents.ShadowCSS.findStyles(scInclude.shadowRoot),
+            WebComponents.ShadowCSS.insertDirectives
+        );
 	});
 	it('should replace polyfilled selector', function () {
 		expect(scInclude.shadowRoot).to.be.not.null;
