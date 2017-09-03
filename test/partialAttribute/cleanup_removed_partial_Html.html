@@ -28,8 +28,10 @@
             });
             var instance;
             var model = {
-                "Html": "../templateToInclude.html",
-                "doesItWork": "works!"
+                "AppA": {
+                    "Html": "templateToInclude.html",
+                    "doesItWork": "works!"
+                }
             };
 
             beforeEach(function() {
@@ -85,18 +87,20 @@
             });
             // --
 
-            it('when the `partial` property is changed to an object with empty Html', function(done) {
+            it('when the `partial` property is changed to an object with empty Html sub-property, should request new HTML from just `/sc/htmlmerger?AppA=` - for example to get default declarative Shadow DOM composition', function(done) {
                 expectPartialToBeAttached();
                 instance.partial = {
-                    "Html": "",
-                    "doesItWork": "works!"
+                    "AppA":{
+                        "Html": "",
+                        "doesItWork": "works!"
+                    }
                 };
-                expectPartialToBeCleanedUp();
+                expect(instance.template.getAttribute("content")).to.equal('/sc/htmlmerger?AppA=');
                 done();
             });
 
             function expectPartialToBeAttached() {
-                expect(instance.template.getAttribute("content")).to.equal(model.Html);
+                expect(instance.template.getAttribute("content")).to.equal('/sc/htmlmerger?AppA=templateToInclude.html');
             }
 
             function expectPartialToBeCleanedUp() {
