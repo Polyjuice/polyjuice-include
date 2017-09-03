@@ -20,11 +20,13 @@ If you have **/app/sub/page/path.html**:
 	<h1>Hello {{username}}</h1>
 </template>
 ```
-and JSON view-model
+and merged/blended JSON view-model
 ```javascript
 SubPageViewModel = {
-  username: "World"
-  html: "/app/sub/page/path.html"
+    App: {
+        username: "World"
+        Html: "/app/sub/page/path.html"
+    }
 }
 ```
 You can put it on screen with
