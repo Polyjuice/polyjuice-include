@@ -12,17 +12,16 @@
     "grunt-bump": "^0.3.1",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-watch": "^0.6.1",
-    "npm-run-all": "^4.1.1",
     "path": "^0.12.7",
     "web-component-tester": "github:tomalec/web-component-tester#88236713a7"
   },
   "scripts": {
-    "serve": "npm-run-all --parallel mockserver polyserve",
+    "serve": "npm run mockserver && polyserve",
     "polyserve": "polyserve -o --proxy-target http://127.0.0.1:9999/sc --proxy-path sc",
-    "test": "npm-run-all --parallel mockserver wct",
-    "test:no-sauce": "npm-run-all --parallel mockserver wct:no-sauce",
-    "test:sauce-only": "npm-run-all --parallel mockserver wct:sauce-only",
-    "mockserver": "node test/mocked_sc_htmlmerger.js",
+    "test": "npm run mockserver && npm run wct",
+    "test:no-sauce": "npm run mockserver && npm run wct:no-sauce",
+    "test:sauce-only": "npm run mockserver && npm run wct:sauce-only",
+    "mockserver": "node test/mocked_sc_htmlmerger.js &",
     "wct": "wct",
     "wct:no-sauce": "wct --skip-plugin sauce",
     "wct:sauce-only": "wct --skip-plugin local --plugin sauce"
