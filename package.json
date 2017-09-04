@@ -22,9 +22,9 @@
     "test:no-sauce": "npm-run-all --parallel mockserver wct:no-sauce",
     "test:sauce-only": "npm-run-all --parallel mockserver wct:sauce-only",
     "mockserver": "node test/mocked_sc_htmlmerger.js",
-    "wct": "wct --proxy-target http://127.0.0.1:9999/sc --proxy-path sc",
-    "wct:no-sauce": "wct --proxy-target http://127.0.0.1:9999/sc --proxy-path sc --skip-plugin sauce",
-    "wct:sauce-only": "wct --proxy-target http://127.0.0.1:9999/sc --proxy-path sc --skip-plugin local --plugin sauce"
+    "wct": "wct",
+    "wct:no-sauce": "wct --skip-plugin sauce",
+    "wct:sauce-only": "wct --skip-plugin local --plugin sauce"
   },
   "repository": {
     "type": "git",
