@@ -95,6 +95,7 @@ version: 3.0.0-rc.2
          * @see Starcounter/starcounter-include - partialAttributeToProperty It's just a copy
          */
         function partialAttributeToProperty(element, attrVal) {
+
             var attrVal = element.getAttribute("partial") || element.getAttribute("view-model");
             if(!attrVal){
                 // no value
@@ -112,6 +113,7 @@ version: 3.0.0-rc.2
             var starcounterInclude = this;
             var partialId = this.partialId;
             var partial = this.viewModel || this.partial || undefined;
+            checkForNonNamesapced(partial);
 
             // build shadow DOM
             if(useShadowDOMV1){
@@ -128,6 +130,7 @@ version: 3.0.0-rc.2
                 partial: {
                     set: function(newValue) {
                         partial = newValue;
+                        checkForNonNamesapced(partial);
                         starcounterInclude.stampImportedTemplate();
                         starcounterInclude.partialChanged(partial);
                     },
@@ -393,6 +396,18 @@ version: 3.0.0-rc.2
             return obj.CompositionProvider && 'CompositionProvider'|| obj.CompositionProvider_0 && 'CompositionProvider_0';
         };
 
+        /**
+         * Check if given viewModel is non-namespace (contains `.Html` property)
+         * and throw a warning to the console with a hint how to fix that.
+         * @param  {Object} viewModel view-model to check
+         */
+        function checkForNonNamesapced(viewModel){
+            if(viewModel && typeof viewModel.Html !== 'undefined'){
+                console.warn(`Your view-model is probably not namespaced!
+We no longer support those.
+Please make sure it's a result of \`Self.GET\` on serverside. If it's not a result of blending, then replace \`<starcounter-include view-model="{{viewModel}}">\` with  \`<div><template is="imported-template" model="{{viewModel}}" content$="{{viewModel.Html}}"></template></div>\`.`);
+            }
+        };
 
         /**
          * Stamps new shadow root (overwrites existing),

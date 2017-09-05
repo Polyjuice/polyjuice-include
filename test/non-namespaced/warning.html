@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../document-register-element/build/document-register-element.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../helpers/chainable-methods-for-partial.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../starcounter-include.html">
+    <script src="../helpers/WCT-Polyfill_bugs_workaround.js"></script>
+</head>
+
+<body>
+
+    <test-fixture id="given-in-HTML">
+        <template>
+            <starcounter-include partial="{&quot;Html&quot;: &quot;../templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;works!&quot;}"></starcounter-include>
+        </template>
+    </test-fixture>
+
+    <test-fixture id="given-in-JS">
+        <template>
+            <starcounter-include></starcounter-include>
+        </template>
+    </test-fixture>
+
+
+    <script>
+        // describe('`partial` attribute is set/updated using HTML methods')
+        var scInclude, importedTemplate, previousModel;
+        describe('when non-namespaced JSON view-model is given (object that contains `Html` property)', function(){
+            // afterEach(function(){
+            //     if(scInclude.parentElement){
+            //         scInclude.parentElement.removeChild(scInclude);
+            //     }
+            // });
+            var model = () => ({
+                "Html": "../templateToInclude.html",
+                "doesItWork": "works!"
+            });
+
+            // var func = () => ({foo: 1})
+
+            beforeEach(function (done) {
+                sinon.spy(console, 'warn');
+                // scInclude = fixture('default-composition');
+                // scInclude.partial = JSON.parse(JSON.stringify(partial));
+                // setTimeout(done, 500);
+                done();
+            });
+            afterEach(function (done) {
+                console.warn.restore();
+                // give more time to polyfill cleanup
+                setTimeout(done);
+            });
+            describe('in stamped HTML markup', function(){
+                beforeEach(function (done) {
+                    scInclude = fixture('given-in-HTML');
+                    // wait for polyfills
+                    setTimeout(done, 500);
+                });
+                it('should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
+                    expect(console.warn).to.be.called;
+                    expect(console.warn.args[0][0]).to.contain('namespaced');
+                    expect(console.warn.args[0][0]).to.contain('Self.GET');
+                    expect(console.warn.args[0][0]).to.contain('imported-template');
+                });
+            });
+            describe('in JS', function(){
+                beforeEach(function (done) {
+                    scInclude = fixture('given-in-JS');
+                    // wait for polyfills
+                    setTimeout(done, 500);
+                });
+                it('via `setAttribute`, should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
+                    scInclude.setAttribute('view-model', JSON.stringify(model()));
+                    expect(console.warn).to.be.called;
+                    expect(console.warn.args[0][0]).to.contain('namespaced');
+                    expect(console.warn.args[0][0]).to.contain('Self.GET');
+                    expect(console.warn.args[0][0]).to.contain('imported-template');
+                });
+                it('via property, should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
+                    scInclude.viewModel = model();
+                    expect(console.warn).to.be.called;
+                    expect(console.warn.args[0][0]).to.contain('namespaced');
+                    expect(console.warn.args[0][0]).to.contain('Self.GET');
+                    expect(console.warn.args[0][0]).to.contain('imported-template');
+                });
+            });
+        });
+
+    </script>
+
+</body>
+
+</html>

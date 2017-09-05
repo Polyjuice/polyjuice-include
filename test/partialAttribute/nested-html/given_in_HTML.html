@@ -41,7 +41,7 @@
     </test-fixture>
     <test-fixture id="old">
         <template>
-            <starcounter-include partial="{&quot;Html&quot;: &quot;../../old_templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;worked!&quot;}"></starcounter-include>
+            <starcounter-include partial="{&quot;App&quot;: {&quot;Html&quot;: &quot;old_templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;worked!&quot;}}"></starcounter-include>
         </template>
     </test-fixture>
 
@@ -66,8 +66,10 @@
             }
         };
         var oldModel = {
-            "Html": "../../old_templateToInclude.html",
-            "doesItWork": "worked!"
+            "AppA":{
+                "Html": "old_templateToInclude.html",
+                "doesItWork": "worked!"
+            }
         };
         describe('set', function () {
 

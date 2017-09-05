@@ -14,9 +14,6 @@
         // Load and run all tests (.html, .js):
         var suites = [
             'partialAttribute/not_provided.html',
-            'partialAttribute/given_in_HTML.html',
-            'partialAttribute/given_in_JS.html',
-            'partialAttribute/given_in_JS_before_upgrade.html',
             'partialAttribute/not_stamped_from_polymer_template.html',
             'partialAttribute/cleanup_removed_partial_Html.html',
             'partialAttribute/cleanup_removed_partial_PartialId.html',
@@ -33,7 +30,9 @@
             'composition/declarative-shadow-dom.html',
             'composition/starcounter-composition.html',
             //internals
-            'internals/buildURL.html'
+            'internals/buildURL.html',
+            // warning on dropped support for non-namespaced view-models
+            'non-namespaced/warning.html'
         ];
         var v0suites = [
             'v0/basic.html',

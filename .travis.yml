@@ -2,7 +2,7 @@ language: node_js
 sudo: required
 dist: trusty
 before_script:
-  - npm install web-component-tester
+  - npm install github:tomalec/web-component-tester#88236713a7
   - npm install bower
   - 'export PATH=$PWD/node_modules/.bin:$PATH'
   - bower install
@@ -15,5 +15,5 @@ addons:
     packages:
       - google-chrome-stable
 script:
-  - xvfb-run wct --skip-plugin sauce
-  - "if [ \"${TRAVIS_PULL_REQUEST}\" = \"false\" ]; then npm run wct:sauce-only; fi"
+  - xvfb-run npm run test:no-sauce
+  - "if [ \"${TRAVIS_PULL_REQUEST}\" = \"false\" ]; then npm run test:sauce-only; fi"
