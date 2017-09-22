@@ -24,8 +24,9 @@ In order to develop it locally we suggest to use [polyserve](https://npmjs.com/p
 1. Install [bower](http://bower.io/) & [polyserve](https://npmjs.com/polyserve): `$ npm install -g bower polyserve`
 2. Install local dependencies: `$ bower install`
 3. Start development server `$ polyserve -p 8000`
-4. Open the demo/preview: [http://localhost:8000/components/starcounter-include/demo/](http://localhost:8000/components/starcounter-include/demo/)
-5. Open the test suite: [http://localhost:8000/components/starcounter-include/test/](http://localhost:8000/components/starcounter-include/test/)
+4. Start mock server to mock Starcounter's responses `$ npm run mockserver`
+5. Open the demo/preview: [http://localhost:8000/components/starcounter-include/demo/](http://localhost:8000/components/starcounter-include/demo/)
+6. Open the test suite: [http://localhost:8000/components/starcounter-include/test/](http://localhost:8000/components/starcounter-include/test/)
 
 ## Contributing Pull Requests
 
@@ -55,7 +56,7 @@ To run the element unit tests from CLI, you need to:
 0.  Install `web-component-tester` globally: `npm install -g web-component-tester`
 1.  Clone the element repo.
 2.  Install the dependencies. `bower install`
-3.  Run the tests: `wct`
+3.  Run the tests: `npm run test`
 
 #### Configuring `web-component-tester`
 
@@ -69,7 +70,7 @@ information on configuring the tool.
 
 **The release is done from `master` branch.**
 
-1. Make sure that the browser tests pass in Chrome, Firefox, Edge and IE. This can be done manually or using `wct` (see instructions above).
+1. Make sure that the browser tests pass in Chrome, Firefox, Edge and IE. This can be done manually or using `npm run test` (see instructions above).
 2. Call `git status` to verify that there are no uncommited files in the directory
 3. Call `grunt bump:patch`, `grunt bump:minor` or `grunt bump:major`. This command:
  - increments the version number in the relevant files

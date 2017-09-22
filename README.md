@@ -44,7 +44,6 @@ To produce
 
 ### [`<imported-template>` Demo/Example](https://github.com/Juicy/imported-template#demoexamples)
 
-### [Test/Use cases](http://starcounter.github.io/starcounter-include/test)
 
 ## Related custom elements
 
@@ -150,8 +149,8 @@ Name                                    | Detail                 | Description
 
 ## Test suite
 
- - local browser `./test/index.html`
- - [online](http://starcounter.github.io/starcounter-include/test)
+ - start mock server  and simple dev static files server `npm run serve`
+ - open local browser at [`127.0.0.1:8081/components/starcounter-include/test/`](http://127.0.0.1:8081/components/starcounter-include/test/)
 
 ## [Contributing and Development](CONTRIBUTING.md)
 
