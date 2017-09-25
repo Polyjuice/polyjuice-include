@@ -66,9 +66,17 @@
                 });
                 it('should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
                     expect(console.warn).to.be.called;
-                    expect(console.warn.args[0][0]).to.contain('namespaced');
-                    expect(console.warn.args[0][0]).to.contain('Self.GET');
-                    expect(console.warn.args[0][0]).to.contain('imported-template');
+                    expect(console.warn.args[0].join()).to.contain('namespaced');
+                    expect(console.warn.args[0].join()).to.contain('Self.GET');
+                    expect(console.warn.args[0].join()).to.contain('imported-template');
+                });
+                it('should throw a warning about "namespaced" view-model, that contains a reference to the element', function(){
+                    expect(console.warn).to.be.called;
+                    expect(console.warn.args[0]).to.contain(scInclude);
+                });
+                it('should throw a warning about "namespaced" view-model, that contains a reference to the view-model', function(){
+                    expect(console.warn).to.be.called;
+                    expect(console.warn.args[0]).to.contain(scInclude.viewModel);
                 });
             });
             describe('in JS', function(){
@@ -77,19 +85,43 @@
                     // wait for polyfills
                     setTimeout(done, 500);
                 });
-                it('via `setAttribute`, should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
-                    scInclude.setAttribute('view-model', JSON.stringify(model()));
-                    expect(console.warn).to.be.called;
-                    expect(console.warn.args[0][0]).to.contain('namespaced');
-                    expect(console.warn.args[0][0]).to.contain('Self.GET');
-                    expect(console.warn.args[0][0]).to.contain('imported-template');
+                describe('via `setAttribute`,', function(){
+                    beforeEach(function(){
+                        scInclude.setAttribute('view-model', JSON.stringify(model()));
+                    });
+                    it('should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
+                        expect(console.warn).to.be.called;
+                        expect(console.warn.args[0].join()).to.contain('namespaced');
+                        expect(console.warn.args[0].join()).to.contain('Self.GET');
+                        expect(console.warn.args[0].join()).to.contain('imported-template');
+                    });
+                    it('should throw a warning, that contains a reference to the element', function(){
+                        expect(console.warn).to.be.called;
+                        expect(console.warn.args[0]).to.contain(scInclude);
+                    });
+                    it('should throw a warning, that contains a reference to the view-model', function(){
+                        expect(console.warn).to.be.called;
+                        expect(console.warn.args[0]).to.contain(scInclude.viewModel);
+                    });
                 });
-                it('via property, should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
-                    scInclude.viewModel = model();
-                    expect(console.warn).to.be.called;
-                    expect(console.warn.args[0][0]).to.contain('namespaced');
-                    expect(console.warn.args[0][0]).to.contain('Self.GET');
-                    expect(console.warn.args[0][0]).to.contain('imported-template');
+                describe('via property,', function(){
+                    beforeEach(function(){
+                        scInclude.viewModel = model();
+                    });
+                    it('should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
+                        expect(console.warn).to.be.called;
+                        expect(console.warn.args[0].join()).to.contain('namespaced');
+                        expect(console.warn.args[0].join()).to.contain('Self.GET');
+                        expect(console.warn.args[0].join()).to.contain('imported-template');
+                    });
+                    it('should throw a warning, that contains a reference to the element', function(){
+                        expect(console.warn).to.be.called;
+                        expect(console.warn.args[0]).to.contain(scInclude);
+                    });
+                    it('should throw a warning, that contains a reference to the view-model', function(){
+                        expect(console.warn).to.be.called;
+                        expect(console.warn.args[0]).to.contain(scInclude.viewModel);
+                    });
                 });
             });
         });

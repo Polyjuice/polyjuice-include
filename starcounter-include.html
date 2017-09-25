@@ -113,7 +113,7 @@ version: 3.0.0-rc.3
             var starcounterInclude = this;
             var partialId = this.partialId;
             var partial = this.viewModel || this.partial || undefined;
-            checkForNonNamesapced(partial);
+            checkForNonNamesapced(partial, this);
 
             // build shadow DOM
             if(useShadowDOMV1){
@@ -130,7 +130,7 @@ version: 3.0.0-rc.3
                 partial: {
                     set: function(newValue) {
                         partial = newValue;
-                        checkForNonNamesapced(partial);
+                        checkForNonNamesapced(partial, this);
                         starcounterInclude.stampImportedTemplate();
                         starcounterInclude.partialChanged(partial);
                     },
@@ -400,12 +400,15 @@ version: 3.0.0-rc.3
          * Check if given viewModel is non-namespace (contains `.Html` property)
          * and throw a warning to the console with a hint how to fix that.
          * @param  {Object} viewModel view-model to check
+         * @param  {HTMLElement} element starcounter-include to point to
          */
-        function checkForNonNamesapced(viewModel){
+        function checkForNonNamesapced(viewModel, element){
             if(viewModel && typeof viewModel.Html !== 'undefined'){
                 console.warn(`Your view-model is probably not namespaced!
+`, viewModel, `
 We no longer support those.
-Please make sure it's a result of \`Self.GET\` on serverside. If it's not a result of blending, then replace \`<starcounter-include view-model="{{viewModel}}">\` with  \`<div><template is="imported-template" model="{{viewModel}}" content$="{{viewModel.Html}}"></template></div>\`.`);
+Please make sure it's a result of \`Self.GET\` on serverside. If it's not a result of blending, then replace \`<starcounter-include view-model="{{viewModel}}">\` with  \`<div><template is="imported-template" model="{{viewModel}}" content$="{{viewModel.Html}}"></template></div>\`.
+`, element);
             }
         };
 
