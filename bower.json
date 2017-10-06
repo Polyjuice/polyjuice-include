@@ -29,7 +29,7 @@
     "sc"
   ],
   "dependencies": {
-    "imported-template": ">=1.4.4",
+    "imported-template": "^2.0.0",
     "translate-shadowdom": ">=0.0.4"
   },
   "devDependencies": {
