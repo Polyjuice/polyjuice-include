@@ -48,7 +48,7 @@ version: 3.0.0-rc.4
                     const starcounterInclude = this;
                     const importedTemplate = document.createElement('template', 'imported-template');
 
-                    var html = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
+                    var href = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
 
                     importedTemplate.addEventListener('stamping', function fetchCompositions(event) {
                         var mergedComposition;
@@ -71,7 +71,7 @@ version: 3.0.0-rc.4
                         // TODO: consider moving entire partialChanged or appendChild here
                         starcounterInclude._compositionChanged();
                     });
-                    html && importedTemplate.setAttribute('content', html);
+                    href && (importedTemplate.href = href);
 
 
                     this.appendChild(importedTemplate);
@@ -88,7 +88,7 @@ version: 3.0.0-rc.4
         StarcounterIncludePrototype.partialId = null;
         //FIXME: this one should not be needed, once we get rid of workarounds for server-side
         StarcounterIncludePrototype.compositionAPI = '/sc/partial/composition';
-        // StarcounterIncludePrototype.html = null;
+        // StarcounterIncludePrototype.href = null;
         StarcounterIncludePrototype.mergedHtmlPrefix = '/sc/htmlmerger?';
         StarcounterIncludePrototype.defaultHtml = '';
         /**
@@ -191,21 +191,21 @@ version: 3.0.0-rc.4
             if(!this.template){
                 return;
             }
-            var html = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
-            if (html !== this._lastHtml) {
-                if (this._lastHtml) {
+            var href = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
+            if (href !== this._lastHref) {
+                if (this._lastHref) {
                     this.template.clear();
                 }
-                if (!html) {
-                    this.template.removeAttribute("content");
+                if (!href) {
+                    this.template.href = null;
                     if (this.template.model != this.partial) {
                         this.template.model = this.partial
                     }
                 } else {
-                    this.template.setAttribute("content", html);
+                    this.template.href = href;
                 }
                 this._forceLayoutChange = true;
-                this._lastHtml = html;
+                this._lastHref = href;
             } else if (this.template.model != this.partial) {
                 this.template.model = this.partial
             }
@@ -407,7 +407,7 @@ version: 3.0.0-rc.4
                 console.warn(`Your view-model is probably not namespaced!
 `, viewModel, `
 We no longer support those.
-Please make sure it's a result of \`Self.GET\` on serverside. If it's not a result of blending, then replace \`<starcounter-include view-model="{{viewModel}}">\` with  \`<div><template is="imported-template" model="{{viewModel}}" content$="{{viewModel.Html}}"></template></div>\`.
+Please make sure it's a result of \`Self.GET\` on serverside. If it's not a result of blending, then replace \`<starcounter-include view-model="{{viewModel}}">\` with  \`<div><template is="imported-template" model="{{viewModel}}" href="{{viewModel.Html}}"></template></div>\`.
 `, element);
             }
         };

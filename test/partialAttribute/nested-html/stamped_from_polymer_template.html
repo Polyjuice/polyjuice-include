@@ -79,8 +79,9 @@
 
             });
 
-            it('should attach concatenated `Html` properties as content attribute for `<imported-template>`', function () {
-                expect(importedTemplate.getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+            it('should attach concatenated `Html` properties as href attribute and property for `<imported-template>`', function () {
+                expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
             });
             it('should NOT attach partial model to `imported-template` immediately', function () {
                 expect(importedTemplate.model).to.equal(null);
@@ -108,8 +109,9 @@
                     });
                 });
 
-                it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
-                    expect(importedTemplate.getAttribute("content")).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
+                it('should attach new `.Html` property as href attribute and property for `<imported-template>`', function () {
+                    expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
+                    expect(importedTemplate.href).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
                 });
                 it('should NOT attach new partial model to `imported-template` immediately', function () {
                     expect(importedTemplate.model).to.equal(partial);
@@ -146,8 +148,9 @@
                     });
                 });
 
-                it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
-                    expect(importedTemplate.getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                it('should attach new `.Html` property as href attribute and propery for `<imported-template>`', function () {
+                    expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                 });
                 it('should attach new partial model to `imported-template` immediately', function () {
                     expect(importedTemplate.model).to.equal(changedPartialWithSameHtml);
@@ -166,8 +169,9 @@
                     });
                 });
 
-                it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
-                    expect(importedTemplate.getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                it('should attach new `.Html` property as href attribute and property for `<imported-template>`', function () {
+                    expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                 });
                 it('should NOT attach new partial model to `imported-template` immediately', function () {
                     expect(importedTemplate.model).to.equal(partial);
@@ -194,8 +198,9 @@
                     });
                 });
 
-                it('should attach same `.Html` property as content attribute for `<imported-template>`', function () {
-                    expect(importedTemplate.getAttribute("content")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                it('should attach same `.Html` property as href attribute and propery for `<imported-template>`', function () {
+                    expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                 });
                 it('should attach new partial model to `imported-template` immediately', function () {
                     expect(importedTemplate.model.scope1).to.equal(changedScopeWithSameHtml);
@@ -207,8 +212,9 @@
                     domBind.set('model.Page.scope1.Html', 'changedHtml');
                 });
 
-                it('should attach new `.Html` property as content attribute for `<imported-template>`', function () {
-                    expect(importedTemplate.getAttribute("content")).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                it('should attach new `.Html` property as href attribute and property for `<imported-template>`', function () {
+                    expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                 });
                 it('should attach same partial model to `imported-template` on `stamping`', function (done) {
                     importedTemplate.addEventListener('stamping', function onceStamped(){
@@ -230,8 +236,9 @@
                     });
                 });
 
-                it('should attach `null` as content attribute for `<imported-template>`', function () {
-                    expect(importedTemplate.getAttribute("content")).to.equal(null);
+                it('should attach `null` as href attribute and property for `<imported-template>`', function () {
+                    expect(importedTemplate.getAttribute("href")).to.equal(null);
+                    expect(importedTemplate.href).to.equal(null);
                 });
                 it('should attach same partial model to `imported-template`', function () {
                     expect(importedTemplate.model).to.equal(partial);

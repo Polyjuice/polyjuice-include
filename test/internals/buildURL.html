@@ -34,7 +34,8 @@
             scInclude.partial = clone(model);
             let importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
 
-            expect(importedTemplate.getAttribute("content")).to.equal('/sc/htmlmerger?scope%3B%2C%2F%3F%3A%40%26%3D%2B%24=scopeHtml%3B%2C%2F%3F%3A%40%26%3D%2B%24');
+            expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope%3B%2C%2F%3F%3A%40%26%3D%2B%24=scopeHtml%3B%2C%2F%3F%3A%40%26%3D%2B%24');
+            expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope%3B%2C%2F%3F%3A%40%26%3D%2B%24=scopeHtml%3B%2C%2F%3F%3A%40%26%3D%2B%24');
             expect(importedTemplate.model).to.equal(null);
 
             document.body.appendChild(scInclude);
@@ -53,7 +54,8 @@
             scInclude.partial = clonedModel;
             let importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
 
-            expect(importedTemplate.getAttribute("content")).to.equal('/sc/htmlmerger?scope%3B%2C%2F%3F%3A%40%26%3D%2B%24=scopeHtml%3B%2C%2F%3F%3A%40%26%3D%2B%24');
+            expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope%3B%2C%2F%3F%3A%40%26%3D%2B%24=scopeHtml%3B%2C%2F%3F%3A%40%26%3D%2B%24');
+            expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope%3B%2C%2F%3F%3A%40%26%3D%2B%24=scopeHtml%3B%2C%2F%3F%3A%40%26%3D%2B%24');
             expect(importedTemplate.model).to.equal(null);
 
             document.body.appendChild(scInclude);

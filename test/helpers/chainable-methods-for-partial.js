@@ -14,9 +14,9 @@ chai.Assertion.addProperty('clearImportedTemplate', function () {
     var obj = chai.util.flag(this, 'object');
 
     expect(obj.model, '`imported-template` should have falsy model property').to.be.falsy;
-    expect(obj.hasAttribute("content"), '`imported-template` should not have `model` attribute set').to.be.falsy;
-    expect(obj.hasAttribute("content"), '`imported-template` should not have `content` attribute set').to.be.false;
-    // new chai.Assertion(obj.content, 'should have falsy content property').to.be.falsy;
+    expect(obj.hasAttribute("model"), '`imported-template` should not have `model` attribute set').to.be.falsy;
+    expect(obj.hasAttribute("href"), '`imported-template` should not have `href` attribute set').to.be.false;
+    expect(obj.href, '`imported-template` should have falsy `href` property').to.be.falsy;
 });
 chai.Assertion.addChainableMethod('HTMLAttribute', function (str) {
     var obj = chai.util.flag(this, 'object');
