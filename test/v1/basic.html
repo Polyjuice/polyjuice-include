@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>starcounter-include composition basic test</title>
-    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
     <script src="../helpers/pre-config.js"></script>
     <link rel="import" href="../../../polymer/polymer.html">
@@ -23,12 +23,14 @@
     <test-fixture id="element">
         <template>
             <div>
-                <template is="dom-bind">
-                    <starcounter-include view-model="{{partial}}">
-                        <div id="childNode1" slot="my-slot1">childNode1</div>
-                        <div id="childNode2" slot="my-slot2">childNode2</div>
-                    </starcounter-include>
-                </template>
+                <dom-bind>
+                    <template>
+                        <starcounter-include view-model="{{partial}}">
+                            <div id="childNode1" slot="my-slot1">childNode1</div>
+                            <div id="childNode2" slot="my-slot2">childNode2</div>
+                        </starcounter-include>
+                    </template>
+                </dom-bind>
             </div>
         </template>
     </test-fixture>
@@ -55,7 +57,7 @@
         describe('when `.CompositionProvider.Composition$` property is set', function () {
             beforeEach(function (done) {
                 container = fixture('element');
-                domBind = container.querySelector('template[is="dom-bind"]');
+                domBind = container.querySelector('dom-bind');
                 // domBind.addEventListener('dom-change', function waitForDomBind(){
                     scInclude = container.querySelector('starcounter-include');
                     composition = document.querySelector('#composition').innerHTML;

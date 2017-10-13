@@ -10,7 +10,7 @@
     <script src="../../../../web-component-tester/browser.js"></script>
     <!-- <script src="../../helpers/mock-htmlmerger.js"></script> -->
 
-    <script src="../../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../../../document-register-element/build/document-register-element.js"></script>
 
     <link rel="import" href="../../../../polymer/polymer.html">
@@ -21,9 +21,11 @@
 
 <body>
     <template id="fixture">
-        <template is="dom-bind">
-            <starcounter-include partial="{{model.Page}}"></starcounter-include>
-        </template>
+        <dom-bind>
+            <template>
+                <starcounter-include partial="{{model.Page}}"></starcounter-include>
+            </template>
+        </dom-bind>
     </template>
     <better-test-fixture id="container"></better-test-fixture>
     <script>
@@ -64,7 +66,7 @@
             beforeEach(function(done) {
                 var fixture = document.querySelector('#fixture');
                 var clone = document.importNode(fixture.content, true);
-                domBind = clone.querySelector('template[is=dom-bind]');
+                domBind = clone.querySelector('dom-bind');
                 partial = createPartial();
                 domBind.model = {
                     Page: partial
@@ -93,10 +95,10 @@
                 });
             });
             it('should forward Polymer notification to `imported-template`', function () {
-                sinon.stub(importedTemplate, "_notifyPath");
+                sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
                 var newVal = "notification works";
                 domBind.set("model.Page.scope1.doesItWork", newVal);
-                expect(importedTemplate._notifyPath).to.be.calledWith("model.scope1.doesItWork", newVal)
+                expect(importedTemplate._setPendingPropertyOrPath).to.be.calledWith("model.scope1.doesItWork", newVal)
             });
 
             describe('after `dom-bind`` changed the partial property', function () {

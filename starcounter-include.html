@@ -239,13 +239,20 @@ version: 3.0.0-rc.5
                 this._lastLayout = compositionString;
             }
         };
+        // to fool Polymer into thinking `starcounter-include` is a polymer element thus forwarding notifications to it.
+        StarcounterIncludePrototype.__dataHasAccessor = {partial: true, viewModel: true};
+
+        // Polymer doesn't set props on its own components, rather, it calls this function
+        StarcounterIncludePrototype._setPendingProperty = function (path, value) {    
+            this[path] = value;
+        }
         /**
-         * Forward Polymer notification downwards from `<template is="dom-bind">`
-         * to <template is="imported-template">
-         * @param  {String} path Polymer notification path
-         * @param  {Mixed} value New value
-         */
-        StarcounterIncludePrototype._notifyPath = function(path, value) {
+        * Forward Polymer notification downwards from `<dom-bind>`
+        * to <template is="imported-template">
+        * @param  {String} path Polymer notification path
+        * @param  {Mixed} value New value
+        */
+        StarcounterIncludePrototype._setPendingPropertyOrPath = function (path, value) {
             if (path.indexOf("partial.") === 0 || path.indexOf("viewModel.") === 0) {
                 if (
                     // path === "viewModel.Html" || // covered by  viewModel._whatever_
@@ -280,8 +287,8 @@ version: 3.0.0-rc.5
                     } else if (path === 'partial.' + compositionProviderPath + '.PartialId' || path === 'viewModel.' + compositionProviderPath + '.PartialId') {
                         const compositionProvider = findCompositionProvider(this.partial);
                         this.partialId = compositionProvider && compositionProvider.PartialId; //should always be string
-                    } else if (this.template._notifyPath) {
-                        this.template._notifyPath(
+                    } else if (this.template._setPendingPropertyOrPath) {
+                        this.template._setPendingPropertyOrPath(
                             path.replace("partial.", "model.")
                                 .replace("viewModel.", "model."),
                              value);
