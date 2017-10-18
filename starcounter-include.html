@@ -227,13 +227,14 @@ version: 3.0.0-rc.5
                 }
             }
             // do not change if there is one, it's same as before, and we are not forced
+            if (!compositionString) {
+                composition = this.defaultComposition && this.defaultComposition.cloneNode(true);
+                compositionString = this.defaultComposition;
+            } else {
+                // make clone to avoid direct binding
+                composition = this.stringToDocumentFragment(compositionString);
+            }
             if (!compositionString || compositionString !== this._lastLayout || this._forceLayoutChange) {
-                if (!compositionString) {
-                    composition = this.defaultComposition && this.defaultComposition.cloneNode(true);
-                } else {
-                    // make clone to avoid direct binding
-                    composition = this.stringToDocumentFragment(compositionString);
-                }
                 this.stampComposition(composition);
                 this._forceLayoutChange = false;
                 this._lastLayout = compositionString;
