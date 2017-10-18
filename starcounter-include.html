@@ -246,6 +246,7 @@ version: 3.0.0-rc.5
          * @param  {Mixed} value New value
          */
         StarcounterIncludePrototype._notifyPath = function(path, value) {
+            var modelAlreadyLoaded = this.template.model == this.partial;
             if (path.indexOf("partial.") === 0 || path.indexOf("viewModel.") === 0) {
                 if (
                     // path === "viewModel.Html" || // covered by  viewModel._whatever_
@@ -258,11 +259,6 @@ version: 3.0.0-rc.5
                     // path.match(/^partial\.[^.]+\.Html$/)
                     (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1
                 ) {
-                    this.partialChanged(this.partial);
-                } else if(
-                    // if viewModel|partial._whatever_, but not _ver - scope changed
-                    path.split('.').length === 2 && path.indexOf('_ver#s') === -1 && path.indexOf('_ver#c$') === -1
-                ){
                     this.partialChanged(this.partial);
                 } else {
                     const compositionProviderPath = findCompositionProviderPath(this.partial);
@@ -280,11 +276,15 @@ version: 3.0.0-rc.5
                     } else if (path === 'partial.' + compositionProviderPath + '.PartialId' || path === 'viewModel.' + compositionProviderPath + '.PartialId') {
                         const compositionProvider = findCompositionProvider(this.partial);
                         this.partialId = compositionProvider && compositionProvider.PartialId; //should always be string
-                    } else if (this.template._notifyPath) {
-                        this.template._notifyPath(
-                            path.replace("partial.", "model.")
-                                .replace("viewModel.", "model."),
-                             value);
+                    } else {
+                        this.partialChanged(this.partial);
+
+                        if (modelAlreadyLoaded && this.template._notifyPath) {
+                            this.template._notifyPath(
+                                path.replace("partial.", "model.")
+                                    .replace("viewModel.", "model."),
+                                 value);
+                        }
                     }
                 }
             }
