@@ -185,8 +185,8 @@
                 });
             });
 
-            describe('after `dom-bind` re-set the sub-partial property (just one scope) to the same instance but with new values', function () {
-                var scope, newVal = "still works";
+            describe('after `dom-bind` re-set the sub-partial property (just one scope) to the same instance but potentially with new values', function () {
+                var scope;
 
                 beforeEach(function(done) {
                     // IDEA: promisify juicy-html
@@ -194,7 +194,6 @@
                     importedTemplate.addEventListener('stamping', function onceStamped(){
                         importedTemplate.removeEventListener('stamping', onceStamped);
                         scope = domBind.get('model.Page.scope1');
-                        scope.doesItWork = newVal;
                         domBind.set('model.Page.scope1', scope);
                         done();
                     });
