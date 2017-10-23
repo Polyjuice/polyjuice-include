@@ -271,7 +271,7 @@ version: 3.0.0-rc.6
          * @param  {Mixed} value New value
          */
         StarcounterIncludePrototype._notifyPath = function(path, value) {
-            var modelAlreadyLoaded = this.template.model == this.partial;
+            var sameModelAlreadyLoaded = this.template.model == this.partial;
             if (path.indexOf("partial.") === 0 || path.indexOf("viewModel.") === 0) {
                 if (
                     // path === "viewModel.Html" || // covered by  viewModel._whatever_
@@ -304,7 +304,7 @@ version: 3.0.0-rc.6
                     } else {
                         this.partialChanged(this.partial);
 
-                        if (modelAlreadyLoaded && this.template._notifyPath) {
+                        if (sameModelAlreadyLoaded && this.template._notifyPath) {
                             this.template._notifyPath(
                                 path.replace("partial.", "model.")
                                     .replace("viewModel.", "model."),
