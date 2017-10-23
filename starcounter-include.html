@@ -210,35 +210,59 @@ version: 3.0.0-rc.6
                 this.template.model = this.partial
             }
         };
+
+        /**
+         * Stamps composition if needed
+         * @param  {String} compositionString HTML as a string to compare if a re-render is needed
+         * @param  {Function} callb Function that returns a composition to render
+         */
+        StarcounterIncludePrototype._renderCompositionChange = function(compositionString, callb) {
+            if (!this._forceLayoutChange && this._lastCompositionString == compositionString) {
+                return;
+            }
+            let composition = callb();
+            this.stampComposition(composition);
+            this._forceLayoutChange = false;
+            this._lastCompositionString = compositionString;
+        }
+
         /**
          * Handles change of the composition.
          * If not given explicitely, fetches one from provider.
-         * Stamps if needed.
+         * If not given in provider, fetches one from imported template's default composition.
+         * If imported template does not have a default composition, uses fallback composition.
+         * Warning: the explicit composition might come from https://github.com/Starcounter/starcounter-layout-html-editor/blob/17b21f729facd9a8dcd4241fb5c48cb71de11af5/starcounter-layout-html-editor.html#L253
          * @see .stampComposition
          * @param  {String} compositionString stringified HTML for new Shadow Root
          */
         StarcounterIncludePrototype._compositionChanged = function(compositionString) {
-            let composition;
-            if (this.partial && compositionString === undefined) {
-                const compositionProvider = findCompositionProvider(this.partial);
-                if (compositionProvider) {
-                    compositionString = compositionProvider.Composition$; //should always be string
-                    this.storedLayout = compositionString;
+            var that = this;
+
+            if (compositionString !== undefined) {
+                this._forceLayoutChange = true;
+                this._renderCompositionChange("explicit or fallback", function() {
+                    return that.stringToDocumentFragment(compositionString);
+                });
+            }
+            else {
+                const compositionProvider = this.partial && findCompositionProvider(this.partial);
+                if (compositionProvider && compositionProvider.Composition$) {
+                    this._renderCompositionChange(compositionProvider.Composition$, function() {
+                        that.storedLayout = compositionProvider.Composition$; //should always be string
+                        return that.stringToDocumentFragment(that.storedLayout);
+                    });
                 }
-            }
-            // do not change if there is one, it's same as before, and we are not forced
-            if (!compositionString) {
-                composition = this.defaultComposition && this.defaultComposition.cloneNode(true);
-                compositionString = this.defaultComposition;
-            } else {
-                // make clone to avoid direct binding
-                composition = this.stringToDocumentFragment(compositionString);
-            }
-            if (!compositionString || compositionString !== this._lastLayout || this._forceLayoutChange) {
-                this.stampComposition(composition);
-                this._forceLayoutChange = false;
-                this._lastLayout = compositionString;
-            }
+                else if (this.defaultComposition) {
+                    this._renderCompositionChange("imported template's default", function() {
+                        return that.defaultComposition.cloneNode(true);
+                    });
+                }
+                else {
+                    this._renderCompositionChange("explicit or fallback", function() {
+                        return undefined;
+                    });
+                }
+            }            
         };
         /**
          * Forward Polymer notification downwards from `<template is="dom-bind">`
