@@ -113,7 +113,7 @@ version: 3.0.0-rc.6
             var starcounterInclude = this;
             var partialId = this.partialId;
             var partial = this.viewModel || this.partial || undefined;
-            checkForNonNamesapced(partial, this);
+            checkForNonNamespaced(partial, this);
 
             // build shadow DOM
             if(useShadowDOMV1){
@@ -130,7 +130,7 @@ version: 3.0.0-rc.6
                 partial: {
                     set: function(newValue) {
                         partial = newValue;
-                        checkForNonNamesapced(partial, this);
+                        checkForNonNamespaced(partial, this);
                         starcounterInclude.stampImportedTemplate();
                         starcounterInclude.partialChanged(partial);
                     },
@@ -393,7 +393,7 @@ version: 3.0.0-rc.6
          * @param  {Object} viewModel view-model to check
          * @param  {HTMLElement} element starcounter-include to point to
          */
-        function checkForNonNamesapced(viewModel, element){
+        function checkForNonNamespaced(viewModel, element){
             if(viewModel && typeof viewModel.Html !== 'undefined'){
                 console.warn(`Your view-model is probably not namespaced!
 `, viewModel, `
