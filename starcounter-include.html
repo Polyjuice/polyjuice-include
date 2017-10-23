@@ -211,17 +211,17 @@ version: 3.0.0-rc.6
 
         /**
          * Stamps composition if needed
-         * @param  {String} compositionString HTML as a string to compare if a re-render is needed
+         * @param  {String|DocumentFragment} compositionRef reference to the evaluated composition
          * @param  {Function} callb Function that returns a composition to render
          */
-        StarcounterIncludePrototype._renderCompositionChange = function(compositionString, callb) {
-            if (!this._forceLayoutChange && this._lastCompositionString == compositionString) {
+        StarcounterIncludePrototype._renderCompositionChange = function(compositionRef, callb) {
+            if (!this._forceLayoutChange && this._lastCompositionRef == compositionRef) {
                 return;
             }
             let composition = callb();
             this.stampComposition(composition);
             this._forceLayoutChange = false;
-            this._lastCompositionString = compositionString;
+            this._lastCompositionRef = compositionRef;
         }
 
         /**
@@ -253,7 +253,7 @@ version: 3.0.0-rc.6
                     });
                 }
                 else if (this.defaultComposition) {
-                    this._renderCompositionChange("imported template's default", function() {
+                    this._renderCompositionChange(this.defaultComposition, function() {
                         return that.defaultComposition.cloneNode(true);
                     });
                 }
