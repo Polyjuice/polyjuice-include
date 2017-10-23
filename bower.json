@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "web-component-tester": "^6.0.0",
-    "polymer": "^1.9.1",
+    "polymer": "^2.0.0",
     "document-register-element": "^1.5.0"
   }
 }

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>starcounter-include basic test</title>
-    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../../document-register-element/build/document-register-element.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
     <script src="../helpers/pre-config.js"></script>
@@ -57,7 +57,7 @@
         describe('when `.composition` property is set, once `.stamp` method is called', function () {
             beforeEach(function (done) {
                 container = fixture('element');
-                domBind = container.querySelector('template[is="dom-bind"]');
+                domBind = container.querySelector('dom-bind');
                 // domBind.addEventListener('dom-change', function waitForDomBind(){
                     scInclude = container.querySelector('starcounter-include');
                     composition = document.querySelector('#composition').innerHTML;

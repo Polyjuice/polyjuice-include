@@ -240,13 +240,20 @@ version: 3.0.0-rc.6
                 this._lastLayout = compositionString;
             }
         };
+        // to fool Polymer into thinking `starcounter-include` is a polymer element thus forwarding notifications to it.
+        StarcounterIncludePrototype.__dataHasAccessor = {partial: true, viewModel: true};
+
+        // Polymer doesn't set props on its own components, rather, it calls this function
+        StarcounterIncludePrototype._setPendingProperty = function (path, value) {    
+            this[path] = value;
+        }
         /**
-         * Forward Polymer notification downwards from `<template is="dom-bind">`
-         * to <template is="imported-template">
-         * @param  {String} path Polymer notification path
-         * @param  {Mixed} value New value
-         */
-        StarcounterIncludePrototype._notifyPath = function(path, value) {
+        * Forward Polymer notification downwards from `<dom-bind>`
+        * to <template is="imported-template">
+        * @param  {String} path Polymer notification path
+        * @param  {Mixed} value New value
+        */
+        StarcounterIncludePrototype._setPendingPropertyOrPath = function (path, value) {
             var modelAlreadyLoaded = this.template.model == this.partial;
             if (path.indexOf("partial.") === 0 || path.indexOf("viewModel.") === 0) {
                 if (
@@ -280,8 +287,8 @@ version: 3.0.0-rc.6
                     } else {
                         this.partialChanged(this.partial);
 
-                        if (modelAlreadyLoaded && this.template._notifyPath) {
-                            this.template._notifyPath(
+                        if (modelAlreadyLoaded && this.template._setPendingPropertyOrPath) {
+                            this.template._setPendingPropertyOrPath(
                                 path.replace("partial.", "model.")
                                     .replace("viewModel.", "model."),
                                  value);
@@ -438,7 +445,7 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
 
                 shadowRoot.appendChild(givenComposition);
                 // polyfill `polyfill-next-selector` if needed
-                WebComponents && WebComponents.ShadowCSS &&
+                typeof WebComponents !== 'undefined' && WebComponents.ShadowCSS &&
                     WebComponents.ShadowCSS.replaceTextInStyles(
                         WebComponents.ShadowCSS.findStyles(shadowRoot),
                         WebComponents.ShadowCSS.insertDirectives
@@ -453,8 +460,6 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
         StarcounterIncludePrototype.clear = function (){
             console.error('clear is not yet defined!');
         }
-
-
         customElements.define('starcounter-include', StarcounterInclude);
     })();
 </script>
