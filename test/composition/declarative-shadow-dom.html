@@ -79,6 +79,17 @@
                     .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML.trim());
             });
         });
+        describe('after partial property is replaced with itself', function () {
+            it('should keep using the existing composition', function (done) { //otherwise ViewKeeper (aka workspaces) do not keep state in Firefox and Edge
+                var old  = scInclude.shadowRoot.querySelector("h2");
+                scInclude.partial = scInclude.partial;
+                setTimeout(function() {
+                    expect(old).to.be.not.null;
+                    expect(old).to.be.equal(scInclude.shadowRoot.querySelector("h2"));
+                    done();
+                }, 500);
+            });
+        });
 
     });
     </script>
