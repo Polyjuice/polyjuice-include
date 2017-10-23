@@ -182,8 +182,6 @@ version: 3.0.0-rc.6
          */
         StarcounterIncludePrototype.partialChanged = function(newVal) {
             this._htmlChanged();
-            const compositionProvider = this.partial && findCompositionProvider(this.partial);
-            this.partialId = compositionProvider && compositionProvider.PartialId; //should always be string
             this._compositionChanged();
         };
         StarcounterIncludePrototype._htmlChanged = function() {
@@ -246,6 +244,8 @@ version: 3.0.0-rc.6
             }
             else {
                 const compositionProvider = this.partial && findCompositionProvider(this.partial);
+                this.partialId = compositionProvider && compositionProvider.PartialId;
+
                 if (compositionProvider && compositionProvider.Composition$) {
                     this._renderCompositionChange(compositionProvider.Composition$, function() {
                         that.storedLayout = compositionProvider.Composition$; //should always be string
@@ -272,46 +272,12 @@ version: 3.0.0-rc.6
          */
         StarcounterIncludePrototype._notifyPath = function(path, value) {
             var sameModelAlreadyLoaded = this.template.model == this.partial;
-            if (path.indexOf("partial.") === 0 || path.indexOf("viewModel.") === 0) {
-                if (
-                    // path === "viewModel.Html" || // covered by  viewModel._whatever_
-                    // path.match(/^viewModel\.[^.]+\.Html$/)
-                    (path.indexOf('.Html') === path.length - 5) && path.slice(10, -5).indexOf('.') === -1
-                ) {
-                    this.partialChanged(this.partial);
-                } else if (
-                    // path === "partial.Html" || // covered by  partial._whatever_
-                    // path.match(/^partial\.[^.]+\.Html$/)
-                    (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1
-                ) {
-                    this.partialChanged(this.partial);
-                } else {
-                    const compositionProviderPath = findCompositionProviderPath(this.partial);
-                    // if (path === 'partial.' + compositionProviderPath ||
-                    //     path === 'viewModel.' + compositionProviderPath) {
-                    //     // .Composition$ and .PartialId may have changed, also CompositionProvider theoretically could provide it's .Html as well
-                    //     this.partialChanged();
-                    // } else
-                    if(
-                        // .Composition$ have changed
-                        path === 'partial.' + compositionProviderPath  + '.Composition$'||
-                        path === 'viewModel.' + compositionProviderPath + '.Composition$'
-                    ) {
-                        this._compositionChanged();
-                    } else if (path === 'partial.' + compositionProviderPath + '.PartialId' || path === 'viewModel.' + compositionProviderPath + '.PartialId') {
-                        const compositionProvider = findCompositionProvider(this.partial);
-                        this.partialId = compositionProvider && compositionProvider.PartialId; //should always be string
-                    } else {
-                        this.partialChanged(this.partial);
-
-                        if (sameModelAlreadyLoaded && this.template._notifyPath) {
-                            this.template._notifyPath(
-                                path.replace("partial.", "model.")
-                                    .replace("viewModel.", "model."),
-                                 value);
-                        }
-                    }
-                }
+            this.partialChanged(this.partial);
+            if (sameModelAlreadyLoaded && this.template._notifyPath) {
+                this.template._notifyPath(
+                    path.replace("partial.", "model.")
+                        .replace("viewModel.", "model."),
+                     value);
             }
         };
         /**
