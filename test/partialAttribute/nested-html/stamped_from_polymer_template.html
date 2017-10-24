@@ -222,7 +222,7 @@
                     expect(importedTemplate._notifyPath).to.be.calledWith("model.scope1.doesItWork", newVal);
                 });
 
-                it('should be preserve the explicit composition', function () {
+                it('should preserve the explicit composition', function () {
                     expect(include.shadowRoot.innerHTML).to.be.equal(customComposition);
                 });
             });
