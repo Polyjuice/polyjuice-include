@@ -185,7 +185,7 @@
                 });
             });
 
-            describe('after `dom-bind` re-set the sub-partial property (just one scope) to the same instance but potentially with new values', function () {
+            describe('after `dom-bind` re-set the sub-partial property (just one scope) to the same instance', function () {
                 var scope;
 
                 beforeEach(function(done) {
@@ -201,6 +201,29 @@
 
                 it('should forward the notification to `imported-template`', function () {
                     expect(importedTemplate._notifyPath).to.be.calledWith("model.scope1", scope)
+                });
+            });
+
+            describe('after `dom-bind` changes the sub-partial property of a view with an explicit composition', function () {
+                var scope, include, newVal = "yeah", customComposition = "my custom composition";
+
+                beforeEach(function(done) {
+                    sinon.stub(importedTemplate, "_notifyPath");
+                    importedTemplate.addEventListener('stamping', function onceStamped(){
+                        importedTemplate.removeEventListener('stamping', onceStamped);                   
+                        include = container.querySelector('starcounter-include');
+                        include._compositionChanged(customComposition); //this is how starcounter-layout-html-editor uses it
+                        domBind.set('model.Page.scope1.doesItWork', newVal);
+                        done();
+                    });
+                });
+
+                it('should forward the notification to `imported-template`', function () {
+                    expect(importedTemplate._notifyPath).to.be.calledWith("model.scope1.doesItWork", newVal);
+                });
+
+                it('should preserve the explicit composition', function () {
+                    expect(include.shadowRoot.innerHTML).to.be.equal(customComposition);
                 });
             });
 

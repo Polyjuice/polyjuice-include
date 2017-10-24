@@ -86,8 +86,6 @@ version: 3.0.0-rc.6
         StarcounterIncludePrototype.shadow = useShadowDOMV1;
         StarcounterIncludePrototype.partial = null;
         StarcounterIncludePrototype.partialId = null;
-        //FIXME: this one should not be needed, once we get rid of workarounds for server-side
-        StarcounterIncludePrototype.compositionAPI = '/sc/partial/composition';
         // StarcounterIncludePrototype.href = null;
         StarcounterIncludePrototype.mergedHtmlPrefix = '/sc/htmlmerger?';
         StarcounterIncludePrototype.defaultHtml = '';
@@ -113,7 +111,7 @@ version: 3.0.0-rc.6
             var starcounterInclude = this;
             var partialId = this.partialId;
             var partial = this.viewModel || this.partial || undefined;
-            checkForNonNamesapced(partial, this);
+            checkForNonNamespaced(partial, this);
 
             // build shadow DOM
             if(useShadowDOMV1){
@@ -130,7 +128,7 @@ version: 3.0.0-rc.6
                 partial: {
                     set: function(newValue) {
                         partial = newValue;
-                        checkForNonNamesapced(partial, this);
+                        checkForNonNamespaced(partial, this);
                         starcounterInclude.stampImportedTemplate();
                         starcounterInclude.partialChanged(partial);
                     },
@@ -182,8 +180,6 @@ version: 3.0.0-rc.6
          */
         StarcounterIncludePrototype.partialChanged = function(newVal) {
             this._htmlChanged();
-            const compositionProvider = this.partial && findCompositionProvider(this.partial);
-            this.partialId = compositionProvider && compositionProvider.PartialId; //should always be string
             this._compositionChanged();
         };
         StarcounterIncludePrototype._htmlChanged = function() {
@@ -210,35 +206,62 @@ version: 3.0.0-rc.6
                 this.template.model = this.partial
             }
         };
+
+        /**
+         * Stamps composition if needed
+         * @param  {String|DocumentFragment} compositionRef reference to the evaluated composition
+         * @param  {Function} callb Function that returns a composition to render
+         */
+        StarcounterIncludePrototype._renderCompositionChange = function(compositionRef, callb) {
+            if (this._forceLayoutChange || this._lastCompositionRef !== compositionRef) {
+                this.storedLayout = null;
+                let composition = callb();
+                this.stampComposition(composition);
+                this._forceLayoutChange = false;
+                this._lastCompositionRef = compositionRef;
+            }
+        }
+
         /**
          * Handles change of the composition.
          * If not given explicitely, fetches one from provider.
-         * Stamps if needed.
+         * If not given in provider, fetches one from imported template's default composition.
+         * If imported template does not have a default composition, uses fallback composition.
+         * Warning: the explicit composition might come from https://github.com/Starcounter/starcounter-layout-html-editor/blob/17b21f729facd9a8dcd4241fb5c48cb71de11af5/starcounter-layout-html-editor.html#L253
          * @see .stampComposition
          * @param  {String} compositionString stringified HTML for new Shadow Root
          */
         StarcounterIncludePrototype._compositionChanged = function(compositionString) {
-            let composition;
-            if (this.partial && compositionString === undefined) {
-                const compositionProvider = findCompositionProvider(this.partial);
+            if (compositionString) {
+                this._forceLayoutChange = true;
+                this._renderCompositionChange("explicit or fallback", () => this.stringToDocumentFragment(compositionString));
+            }
+            else {
+                const compositionProvider = this.partial && findCompositionProvider(this.partial);
+
                 if (compositionProvider) {
-                    compositionString = compositionProvider.Composition$; //should always be string
-                    this.storedLayout = compositionString;
+                    this.partialId = compositionProvider.PartialId;
+                    if (compositionString === "") {
+                        //this is a request from starcounter-layout-html-editor to reset to default composition
+                        this.Composition$ = "";
+                    }
+                    else if (compositionProvider.Composition$) {
+                        return this._renderCompositionChange(compositionProvider.Composition$, () => {
+                            this.storedLayout = compositionProvider.Composition$; //should always be string
+                            return this.stringToDocumentFragment(this.storedLayout);
+                        });
+                    }
                 }
-            }
-            // do not change if there is one, it's same as before, and we are not forced
-            if (!compositionString) {
-                composition = this.defaultComposition && this.defaultComposition.cloneNode(true);
-                compositionString = this.defaultComposition;
-            } else {
-                // make clone to avoid direct binding
-                composition = this.stringToDocumentFragment(compositionString);
-            }
-            if (!compositionString || compositionString !== this._lastLayout || this._forceLayoutChange) {
-                this.stampComposition(composition);
-                this._forceLayoutChange = false;
-                this._lastLayout = compositionString;
-            }
+                else {
+                    this.partialId = null;
+                }
+
+                if (this.defaultComposition) {
+                    return this._renderCompositionChange(this.defaultComposition, () => this.defaultComposition.cloneNode(true));
+                }
+                
+                return this._renderCompositionChange("explicit or fallback", () => undefined);
+            }            
         };
         /**
          * Forward Polymer notification downwards from `<template is="dom-bind">`
@@ -247,47 +270,13 @@ version: 3.0.0-rc.6
          * @param  {Mixed} value New value
          */
         StarcounterIncludePrototype._notifyPath = function(path, value) {
-            var modelAlreadyLoaded = this.template.model == this.partial;
-            if (path.indexOf("partial.") === 0 || path.indexOf("viewModel.") === 0) {
-                if (
-                    // path === "viewModel.Html" || // covered by  viewModel._whatever_
-                    // path.match(/^viewModel\.[^.]+\.Html$/)
-                    (path.indexOf('.Html') === path.length - 5) && path.slice(10, -5).indexOf('.') === -1
-                ) {
-                    this.partialChanged(this.partial);
-                } else if (
-                    // path === "partial.Html" || // covered by  partial._whatever_
-                    // path.match(/^partial\.[^.]+\.Html$/)
-                    (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1
-                ) {
-                    this.partialChanged(this.partial);
-                } else {
-                    const compositionProviderPath = findCompositionProviderPath(this.partial);
-                    // if (path === 'partial.' + compositionProviderPath ||
-                    //     path === 'viewModel.' + compositionProviderPath) {
-                    //     // .Composition$ and .PartialId may have changed, also CompositionProvider theoretically could provide it's .Html as well
-                    //     this.partialChanged();
-                    // } else
-                    if(
-                        // .Composition$ have changed
-                        path === 'partial.' + compositionProviderPath  + '.Composition$'||
-                        path === 'viewModel.' + compositionProviderPath + '.Composition$'
-                    ) {
-                        this._compositionChanged();
-                    } else if (path === 'partial.' + compositionProviderPath + '.PartialId' || path === 'viewModel.' + compositionProviderPath + '.PartialId') {
-                        const compositionProvider = findCompositionProvider(this.partial);
-                        this.partialId = compositionProvider && compositionProvider.PartialId; //should always be string
-                    } else {
-                        this.partialChanged(this.partial);
-
-                        if (modelAlreadyLoaded && this.template._notifyPath) {
-                            this.template._notifyPath(
-                                path.replace("partial.", "model.")
-                                    .replace("viewModel.", "model."),
-                                 value);
-                        }
-                    }
-                }
+            var sameModelAlreadyLoaded = this.template.model == this.partial;
+            this.partialChanged(this.partial);
+            if (sameModelAlreadyLoaded && this.template._notifyPath) {
+                this.template._notifyPath(
+                    path.replace("partial.", "model.")
+                        .replace("viewModel.", "model."),
+                     value);
             }
         };
         /**
@@ -338,30 +327,12 @@ version: 3.0.0-rc.6
         StarcounterIncludePrototype.saveLayout = function(compositionStr){
             compositionStr = compositionStr || this.shadowRoot.innerHTML;
             this.storedLayout = compositionStr;
-            //TODO: trigger polymer-protocol-compliant event
-
-            // FIXME: temporary workaround for servers not accepting JSON-Patch
-            // from juicy-tiles-setup-sync
-            var req = new XMLHttpRequest();
-            req.open("POST", this.compositionAPI + "?key=" + encodeURIComponent(this.partialId) + '&ver=', true);
-            req.onreadystatechange = function () {
-                if (req.readyState == 4) {
-                    if (!(req.status >= 200 && req.status <= 299)) {
-                        console.error("Failed to save composition configuration");
-                        return;
-                    }
-                    console.info("composition configuration saved");
-                }
-                // FIXME: bellow is required for save button not to overwrite with old value, but it fails due to puppet error
-                console.info('Direct change to model is required for save button not to overwrite with old value, but it fails due to puppet error.');
-                findCompositionProvider(this.partial).Composition$ = this.storedLayout;
-                this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: this.storedLayout}));
-                // trigger polymer-notification-protocol-compilant event
-                this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.' + findCompositionProviderPath(this.partial) + '.Composition$'}}));
-                this.dispatchEvent(new CustomEvent("view-model-changed", {detail: {value: this.storedLayout, path: 'viewModel.' + findCompositionProviderPath(this.partial) + '.Composition$'}}));
-            }.bind(this);
-            return req.send(this.storedLayout);
-
+            findCompositionProvider(this.partial).Composition$ = this.storedLayout;
+            this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: this.storedLayout}));
+            // trigger polymer-notification-protocol-compilant event
+            var notificationPath = findCompositionProviderPath(this.partial) + '.Composition$';
+            this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.' + notificationPath}}));
+            this.dispatchEvent(new CustomEvent("view-model-changed", {detail: {value: this.storedLayout, path: 'viewModel.' + notificationPath}}));
         };
 
         // stringToDocumentFragment(strHTML) from http://stackoverflow.com/a/25214113/868184
@@ -403,7 +374,7 @@ version: 3.0.0-rc.6
          * @param  {Object} viewModel view-model to check
          * @param  {HTMLElement} element starcounter-include to point to
          */
-        function checkForNonNamesapced(viewModel, element){
+        function checkForNonNamespaced(viewModel, element){
             if(viewModel && typeof viewModel.Html !== 'undefined'){
                 console.warn(`Your view-model is probably not namespaced!
 `, viewModel, `

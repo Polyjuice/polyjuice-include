@@ -32,11 +32,19 @@
     </test-fixture>
     <template id="reference-composition">
         <h2>Custom Shadow DOM composition</h2>
-		<slot name="my-slot"></slot>
+        <slot name="my-slot"></slot>
+    </template>
+    <template id="reference-alternative-composition">
+        <h2>Custom Shadow DOM alternative composition</h2>
+        <slot name="my-slot"></slot>
     </template>
     <template id="reference-composition-v1-to-v0">
         <h2>Custom Shadow DOM composition</h2>
-		<content name="my-slot" select="[slot='my-slot']"></content>
+        <content name="my-slot" select="[slot='my-slot']"></content>
+    </template>
+    <template id="reference-alternative-composition-v1-to-v0">
+        <h2>Custom Shadow DOM alternative composition</h2>
+        <content name="my-slot" select="[slot='my-slot']"></content>
     </template>
 
 
@@ -44,14 +52,15 @@
     describe('starcounter-include when imports a template that contains <code>template is="declarative-shadow-dom"</code>', function () {
         const useShadowDOMV1 = Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
         const REFERENCE_COMPOSITION = useShadowDOMV1 ? '#reference-composition' : '#reference-composition-v1-to-v0'
+        const REFERENCE_ALTERNATIVE_COMPOSITION = useShadowDOMV1 ? '#reference-alternative-composition' : '#reference-alternative-composition-v1-to-v0'
 
         var scInclude;
-        var partial = {
+        var alternativePartial = {
             "CompositionProvider": {
                 "PartialId": "given PartialId"
             },
             "App": {
-                "Html": "template_w_declarative-shadow-dom.html",
+                "Html": "template_w_declarative-shadow-dom-alternative.html",
                 "doesItWork": "works!"
             }
         };
@@ -64,18 +73,32 @@
             // scInclude.partial = JSON.parse(JSON.stringify(partial));
             setTimeout(done, 500);
         });
-        it('should use it as it\'s composition', function () {
+        it('should use it as its composition', function () {
             expect(scInclude.shadowRoot).to.be.not.null;
             expect(scInclude.shadowRoot.innerHTML.trim()).to.be
                 .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML.trim());
         });
         describe('after partial property is replaced with the partial that also does contain default composition', function () {
             beforeEach(function (done) {
-                scInclude.partial = JSON.parse(JSON.stringify(partial));
+                scInclude.partial = JSON.parse(JSON.stringify(alternativePartial));
                 setTimeout(done, 500);
             });
-            it('should use it as it\'s composition', function () {
+            it('should use it as its composition', function () {
                 expect(scInclude.shadowRoot).to.be.not.null;
+                expect(scInclude.shadowRoot.innerHTML.trim()).to.be
+                    .equal(document.querySelector(REFERENCE_ALTERNATIVE_COMPOSITION).innerHTML.trim());
+            });
+        });
+        describe('after composition is changed from default to explicit', function () {
+            var explicitComposition = "explicit composition";
+            beforeEach(function () {
+                scInclude._compositionChanged(explicitComposition);
+            });
+            it('should render the explicit composition', function () {
+                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
+            });
+            it('should return to default after resetting', function () {
+                scInclude._compositionChanged(""); //this is how starcounter-layout-html-editor resets
                 expect(scInclude.shadowRoot.innerHTML.trim()).to.be
                     .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML.trim());
             });

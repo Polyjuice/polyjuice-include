@@ -66,7 +66,7 @@
             // scInclude.partial = JSON.parse(JSON.stringify(partial));
             setTimeout(done, 500);
         });
-        it('should use it as it\'s composition', function () {
+        it('should use it as its composition', function () {
             expect(scInclude.shadowRoot).to.be.not.null;
             expect(scInclude.shadowRoot.innerHTML.trim()).to.be
                 .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML.trim());
@@ -80,7 +80,7 @@
                 scInclude.partial = JSON.parse(JSON.stringify(partial));
                 setTimeout(done, 500);
             });
-            it('should use it as it\'s composition', function () {
+            it('should use it as its composition', function () {
                 expect(scInclude.shadowRoot).to.be.not.null;
                 expect(scInclude.shadowRoot.innerHTML.trim()).to.be
                     .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML.trim());
