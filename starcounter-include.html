@@ -218,6 +218,7 @@ version: 3.0.0-rc.6
             if (!this._forceLayoutChange && this._lastCompositionRef == compositionRef) {
                 return;
             }
+            this.storedLayout = null;
             let composition = callb();
             this.stampComposition(composition);
             this._forceLayoutChange = false;
@@ -236,7 +237,7 @@ version: 3.0.0-rc.6
         StarcounterIncludePrototype._compositionChanged = function(compositionString) {
             var that = this;
 
-            if (compositionString !== undefined) {
+            if (compositionString) {
                 this._forceLayoutChange = true;
                 this._renderCompositionChange("explicit or fallback", function() {
                     return that.stringToDocumentFragment(compositionString);
@@ -245,6 +246,11 @@ version: 3.0.0-rc.6
             else {
                 const compositionProvider = this.partial && findCompositionProvider(this.partial);
                 this.partialId = compositionProvider && compositionProvider.PartialId;
+
+                if (compositionProvider && compositionProvider.Composition$ && compositionString === "") {
+                    //this is a request from starcounter-layout-html-editor to reset to default composition
+                    that.Composition$ = "";
+                }
 
                 if (compositionProvider && compositionProvider.Composition$) {
                     this._renderCompositionChange(compositionProvider.Composition$, function() {

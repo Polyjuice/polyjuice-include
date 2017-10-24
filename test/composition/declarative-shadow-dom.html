@@ -89,6 +89,20 @@
                     .equal(document.querySelector(REFERENCE_ALTERNATIVE_COMPOSITION).innerHTML.trim());
             });
         });
+        describe('after composition is changed from default to explicit', function () {
+            var explicitComposition = "explicit composition";
+            beforeEach(function () {
+                scInclude._compositionChanged(explicitComposition);
+            });
+            it('should render the explicit composition', function () {
+                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
+            });
+            it('should return to default after resetting', function () {
+                scInclude._compositionChanged(""); //this is how starcounter-layout-html-editor resets
+                expect(scInclude.shadowRoot.innerHTML.trim()).to.be
+                    .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML.trim());
+            });
+        });
         describe('after partial property is replaced with itself', function () {
             it('should keep using the existing composition', function (done) { //otherwise ViewKeeper (aka workspaces) do not keep state in Firefox and Edge
                 var old  = scInclude.shadowRoot.querySelector("h2");
