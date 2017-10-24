@@ -234,9 +234,7 @@ version: 3.0.0-rc.6
         StarcounterIncludePrototype._compositionChanged = function(compositionString) {
             if (compositionString) {
                 this._forceLayoutChange = true;
-                this._renderCompositionChange("explicit or fallback", () => {
-                    return this.stringToDocumentFragment(compositionString);
-                });
+                this._renderCompositionChange("explicit or fallback", () => this.stringToDocumentFragment(compositionString));
             }
             else {
                 const compositionProvider = this.partial && findCompositionProvider(this.partial);
@@ -259,14 +257,10 @@ version: 3.0.0-rc.6
                 }
 
                 if (this.defaultComposition) {
-                    return this._renderCompositionChange(this.defaultComposition, () => {
-                        return this.defaultComposition.cloneNode(true);
-                    });
+                    return this._renderCompositionChange(this.defaultComposition, () => this.defaultComposition.cloneNode(true));
                 }
                 
-                return this._renderCompositionChange("explicit or fallback", () => {
-                    return undefined;
-                });
+                return this._renderCompositionChange("explicit or fallback", () => undefined);
             }            
         };
         /**
