@@ -215,14 +215,13 @@ version: 3.0.0-rc.6
          * @param  {Function} callb Function that returns a composition to render
          */
         StarcounterIncludePrototype._renderCompositionChange = function(compositionRef, callb) {
-            if (!this._forceLayoutChange && this._lastCompositionRef == compositionRef) {
-                return;
+            if (this._forceLayoutChange || this._lastCompositionRef !== compositionRef) {
+                this.storedLayout = null;
+                let composition = callb();
+                this.stampComposition(composition);
+                this._forceLayoutChange = false;
+                this._lastCompositionRef = compositionRef;
             }
-            this.storedLayout = null;
-            let composition = callb();
-            this.stampComposition(composition);
-            this._forceLayoutChange = false;
-            this._lastCompositionRef = compositionRef;
         }
 
         /**
@@ -235,39 +234,41 @@ version: 3.0.0-rc.6
          * @param  {String} compositionString stringified HTML for new Shadow Root
          */
         StarcounterIncludePrototype._compositionChanged = function(compositionString) {
-            var that = this;
-
             if (compositionString) {
                 this._forceLayoutChange = true;
-                this._renderCompositionChange("explicit or fallback", function() {
-                    return that.stringToDocumentFragment(compositionString);
+                this._renderCompositionChange("explicit or fallback", () => {
+                    return this.stringToDocumentFragment(compositionString);
                 });
             }
             else {
                 const compositionProvider = this.partial && findCompositionProvider(this.partial);
-                this.partialId = compositionProvider && compositionProvider.PartialId;
 
-                if (compositionProvider && compositionProvider.Composition$ && compositionString === "") {
-                    //this is a request from starcounter-layout-html-editor to reset to default composition
-                    that.Composition$ = "";
-                }
-
-                if (compositionProvider && compositionProvider.Composition$) {
-                    this._renderCompositionChange(compositionProvider.Composition$, function() {
-                        that.storedLayout = compositionProvider.Composition$; //should always be string
-                        return that.stringToDocumentFragment(that.storedLayout);
-                    });
-                }
-                else if (this.defaultComposition) {
-                    this._renderCompositionChange(this.defaultComposition, function() {
-                        return that.defaultComposition.cloneNode(true);
-                    });
+                if (compositionProvider) {
+                    this.partialId = compositionProvider.PartialId;
+                    if (compositionString === "") {
+                        //this is a request from starcounter-layout-html-editor to reset to default composition
+                        this.Composition$ = "";
+                    }
+                    else if (compositionProvider.Composition$) {
+                        return this._renderCompositionChange(compositionProvider.Composition$, () => {
+                            this.storedLayout = compositionProvider.Composition$; //should always be string
+                            return this.stringToDocumentFragment(this.storedLayout);
+                        });
+                    }
                 }
                 else {
-                    this._renderCompositionChange("explicit or fallback", function() {
-                        return undefined;
+                    this.partialId = null;
+                }
+
+                if (this.defaultComposition) {
+                    return this._renderCompositionChange(this.defaultComposition, () => {
+                        return this.defaultComposition.cloneNode(true);
                     });
                 }
+                
+                return this._renderCompositionChange("explicit or fallback", () => {
+                    return undefined;
+                });
             }            
         };
         /**
@@ -337,8 +338,9 @@ version: 3.0.0-rc.6
             findCompositionProvider(this.partial).Composition$ = this.storedLayout;
             this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: this.storedLayout}));
             // trigger polymer-notification-protocol-compilant event
-            this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.' + findCompositionProviderPath(this.partial) + '.Composition$'}}));
-            this.dispatchEvent(new CustomEvent("view-model-changed", {detail: {value: this.storedLayout, path: 'viewModel.' + findCompositionProviderPath(this.partial) + '.Composition$'}}));
+            var notificationPath = findCompositionProviderPath(this.partial) + '.Composition$';
+            this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.' + notificationPath}}));
+            this.dispatchEvent(new CustomEvent("view-model-changed", {detail: {value: this.storedLayout, path: 'viewModel.' + notificationPath}}));
         };
 
         // stringToDocumentFragment(strHTML) from http://stackoverflow.com/a/25214113/868184
