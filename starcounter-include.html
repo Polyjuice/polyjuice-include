@@ -334,30 +334,11 @@ version: 3.0.0-rc.6
         StarcounterIncludePrototype.saveLayout = function(compositionStr){
             compositionStr = compositionStr || this.shadowRoot.innerHTML;
             this.storedLayout = compositionStr;
-            //TODO: trigger polymer-protocol-compliant event
-
-            // FIXME: temporary workaround for servers not accepting JSON-Patch
-            // from juicy-tiles-setup-sync
-            var req = new XMLHttpRequest();
-            req.open("POST", this.compositionAPI + "?key=" + encodeURIComponent(this.partialId) + '&ver=', true);
-            req.onreadystatechange = function () {
-                if (req.readyState == 4) {
-                    if (!(req.status >= 200 && req.status <= 299)) {
-                        console.error("Failed to save composition configuration");
-                        return;
-                    }
-                    console.info("composition configuration saved");
-                }
-                // FIXME: bellow is required for save button not to overwrite with old value, but it fails due to puppet error
-                console.info('Direct change to model is required for save button not to overwrite with old value, but it fails due to puppet error.');
-                findCompositionProvider(this.partial).Composition$ = this.storedLayout;
-                this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: this.storedLayout}));
-                // trigger polymer-notification-protocol-compilant event
-                this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.' + findCompositionProviderPath(this.partial) + '.Composition$'}}));
-                this.dispatchEvent(new CustomEvent("view-model-changed", {detail: {value: this.storedLayout, path: 'viewModel.' + findCompositionProviderPath(this.partial) + '.Composition$'}}));
-            }.bind(this);
-            return req.send(this.storedLayout);
-
+            findCompositionProvider(this.partial).Composition$ = this.storedLayout;
+            this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: this.storedLayout}));
+            // trigger polymer-notification-protocol-compilant event
+            this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.' + findCompositionProviderPath(this.partial) + '.Composition$'}}));
+            this.dispatchEvent(new CustomEvent("view-model-changed", {detail: {value: this.storedLayout, path: 'viewModel.' + findCompositionProviderPath(this.partial) + '.Composition$'}}));
         };
 
         // stringToDocumentFragment(strHTML) from http://stackoverflow.com/a/25214113/868184
