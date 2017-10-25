@@ -14,13 +14,15 @@ version: 3.0.0-rc.7
 
 <script>
     (function() {
-        const useShadowDOMV1 = Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
+
+        const isSafari = navigator.vendor && navigator.vendor.indexOf("Apple") > -1 && navigator.userAgent && !navigator.userAgent.match("CriOS");
+
+        const useShadowDOMV1 = !isSafari && Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
         // && !(window.StarcounterInclude && window.StarcounterInclude.shadow === 'v0'));
         const defaultShadowCSS = '<style>:host{display:block;}</style>';
         const defaultShadowDOM = useShadowDOMV1 ? '<slot></slot>' : '<content></content>';
 
 
-        const isSafari = navigator.vendor && navigator.vendor.indexOf("Apple") > -1 && navigator.userAgent && !navigator.userAgent.match("CriOS");
 
         class StarcounterInclude extends HTMLElement {
             // static get shadow(){
@@ -29,15 +31,7 @@ version: 3.0.0-rc.7
             static get observedAttributes() {
                 return ['partial', 'view-model', 'partialId'];
             }
-            // the self argument might be provided or not
-            // in both cases, the mandatory `super()` call
-            // will return the right context/instance to use
-            // and eventually return
-            constructor(self) {
-                self = super(self);
-                self.created();
-                return self;
-            }
+            
             /**
              * Stamp `imported-template` into Light DOM,
              * attach `stamping` listener to gather Shadow DOM layout compositions
@@ -78,7 +72,7 @@ version: 3.0.0-rc.7
                     this.template = importedTemplate;
                 }
             }
-            connectedCallback(){
+            attachedCallback(){
                 this.stampImportedTemplate();
             }
         }
@@ -107,7 +101,7 @@ version: 3.0.0-rc.7
         /**
          * Create shadowRoot, define property setters, set unitial partial.
          */
-        StarcounterIncludePrototype.created = function StarcounterIncludeCreated() {
+        StarcounterIncludePrototype.createdCallback = function StarcounterIncludeCreated() {
             var starcounterInclude = this;
             var partialId = this.partialId;
             var partial = this.viewModel || this.partial || undefined;
@@ -425,7 +419,6 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
             console.error('clear is not yet defined!');
         }
 
-
-        customElements.define('starcounter-include', StarcounterInclude);
+        document.registerElement('starcounter-include', StarcounterInclude);
     })();
 </script>
