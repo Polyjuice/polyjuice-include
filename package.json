@@ -13,11 +13,12 @@
     "grunt-cli": "^0.1.13",
     "grunt-contrib-watch": "^0.6.1",
     "path": "^0.12.7",
-    "web-component-tester": "github:tomalec/web-component-tester#88236713a7"
+    "web-component-tester": "github:tomalec/web-component-tester#88236713a7",
+    "polymer-cli": "^1.5.7"    
   },
   "scripts": {
     "serve": "npm run mockserver && polyserve",
-    "polyserve": "polyserve -o --proxy-target http://127.0.0.1:9999/sc --proxy-path sc",
+    "polyserve": "polyserve -o --proxy-target http://127.0.0.1:9999/sc --proxy-path sc --hostname 0.0.0.0",
     "test": "npm run mockserver && npm run wct",
     "test:no-sauce": "npm run mockserver && npm run wct:no-sauce",
     "test:sauce-only": "npm run mockserver && npm run wct:sauce-only",
