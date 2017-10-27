@@ -14,13 +14,14 @@ version: 3.0.0-rc.7
 
 <script>
     (function() {
-        const useShadowDOMV1 = Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
+        const WebComponentsV0 = true; // need a way to detect WC version
+        const isSafari = navigator.vendor && navigator.vendor.indexOf("Apple") > -1 && navigator.userAgent && !navigator.userAgent.match("CriOS");
+
+        const useShadowDOMV1 = !isSafari && Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
         // && !(window.StarcounterInclude && window.StarcounterInclude.shadow === 'v0'));
         const defaultShadowCSS = '<style>:host{display:block;}</style>';
         const defaultShadowDOM = useShadowDOMV1 ? '<slot></slot>' : '<content></content>';
 
-
-        const isSafari = navigator.vendor && navigator.vendor.indexOf("Apple") > -1 && navigator.userAgent && !navigator.userAgent.match("CriOS");
 
         class StarcounterInclude extends HTMLElement {
             // static get shadow(){
@@ -33,9 +34,10 @@ version: 3.0.0-rc.7
             // in both cases, the mandatory `super()` call
             // will return the right context/instance to use
             // and eventually return
+            // constructor is only invoked in WCv1
             constructor(self) {
                 self = super(self);
-                self.created();
+                self.createComponent();
                 return self;
             }
             /**
@@ -47,7 +49,6 @@ version: 3.0.0-rc.7
                 if(!this.template){
                     const starcounterInclude = this;
                     const importedTemplate = document.createElement('template', 'imported-template');
-
                     var href = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
 
                     importedTemplate.addEventListener('stamping', function fetchCompositions(event) {
@@ -63,7 +64,6 @@ version: 3.0.0-rc.7
                             });
                         }
                         starcounterInclude.defaultComposition = mergedComposition;
-
                         if (this.model != starcounterInclude.partial) {
                             this.model = starcounterInclude.partial
                         }
@@ -71,18 +71,25 @@ version: 3.0.0-rc.7
                         // TODO: consider moving entire partialChanged or appendChild here
                         starcounterInclude._compositionChanged();
                     });
+                    
                     href && (importedTemplate.href = href);
-
 
                     this.appendChild(importedTemplate);
                     this.template = importedTemplate;
                 }
             }
-            connectedCallback(){
-                this.stampImportedTemplate();
+            // computed method name (http://2ality.com/2015/02/es6-classes-final.html#computed-method-names)
+            [WebComponentsV0 ? 'attachedCallback' : 'connectedCallback']() {
+                this.stampImportedTemplate();   
             }
-        }
+            [WebComponentsV0 ? 'createdCallback' : 'noop']() {                
+                this.createComponent();
+                // in V0, attributeChangedCallback isn't called with the initial values, we do that manually
+                Array.prototype.forEach.call(this.attributes, attr => this.attributeChangedCallback(attr.name, null, attr.value));
+            }
+        }        
         var StarcounterIncludePrototype = StarcounterInclude.prototype;
+       
         StarcounterIncludePrototype.shadow = useShadowDOMV1;
         StarcounterIncludePrototype.partial = null;
         StarcounterIncludePrototype.partialId = null;
@@ -98,16 +105,16 @@ version: 3.0.0-rc.7
             if(!attrVal){
                 // no value
                 return undefined;
-            } else if (attrVal.match(/\{\{.*\}\}|\[\[.*\]\]/)) {
+            } else if (attrVal.match(/\{\{.*\}\}|\[\[.*\]\]/)) { //polymer binding
                 return null;
             } else {
                 return JSON.parse(attrVal);
             }
         }
         /**
-         * Create shadowRoot, define property setters, set unitial partial.
+         * Create shadowRoot, define property setters, set initial partial.
          */
-        StarcounterIncludePrototype.created = function StarcounterIncludeCreated() {
+        StarcounterIncludePrototype.createComponent = function StarcounterIncludeCreated() {
             var starcounterInclude = this;
             var partialId = this.partialId;
             var partial = this.viewModel || this.partial || undefined;
@@ -165,7 +172,7 @@ version: 3.0.0-rc.7
             this.partialChanged();
         };
         /**
-         * Set partial property if partial or viewm-model attribute was changed
+         * Set partial property if partial or view-model attribute was changed
          */
         StarcounterIncludePrototype.attributeChangedCallback = function(name, oldVal, newVal) {
             if (name === "partial" || name === "view-model") {
@@ -175,7 +182,7 @@ version: 3.0.0-rc.7
         };
         /**
          * Updates inner `imported-template` with partial data given (if applicable)
-         * @see Starcounter/starcounter-include#partialChanged it's alsmost a copy
+         * @see Starcounter/starcounter-include#partialChanged it's almost a copy
          * @param  {Object} newVal new partial value
          */
         StarcounterIncludePrototype.partialChanged = function(newVal) {
@@ -183,10 +190,10 @@ version: 3.0.0-rc.7
             this._compositionChanged();
         };
         StarcounterIncludePrototype._htmlChanged = function() {
-            // do nothing if there is no tempalte yet
+            // do nothing if there is no template yet
             if(!this.template){
                 return;
-            }
+            }            
             var href = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
             if (href !== this._lastHref) {
                 if (this._lastHref) {
@@ -409,7 +416,7 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
 
                 shadowRoot.appendChild(givenComposition);
                 // polyfill `polyfill-next-selector` if needed
-                WebComponents && WebComponents.ShadowCSS &&
+                typeof WebComponents !== 'undefined' && WebComponents.ShadowCSS &&
                     WebComponents.ShadowCSS.replaceTextInStyles(
                         WebComponents.ShadowCSS.findStyles(shadowRoot),
                         WebComponents.ShadowCSS.insertDirectives
@@ -425,7 +432,10 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
             console.error('clear is not yet defined!');
         }
 
-
-        customElements.define('starcounter-include', StarcounterInclude);
+        if(WebComponentsV0) {
+            document.registerElement('starcounter-include', StarcounterInclude);
+        } else {
+            customElements.define('starcounter-include', StarcounterInclude);
+        }
     })();
 </script>

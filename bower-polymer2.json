@@ -1,9 +1,10 @@
 {
   "name": "starcounter-include",
-  "authors": ["Tomek Wytrebowicz <tomalecpub@gmail.com>"],
+  "authors": [
+    "Tomek Wytrebowicz <tomalecpub@gmail.com>"
+  ],
   "homepage": "https://github.com/Starcounter/starcounter-include",
-  "description":
-    "Custom Element to include HTML partials/templates from Starcounter",
+  "description": "Custom Element to include HTML partials/templates from Starcounter",
   "main": "starcounter-include.html",
   "keywords": [
     "template",
@@ -33,7 +34,7 @@
   },
   "devDependencies": {
     "web-component-tester": "^6.0.0",
-    "polymer": "^1.9.1",
+    "polymer": "^2.0.0",
     "document-register-element": "^1.5.0"
   },
   "variants": {
@@ -43,5 +44,6 @@
         "polymer": "^2.0.0"
       }
     }
-  }
+  },
+  "directory": "bower_components-polymer2"
 }

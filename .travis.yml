@@ -4,8 +4,18 @@ dist: trusty
 before_script:
   - npm install github:tomalec/web-component-tester#88236713a7
   - npm install bower
+  - npm install polymer-cli
   - 'export PATH=$PWD/node_modules/.bin:$PATH'
-  - bower install
+  - polymer install # --variants
+  # rename webcomponents-lite to webcomponents for backwards compability
+  # - cp bower_components-polymer2/webcomponentsjs/webcomponents-lite.js bower_components-polymer2/webcomponentsjs/webcomponents.js
+  # move polymer 1.x over polymer 2.x. 
+  # We install polymer2 in bower_components-polymer2 to get WCv1 and all the needed deps,
+  # if we simply install WCv1 as a variant while not listing Polymer 2.x as a variant,
+  # a version mismatch will happen and bower will refuse to install WCv1.
+  # installing Polymer 2 ensures WCv1, but we'll need to overwrite it manually, so here:
+  # - cp -rf bower_components/polymer bower_components-polymer2/polymer
+
 node_js: stable
 addons:
   firefox: latest
