@@ -408,7 +408,7 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
 
                 shadowRoot.appendChild(givenComposition);
                 // polyfill `polyfill-next-selector` if needed
-                WebComponents && WebComponents.ShadowCSS &&
+                typeof WebComponents !== 'undefined' && WebComponents.ShadowCSS &&
                     WebComponents.ShadowCSS.replaceTextInStyles(
                         WebComponents.ShadowCSS.findStyles(shadowRoot),
                         WebComponents.ShadowCSS.insertDirectives
