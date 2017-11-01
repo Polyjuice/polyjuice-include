@@ -11,6 +11,8 @@
 
 <body>
     <script>
+        const isSafari = navigator.vendor && navigator.vendor.indexOf("Apple") > -1 && navigator.userAgent && !navigator.userAgent.match("CriOS");
+                
         // Load and run all tests (.html, .js):
         var suites = [
             'partialAttribute/not_provided.html',
@@ -46,7 +48,7 @@
             'v1/smoke/webcomponents-webcomponentsjs-issues-648.html' // add missing slots
         ];
         // in v1 environment
-        if (Element.prototype.attachShadow && Node.prototype.getRootNode) {
+        if (!isSafari && Element.prototype.attachShadow && Node.prototype.getRootNode) {
             // test also forced v0
             // v0suites = v0suites.map(function(url) {
             //     return url + '?juicy-composition-shadow=v0'

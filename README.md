@@ -100,7 +100,7 @@ Or [download as ZIP](https://github.com/Starcounter/starcounter-include/archive/
 
     ```html
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
-    <script src="bower_components/document-register-element/build/document-register-element.js"></script>
+
     ```
 
 2. Import Custom Element:
