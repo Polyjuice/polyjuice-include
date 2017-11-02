@@ -8,12 +8,14 @@
         window.JuicyComposition = {shadow: 'v0'};
     </script>
     <script src="../../../webcomponentsjs/webcomponents.js"></script>
-    <script src="../../../document-register-element/build/document-register-element.js"></script>
+
     <script src="../../../web-component-tester/browser.js"></script>
     <script src="../helpers/chainable-methods-for-partial.js"></script>
 
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../../starcounter-include.html">
+
+    <script src="../helpers/disable-safari-CE.js"></script>
 </head>
 
 <body>
@@ -50,7 +52,7 @@
 
     <script>
     describe('starcounter-include when imports a template that contains <code>template is="declarative-shadow-dom"</code>', function () {
-        const useShadowDOMV1 = Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
+        const useShadowDOMV1 = !isSafari && Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
         const REFERENCE_COMPOSITION = useShadowDOMV1 ? '#reference-composition' : '#reference-composition-v1-to-v0'
         const REFERENCE_ALTERNATIVE_COMPOSITION = useShadowDOMV1 ? '#reference-alternative-composition' : '#reference-alternative-composition-v1-to-v0'
 

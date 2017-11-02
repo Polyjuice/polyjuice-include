@@ -17,7 +17,7 @@
   },
   "scripts": {
     "serve": "npm run mockserver && polyserve",
-    "polyserve": "polyserve -o --proxy-target http://127.0.0.1:9999/sc --proxy-path sc",
+    "polyserve": "polyserve --proxy-target http://127.0.0.1:9999/sc --proxy-path sc --hostname 0.0.0.0",
     "test": "npm run mockserver && npm run wct",
     "test:no-sauce": "npm run mockserver && npm run wct:no-sauce",
     "test:sauce-only": "npm run mockserver && npm run wct:sauce-only",
