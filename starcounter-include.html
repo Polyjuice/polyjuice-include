@@ -35,7 +35,10 @@ version: 3.0.0-rc.8
             // and eventually return
             createdCallback() {
                 this.createComponent();
-                Array.prototype.forEach.call(this.attributes, attr => this.attributeChangedCallback(attr.name, null, attr.value));
+                const partialAttrib = this.getAttribute('partial');
+                const viewModelAttrib = this.getAttribute('view-model');
+                partialAttrib && this.attributeChangedCallback('partial', null, partialAttrib);
+                viewModelAttrib && this.attributeChangedCallback('view-model', null, viewModelAttrib);
             }
             /**
              * Stamp `imported-template` into Light DOM,
