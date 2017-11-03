@@ -21,7 +21,7 @@
     "test": "npm run mockserver && npm run wct",
     "test:no-sauce": "npm run mockserver && npm run wct:no-sauce",
     "test:sauce-only": "npm run mockserver && npm run wct:sauce-only",
-    "mockserver": "node test/mocked_sc_htmlmerger.js &",
+    "mockserver": "node test/mocked_sc_htmlmerger.js",
     "wct": "wct",
     "wct:no-sauce": "wct --skip-plugin sauce",
     "wct:sauce-only": "wct --skip-plugin local --plugin sauce"
