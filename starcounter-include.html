@@ -22,7 +22,7 @@ version: 3.0.0-rc.8
         const useShadowDOMV1 = !isWebkit && Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
         // && !(window.StarcounterInclude && window.StarcounterInclude.shadow === 'v0'));
         const defaultShadowCSS = '<style>:host{display:block;}</style>';
-        const defaultShadowDOM = useShadowDOMV1 ? '<slot></slot>' : '<content></content>';
+        const defaultShadowDOM = useShadowDOMV1 ? '<slot></slot>' : '<content select=":not([slot]),[slot=\'\']"></content>';
 
 
         class StarcounterInclude extends HTMLElement {
@@ -411,6 +411,9 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
                     // translate givenComposition to current version of SD
                     TranslateShadowDOM.v1tov0.fragment(givenComposition, true);
                 }
+
+                var elems = givenComposition.querySelectorAll("content:not([select])");
+                Array.prototype.forEach.call(elems, (elem) => elem.setAttribute("select", ":not([slot]),[slot='']")); //workaround for https://github.com/tomalec/Translate-ShadowDOM/issues/3
 
                 shadowRoot.appendChild(givenComposition);
                 // polyfill `polyfill-next-selector` if needed
