@@ -43,7 +43,8 @@
 
     <script>
     describe('starcounter-include when imports a template that contains <code>template is="starcounter-composition"</code>', function () {
-        const useShadowDOMV1 = !isSafari && Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
+        const isWebkit = navigator.vendor && navigator.vendor.indexOf("Apple") > -1;
+        const useShadowDOMV1 = !isWebkit && Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
         const REFERENCE_COMPOSITION = useShadowDOMV1 ? '#reference-composition' : '#reference-composition-v1-to-v0'
 
         var scInclude;

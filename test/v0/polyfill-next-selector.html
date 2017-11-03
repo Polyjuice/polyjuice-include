@@ -58,7 +58,7 @@ describe('starcounter-include when stamps a composition which contains `polyfill
 		// give more time to polyfill cleanup
 		setTimeout(done);
 	});
-	beforeEach(function (done) {
+	beforeEach(function (done) {   
         if(WebComponents && WebComponents.ShadowCSS){
             replaceTextInStyles = sinon.spy(WebComponents.ShadowCSS, 'replaceTextInStyles');
         }
