@@ -23,7 +23,8 @@
         <template>
             <starcounter-include partial="{
                 &quot;CompositionProvider&quot;: {
-                    &quot;PartialId&quot;: &quot;given PartialId&quot;
+                    &quot;PartialId&quot;: &quot;given PartialId&quot;,
+                    &quot;Composition$&quot;: &quot;&quot;
                 },
                 &quot;App&quot;: {
                     &quot;Html&quot;: &quot;template_w_declarative-shadow-dom.html&quot;,
@@ -60,7 +61,18 @@
         var scInclude;
         var alternativePartial = {
             "CompositionProvider": {
-                "PartialId": "given PartialId"
+                "PartialId": "given PartialId",
+                "Composition$": ""
+            },
+            "App": {
+                "Html": "template_w_declarative-shadow-dom-alternative.html",
+                "doesItWork": "works!"
+            }
+        };
+        var alternativePartialWithCustomComposition = {
+            "CompositionProvider": {
+                "PartialId": "given PartialId",
+                "Composition$": "custom composition"
             },
             "App": {
                 "Html": "template_w_declarative-shadow-dom-alternative.html",
@@ -104,6 +116,51 @@
                 scInclude._compositionChanged(""); //this is how starcounter-layout-html-editor resets
                 expect(scInclude.shadowRoot.innerHTML.trim()).to.be
                     .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML.trim());
+            });
+            it('should NOT overwrite Composition$', function () {
+                expect(scInclude.viewModel.CompositionProvider.Composition$).to.be.equal("");
+            });
+            describe('after saveLayout() is called', function () {
+                beforeEach(function () {
+                    scInclude.saveLayout();
+                });
+                it('should overwrite Composition$', function () {
+                    expect(scInclude.viewModel.CompositionProvider.Composition$.trim()).to.be.equal(explicitComposition);
+                });
+                it('should render the explicit composition', function () {
+                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
+                });
+            });
+        });
+        describe('after composition is changed from custom to explicit', function () {
+            var explicitComposition = "explicit composition";
+            var customComposition;
+            beforeEach(function () {
+                scInclude.viewModel = JSON.parse(JSON.stringify(alternativePartialWithCustomComposition));
+                customComposition = scInclude.viewModel.CompositionProvider.Composition$;
+                scInclude._compositionChanged(explicitComposition);
+            });
+            it('should render the explicit composition', function () {
+                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
+            });
+            it('should return to default after resetting', function () {
+                scInclude._compositionChanged(""); //this is how starcounter-layout-html-editor resets
+                expect(scInclude.shadowRoot.innerHTML.trim()).to.be
+                    .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML.trim());
+            });
+            it('should NOT overwrite Composition$', function () {
+                expect(scInclude.viewModel.CompositionProvider.Composition$).to.be.equal(customComposition);
+            });
+            describe('after saveLayout() is called', function () {
+                beforeEach(function () {
+                    scInclude.saveLayout();
+                });
+                it('should overwrite Composition$', function () {
+                    expect(scInclude.viewModel.CompositionProvider.Composition$.trim()).to.be.equal(explicitComposition);
+                });
+                it('should render the explicit composition', function () {
+                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
+                });
             });
         });
         describe('after partial property is replaced with itself', function () {
