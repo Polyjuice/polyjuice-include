@@ -362,9 +362,6 @@ version: 3.0.0-rc.8
         StarcounterIncludePrototype.saveLayout = function(compositionStr){
             compositionStr = compositionStr || this.shadowRoot.innerHTML;
             findCompositionProvider(this.partial).Composition$ = compositionStr;
-            setTimeout(() => {
-                this._compositionChanged(); //ugly hack for JSONPatcherProxy notifying Polymer before the new value is applied on the actual object (https://github.com/Palindrom/JSONPatcherProxy/blob/master/src/jsonpatcherproxy.js#L164). In result, I get _notifyPath in s-e with the old value! Repro: 1) comment out this setTimeout, 2) Reset compositions, 3) save a new composition in CompositionEditor, 4) see that it resets to default on saving
-            }, 1);
             this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: compositionStr}));
             // trigger polymer-notification-protocol-compilant event
             var notificationPath = findCompositionProviderPath(this.partial) + '.Composition$';
