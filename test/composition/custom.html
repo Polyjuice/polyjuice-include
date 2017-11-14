@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <script>
-    window.JuicyComposition = { shadow: 'v0' };
+        window.JuicyComposition = { shadow: 'v0' };
     </script>
     <script src="../../../webcomponentsjs/webcomponents.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
@@ -13,6 +13,7 @@
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../../starcounter-include.html">
     <script src="../helpers/disable-safari-CE.js"></script>
+    <script src="../helpers/compareHTMLStrings.js"></script>
     <script src="../helpers/composition-fixtures.js"></script>
 </head>
 
@@ -32,85 +33,87 @@
         </template>
     </test-fixture>
     <script>
-    describe('starcounter-include when imports a partial with a custom composition', function() {
+        describe('starcounter-include when imports a partial with a custom composition', function () {
 
-        var scInclude;
+            var scInclude;
 
-        afterEach(function(done) {
-            // give more time to polyfill cleanup
-            setTimeout(done);
-        });
-        beforeEach(function(done) {
-            scInclude = fixture('initial-fixture');
-            setTimeout(done, 500);
-        });
-        it('should use the initial composition', function() {
-            expect(scInclude.shadowRoot).to.be.not.null;
-            expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(REFERENCE_CUSTOM);
-        });
-        describe('after partial property is replaced with a partial that contains a default composition', function() {
-            beforeEach(function(done) {
-                scInclude.partial = partialWithDefault();
+            afterEach(function (done) {
+                // give more time to polyfill cleanup
+                setTimeout(done);
+            });
+            beforeEach(function (done) {
+                scInclude = fixture('initial-fixture');
                 setTimeout(done, 500);
             });
-            it('should use it as its composition', function() {
+            it('should use the initial composition', function () {
                 expect(scInclude.shadowRoot).to.be.not.null;
-                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(REFERENCE_DEFAULT);
+               
+                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(REFERENCE_CUSTOM);
             });
-        });
-        describe('after partial property is replaced with a partial that contains a fallback composition', function() {
-            beforeEach(function(done) {
-                scInclude.partial = partialWithFallback();
-                setTimeout(done, 500);
-            });
-            it('should use it as its composition', function() {
-                expect(scInclude.shadowRoot).to.be.not.null;
-                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(REFERENCE_FALLBACK);
-            });
-        });
-        describe('after composition is changed to explicit', function() {
-            var composition$;
-            var explicitComposition = "explicit composition";
-            beforeEach(function() {
-                composition$ = scInclude.viewModel.CompositionProvider.Composition$;
-                scInclude._compositionChanged(explicitComposition);
-            });
-            it('should render the explicit composition', function() {
-                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
-            });
-            it('should return to default after resetting', function() {
-                scInclude._compositionChanged(""); //this is how starcounter-layout-html-editor resets
-                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(REFERENCE_DEFAULT);
-            });
-            it('should NOT overwrite Composition$', function() {
-                expect(scInclude.viewModel.CompositionProvider.Composition$).to.be.equal(composition$);
-            });
-            describe('after saveLayout() is called', function() {
-                beforeEach(function() {
-                    scInclude.saveLayout();
-                    scInclude._compositionChanged(); //simulate notifyPath which can trigger _compositionChanged
+            describe('after partial property is replaced with a partial that contains a default composition', function () {
+                beforeEach(function (done) {
+                    scInclude.partial = partialWithDefault();
+                    setTimeout(done, 500);
                 });
-                it('should overwrite Composition$', function() {
-                    expect(scInclude.viewModel.CompositionProvider.Composition$.trim()).to.be.equal(explicitComposition);
+                it('should use it as its composition', function () {
+                    expect(scInclude.shadowRoot).to.be.not.null;
+                    assert(compareHTMLStrings(scInclude.shadowRoot.innerHTML, REFERENCE_DEFAULT));
                 });
-                it('should render the explicit composition', function() {
+            });
+            describe('after partial property is replaced with a partial that contains a fallback composition', function () {
+                beforeEach(function (done) {
+                    scInclude.partial = partialWithFallback();
+                    setTimeout(done, 500);
+                });
+                it('should use it as its composition', function () {
+                    expect(scInclude.shadowRoot).to.be.not.null;
+                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(REFERENCE_FALLBACK);
+                });
+            });
+            describe('after composition is changed to explicit', function () {
+                var composition$;
+                var explicitComposition = "explicit composition";
+                beforeEach(function () {
+                    composition$ = scInclude.viewModel.CompositionProvider.Composition$;
+                    scInclude._compositionChanged(explicitComposition);
+                });
+                it('should render the explicit composition', function () {
                     expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
                 });
-            });
-        });
-        describe('after partial property is replaced with itself', function() {
-            it('should keep using the existing composition', function(done) { //otherwise ViewKeeper (aka workspaces) do not keep state in Firefox and Edge
-                var old = scInclude.shadowRoot.querySelector("slot,content");
-                scInclude.partial = scInclude.partial;
-                setTimeout(function() {
-                    expect(old).to.be.not.null;
-                    expect(old).to.be.equal(scInclude.shadowRoot.querySelector("slot,content"));
-                    done();
-                }, 500);
-            });
-        });
+                it('should return to default after resetting', function () {
+                    scInclude._compositionChanged(""); //this is how starcounter-layout-html-editor resets
 
-    });
+                    assert(compareHTMLStrings(scInclude.shadowRoot.innerHTML, REFERENCE_DEFAULT));
+                });
+                it('should NOT overwrite Composition$', function () {
+                    expect(scInclude.viewModel.CompositionProvider.Composition$).to.be.equal(composition$);
+                });
+                describe('after saveLayout() is called', function () {
+                    beforeEach(function () {
+                        scInclude.saveLayout();
+                        scInclude._compositionChanged(); //simulate notifyPath which can trigger _compositionChanged
+                    });
+                    it('should overwrite Composition$', function () {
+                        expect(scInclude.viewModel.CompositionProvider.Composition$.trim()).to.be.equal(explicitComposition);
+                    });
+                    it('should render the explicit composition', function () {
+                        expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
+                    });
+                });
+            });
+            describe('after partial property is replaced with itself', function () {
+                it('should keep using the existing composition', function (done) { //otherwise ViewKeeper (aka workspaces) do not keep state in Firefox and Edge
+                    var old = scInclude.shadowRoot.querySelector("slot,content");
+                    scInclude.partial = scInclude.partial;
+                    setTimeout(function () {
+                        expect(old).to.be.not.null;
+                        expect(old).to.be.equal(scInclude.shadowRoot.querySelector("slot,content"));
+                        done();
+                    }, 500);
+                });
+            });
+
+        });
     </script>
 </body>
 
