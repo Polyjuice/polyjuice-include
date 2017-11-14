@@ -193,6 +193,7 @@ version: 3.0.0-rc.8
             var href = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
             if (href !== this.template.href) {
                 if (this.template.href) {
+                    this.defaultComposition = null;
                     this.template.clear();
                 }
                 if (!href) {
@@ -247,17 +248,17 @@ version: 3.0.0-rc.8
          */
         StarcounterIncludePrototype._compositionChanged = function(compositionString) {
             if (compositionString) {
-                this._forceLayoutChange = true;
-                return this._renderCompositionChange("explicit or fallback", () => this.stringToDocumentFragment(compositionString));
+                this.explicitComposition = compositionString;
+                return this._renderCompositionChange(compositionString, () => this.stringToDocumentFragment(compositionString));
             }
             else {
                 const compositionProvider = this.partial && findCompositionProvider(this.partial);
 
                 if (compositionProvider) {
                     this.partialId = compositionProvider.PartialId;
+                    this.explicitComposition = null;
                     if (compositionString === "") {
                         //this is a request from starcounter-layout-html-editor to reset to default composition
-                        this.Composition$ = "";
                     }
                     else if (compositionProvider.Composition$) {
                         return this._renderCompositionChange(compositionProvider.Composition$, () => {
@@ -292,10 +293,13 @@ version: 3.0.0-rc.8
                 }
 
                 if (this.defaultComposition) {
+                    this.explicitComposition = null;
                     return this._renderCompositionChange(this.defaultComposition, () => this.defaultComposition.cloneNode(true));
                 }
-                
-                return this._renderCompositionChange("explicit or fallback", () => undefined);
+
+                if (!this.explicitComposition) {
+                    return this._renderCompositionChange("explicit", () => undefined);
+                }                
             }            
         };
         /**
