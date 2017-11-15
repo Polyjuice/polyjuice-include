@@ -7,12 +7,15 @@ const servingDirectory = 'sc/';
 connect().use('/sc/htmlmerger', function fooMiddleware(req, res, next) {
     // req.url starts with "/foo"
     const query = req._parsedUrl.query;
-    const parts = query.split('&');
+    const pairs = query.split('&');
     let content = '';
     // console.log('Merging ' + query);
-    parts.forEach((part)=>{
+    pairs.forEach((pair)=>{
         // res.write("Chunk");
-        const fileName = part.split('=')[1];
+        const parts = pair.split('=');
+        const appName = parts[0];
+        const fileName = parts[1];
+        content += `<imported-template-scope scope="${appName}"><template><meta itemprop="juicy-composition-scope" content="${appName}"/></template>`;
         if(fileName){
             if(fs.existsSync(servingDirectory + fileName)){
                 content +=  fs.readFileSync(servingDirectory + fileName, 'utf8');
@@ -20,6 +23,7 @@ connect().use('/sc/htmlmerger', function fooMiddleware(req, res, next) {
                 content +=  '<template>file does not exist, but you\'re just mocking, right?</template>';
             }
         }
+        content += `</imported-template-scope>`;
     })
     res.setHeader('Content-Type', 'text/html');
     res.end(content);

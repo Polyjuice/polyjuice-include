@@ -32,9 +32,9 @@
 		<h2>Custom Shadow DOM composition</h2>
 		<content name="my-slot" select="[slot='my-slot']"></content>
 		<content name='my-slot' select="[slot='my-slot']"></content>
-		<content></content>
+		<content select=":not([slot]),[slot='']"></content>
 		<content name="my-slot" select="[slot='my-slot']"></content>
-		<content></content>
+		<content select=":not([slot]),[slot='']"></content>
 		<content foo="bar" name="my-slot" baz select="[slot='my-slot']"></content>
 		<content select="[slot='untouched']"></content>
 	</template>

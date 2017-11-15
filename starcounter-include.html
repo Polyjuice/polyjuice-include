@@ -22,7 +22,7 @@ version: 3.0.0-rc.9
         const useShadowDOMV1 = !isWebkit && Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
         // && !(window.StarcounterInclude && window.StarcounterInclude.shadow === 'v0'));
         const defaultShadowCSS = '<style>:host{display:block;}</style>';
-        const defaultShadowDOM = useShadowDOMV1 ? '<slot></slot>' : '<content></content>';
+        const defaultShadowDOM = useShadowDOMV1 ? '<slot></slot>' : '<content select=":not([slot]),[slot=\'\']"></content>';
 
 
         class StarcounterInclude extends HTMLElement {
@@ -51,12 +51,11 @@ version: 3.0.0-rc.9
             stampImportedTemplate(){
                 if(!this.template){
                     const starcounterInclude = this;
+                    this.defaultComposition = null;
                     const importedTemplate = document.createElement('template', 'imported-template');
 
-                    var href = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
-
                     importedTemplate.addEventListener('stamping', function fetchCompositions(event) {
-                        var mergedComposition;
+                        var mergedComposition = null;
                         var templates = event.detail.querySelectorAll('template[is="declarative-shadow-dom"],template[is="starcounter-composition"]');
                         if(templates.length){
                             mergedComposition = document.createDocumentFragment()
@@ -64,7 +63,7 @@ version: 3.0.0-rc.9
                                 if(individualComposition.getAttribute('is') === 'starcounter-composition'){
                                     console.warn('`starcounter-composition` was renamed to `declarative-shadow-dom`! Please update your markup, as the old name is likely to be not supported soon (in V1).')
                                 }
-                                mergedComposition.appendChild(individualComposition.content);
+                                mergedComposition.appendChild(individualComposition.content.cloneNode(true));
                             });
                         }
                         starcounterInclude.defaultComposition = mergedComposition;
@@ -76,8 +75,6 @@ version: 3.0.0-rc.9
                         // TODO: consider moving entire partialChanged or appendChild here
                         starcounterInclude._compositionChanged();
                     });
-                    href && (importedTemplate.href = href);
-
 
                     this.appendChild(importedTemplate);
                     this.template = importedTemplate;
@@ -114,6 +111,7 @@ version: 3.0.0-rc.9
          */
         StarcounterIncludePrototype.createComponent = function StarcounterIncludeCreated() {
             var starcounterInclude = this;
+            this.defaultComposition = null;
             var partialId = this.partialId;
             var partial = this.viewModel || this.partial || undefined;
             checkForNonNamespaced(partial, this);
@@ -193,8 +191,9 @@ version: 3.0.0-rc.9
                 return;
             }
             var href = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
-            if (href !== this._lastHref) {
-                if (this._lastHref) {
+            if (href !== this.template.href) {
+                if (this.template.href) {
+                    this.defaultComposition = null;
                     this.template.clear();
                 }
                 if (!href) {
@@ -205,8 +204,6 @@ version: 3.0.0-rc.9
                 } else {
                     this.template.href = href;
                 }
-                this._forceLayoutChange = true;
-                this._lastHref = href;
             } else if (this.template.model != this.partial) {
                 this.template.model = this.partial
             }
@@ -219,13 +216,26 @@ version: 3.0.0-rc.9
          */
         StarcounterIncludePrototype._renderCompositionChange = function(compositionRef, callb) {
             if (this._forceLayoutChange || this._lastCompositionRef !== compositionRef) {
-                this.storedLayout = null;
                 let composition = callb();
-                this.stampComposition(composition);
-                this._forceLayoutChange = false;
-                this._lastCompositionRef = compositionRef;
+                if (composition !== false) { //it might be undefined and that's a valid value
+                    this._forceLayoutChange = false;
+                    this.stampComposition(composition);
+                    this._lastCompositionRef = compositionRef;
+                }
             }
-        }
+        }        
+
+        function appendComposition(fragment, template) {
+            if (template.nodeName && template.nodeName == 'TEMPLATE') {
+                const name = template.getAttribute('is');
+                if (name === 'declarative-shadow-dom' || name === 'starcounter-composition') {
+                    if (name === 'starcounter-composition') {
+                        console.warn('`starcounter-composition` was renamed to `declarative-shadow-dom`! Please update your markup, as the old name is likely to be not supported soon (in V1).')
+                    } 
+                    fragment.appendChild(template.content.cloneNode(true));
+                }
+            }
+        }        
 
         /**
          * Handles change of the composition.
@@ -238,22 +248,43 @@ version: 3.0.0-rc.9
          */
         StarcounterIncludePrototype._compositionChanged = function(compositionString) {
             if (compositionString) {
-                this._forceLayoutChange = true;
-                this._renderCompositionChange("explicit or fallback", () => this.stringToDocumentFragment(compositionString));
+                this.explicitComposition = compositionString;
+                return this._renderCompositionChange(compositionString, () => this.stringToDocumentFragment(compositionString));
             }
             else {
                 const compositionProvider = this.partial && findCompositionProvider(this.partial);
 
                 if (compositionProvider) {
                     this.partialId = compositionProvider.PartialId;
+                    this.explicitComposition = null;
                     if (compositionString === "") {
                         //this is a request from starcounter-layout-html-editor to reset to default composition
-                        this.Composition$ = "";
                     }
                     else if (compositionProvider.Composition$) {
                         return this._renderCompositionChange(compositionProvider.Composition$, () => {
                             this.storedLayout = compositionProvider.Composition$; //should always be string
-                            return this.stringToDocumentFragment(this.storedLayout);
+                            const merged = this.stringToDocumentFragment(this.storedLayout);
+
+                            if (compositionProvider.ViewUris) {
+                                const keys = Object.keys(this.partial);
+                                for(let key of keys) {
+                                    const scoped = this.partial[key];
+                                    if (scoped && scoped.Html && compositionProvider.ViewUris.indexOf(scoped.Html) === -1) {
+                                        if (this.defaultComposition) {
+                                            this.template.scopedNodes.forEach((nodes) => {
+                                                if(nodes.scope === key) {
+                                                    nodes.forEach((node) => appendComposition(merged, node));
+                                                }
+                                            });
+                                        }
+                                        else {
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }
+
+                            return merged;
                         });
                     }
                 }
@@ -262,10 +293,13 @@ version: 3.0.0-rc.9
                 }
 
                 if (this.defaultComposition) {
+                    this.explicitComposition = null;
                     return this._renderCompositionChange(this.defaultComposition, () => this.defaultComposition.cloneNode(true));
                 }
-                
-                return this._renderCompositionChange("explicit or fallback", () => undefined);
+
+                if (!this.explicitComposition) {
+                    return this._renderCompositionChange("explicit", () => undefined);
+                }                
             }            
         };
         /**
@@ -331,13 +365,12 @@ version: 3.0.0-rc.9
          */
         StarcounterIncludePrototype.saveLayout = function(compositionStr){
             compositionStr = compositionStr || this.shadowRoot.innerHTML;
-            this.storedLayout = compositionStr;
-            findCompositionProvider(this.partial).Composition$ = this.storedLayout;
-            this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: this.storedLayout}));
+            findCompositionProvider(this.partial).Composition$ = compositionStr;
+            this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: compositionStr}));
             // trigger polymer-notification-protocol-compilant event
             var notificationPath = findCompositionProviderPath(this.partial) + '.Composition$';
-            this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.' + notificationPath}}));
-            this.dispatchEvent(new CustomEvent("view-model-changed", {detail: {value: this.storedLayout, path: 'viewModel.' + notificationPath}}));
+            this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: compositionStr, path: 'partial.' + notificationPath}}));
+            this.dispatchEvent(new CustomEvent("view-model-changed", {detail: {value: compositionStr, path: 'viewModel.' + notificationPath}}));
         };
 
         // stringToDocumentFragment(strHTML) from http://stackoverflow.com/a/25214113/868184
@@ -401,7 +434,7 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
             // create shadowRoot if none
             const shadowRoot = this.shadowRoot;
 
-            if (givenComposition) {
+            if (givenComposition !== undefined) {
                 // reset SD to default CSS
                 shadowRoot.innerHTML = '';
                 if(useShadowDOMV1){
@@ -412,6 +445,9 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
                     TranslateShadowDOM.v1tov0.fragment(givenComposition, true);
                 }
 
+                var elems = givenComposition.querySelectorAll("content:not([select])");
+                Array.prototype.forEach.call(elems, (elem) => elem.setAttribute("select", ":not([slot]),[slot='']")); //workaround for https://github.com/tomalec/Translate-ShadowDOM/issues/3
+
                 shadowRoot.appendChild(givenComposition);
                 // polyfill `polyfill-next-selector` if needed
                 typeof WebComponents !== 'undefined' && WebComponents.ShadowCSS &&
@@ -419,7 +455,6 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
                         WebComponents.ShadowCSS.findStyles(shadowRoot),
                         WebComponents.ShadowCSS.insertDirectives
                     );
-                this.isStamped = true;
             } else if(shadowRoot){
                 shadowRoot.innerHTML = defaultShadowCSS + defaultShadowDOM;
             }

@@ -23,7 +23,8 @@
         <template>
             <starcounter-include partial="{
                 &quot;CompositionProvider&quot;: {
-                    &quot;PartialId&quot;: &quot;given PartialId&quot;
+                    &quot;PartialId&quot;: &quot;given PartialId&quot;,
+                    &quot;Composition$&quot;: &quot;&quot;
                 },
                 &quot;App&quot;: {
                     &quot;Html&quot;: &quot;template_w_declarative-shadow-dom.html&quot;,
@@ -60,13 +61,31 @@
         var scInclude;
         var alternativePartial = {
             "CompositionProvider": {
-                "PartialId": "given PartialId"
+                "PartialId": "given PartialId",
+                "Composition$": "",
+                "ViewUris": []
             },
             "App": {
                 "Html": "template_w_declarative-shadow-dom-alternative.html",
                 "doesItWork": "works!"
             }
         };
+        var alternativePartialWithTwo = {
+            "CompositionProvider": {
+                "PartialId": "given PartialId",
+                "Composition$": "custom!",
+                "ViewUris": ["template_w_declarative-shadow-dom.html"]
+            },
+            "App1": {
+                "Html": "template_w_declarative-shadow-dom.html",
+                "doesItWork": "works!"
+            },
+            "App2": {
+                "Html": "template_w_declarative-shadow-dom-alternative.html",
+                "doesItWork": "works!"
+            }
+        };
+
         afterEach(function (done) {
             // give more time to polyfill cleanup
             setTimeout(done);
@@ -92,18 +111,77 @@
                     .equal(document.querySelector(REFERENCE_ALTERNATIVE_COMPOSITION).innerHTML.trim());
             });
         });
-        describe('after composition is changed from default to explicit', function () {
+        describe('after composition is changed from custom subset to explicit', function() {
+            var composition$;
             var explicitComposition = "explicit composition";
-            beforeEach(function () {
+            beforeEach(function() {
+                composition$ = scInclude.viewModel.CompositionProvider.Composition$;
                 scInclude._compositionChanged(explicitComposition);
             });
-            it('should render the explicit composition', function () {
+            it('should render the explicit composition', function() {
                 expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
             });
-            it('should return to default after resetting', function () {
+            it('should return to default after resetting', function() {
                 scInclude._compositionChanged(""); //this is how starcounter-layout-html-editor resets
-                expect(scInclude.shadowRoot.innerHTML.trim()).to.be
-                    .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML.trim());
+                expect(scInclude.shadowRoot.innerHTML).to.be
+                    .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML);
+            });
+            it('should NOT overwrite Composition$', function() {
+                expect(scInclude.viewModel.CompositionProvider.Composition$).to.be.equal(composition$);
+            });
+            describe('after saveLayout() is called', function() {
+                beforeEach(function() {
+                    scInclude.saveLayout();
+                    scInclude._compositionChanged(); //simulate notifyPath which can trigger _compositionChanged
+                });
+                it('should overwrite Composition$', function() {
+                    expect(scInclude.viewModel.CompositionProvider.Composition$.trim()).to.be.equal(explicitComposition);
+                });
+                it('should render the explicit composition', function() {
+                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
+                });
+            });
+        });
+        describe('after partial property is replaced with the partial that does custom subset composition', function () {
+            beforeEach(function (done) {
+                scInclude.partial = JSON.parse(JSON.stringify(alternativePartialWithTwo));
+                setTimeout(done, 500);
+            });
+            it('should use it as its composition', function () {
+                expect(scInclude.shadowRoot).to.be.not.null;
+                expect(scInclude.shadowRoot.innerHTML).to.be
+                    .equal("custom!" + document.querySelector(REFERENCE_ALTERNATIVE_COMPOSITION).innerHTML);
+            });
+            describe('after composition is changed from custom subset to explicit', function() {
+                var composition$;
+                var explicitComposition = "explicit composition";
+                beforeEach(function() {
+                    composition$ = scInclude.viewModel.CompositionProvider.Composition$;
+                    scInclude._compositionChanged(explicitComposition);
+                });
+                it('should render the explicit composition', function() {
+                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
+                });
+                it('should return to default after resetting', function() {
+                    scInclude._compositionChanged(""); //this is how starcounter-layout-html-editor resets
+                    expect(scInclude.shadowRoot.innerHTML).to.be
+                        .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML + document.querySelector(REFERENCE_ALTERNATIVE_COMPOSITION).innerHTML);
+                });
+                it('should NOT overwrite Composition$', function() {
+                    expect(scInclude.viewModel.CompositionProvider.Composition$).to.be.equal(composition$);
+                });
+                describe('after saveLayout() is called', function() {
+                    beforeEach(function() {
+                        scInclude.saveLayout();
+                        scInclude._compositionChanged(); //simulate notifyPath which can trigger _compositionChanged
+                    });
+                    it('should overwrite Composition$', function() {
+                        expect(scInclude.viewModel.CompositionProvider.Composition$.trim()).to.be.equal(explicitComposition);
+                    });
+                    it('should render the explicit composition', function() {
+                        expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
+                    });
+                });
             });
         });
         describe('after partial property is replaced with itself', function () {
