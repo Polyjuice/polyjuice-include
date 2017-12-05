@@ -304,17 +304,24 @@ version: 3.0.0
                 }
             }
         };
+        // to fool Polymer into thinking `starcounter-include` is a polymer element thus forwarding notifications to it.
+        StarcounterIncludePrototype.__dataHasAccessor = {partial: true, viewModel: true};
+
+        // Polymer doesn't set props on its own components, rather, it calls this function
+        StarcounterIncludePrototype._setPendingProperty = function (path, value) {
+            this[path] = value;
+        }
         /**
-         * Forward Polymer notification downwards from `<template is="dom-bind">`
-         * to <imported-template>
-         * @param  {String} path Polymer notification path
-         * @param  {Mixed} value New value
-         */
-        StarcounterIncludePrototype._notifyPath = function(path, value) {
+        * Forward Polymer notification downwards from `<dom-bind>`
+        * to <imported-template>
+        * @param  {String} path Polymer notification path
+        * @param  {Mixed} value New value
+        */
+        StarcounterIncludePrototype._setPendingPropertyOrPath = function (path, value) {
             var sameModelAlreadyLoaded = this.template.model == this.partial;
             this.partialChanged(this.partial);
-            if (sameModelAlreadyLoaded && this.template._notifyPath) {
-                this.template._notifyPath(
+            if (sameModelAlreadyLoaded && this.template._setPendingPropertyOrPath) {
+                this.template._setPendingPropertyOrPath(
                     path.replace("partial.", "model.")
                         .replace("viewModel.", "model."),
                      value);
