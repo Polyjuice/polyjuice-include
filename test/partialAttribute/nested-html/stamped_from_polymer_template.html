@@ -23,9 +23,11 @@
 
 <body>
     <template id="fixture">
-        <template is="dom-bind">
-            <starcounter-include partial="{{model.Page}}"></starcounter-include>
-        </template>
+        <dom-bind>
+            <template is="dom-bind">
+                <starcounter-include partial="{{model.Page}}"></starcounter-include>
+            </template>
+        </dom-bind>
     </template>
     <better-test-fixture id="container"></better-test-fixture>
     <script>
@@ -212,7 +214,7 @@
                 beforeEach(function(done) {
                     sinon.stub(importedTemplate, "_notifyPath");
                     importedTemplate.addEventListener('stamping', function onceStamped(){
-                        importedTemplate.removeEventListener('stamping', onceStamped);                   
+                        importedTemplate.removeEventListener('stamping', onceStamped);
                         include = container.querySelector('starcounter-include');
                         include._compositionChanged(customComposition); //this is how starcounter-layout-html-editor uses it
                         domBind.set('model.Page.scope1.doesItWork', newVal);

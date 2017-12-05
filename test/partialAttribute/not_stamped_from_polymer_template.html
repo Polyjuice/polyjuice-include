@@ -16,10 +16,11 @@
     <script src="../helpers/disable-safari-CE.js"></script>
   </head>
   <body>
-
-    <template is="dom-bind" id="root">
-      <starcounter-include></starcounter-include>
-    </template>
+    <dom-bind id="root">
+      <template is="dom-bind">
+        <starcounter-include></starcounter-include>
+      </template>
+    </dom-bind>
 
     <script>
 var model = {

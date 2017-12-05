@@ -9,13 +9,15 @@
 </head>
 
 <body>
-    <template is="dom-bind" id="root-tmpl">
-        <div>Number:
-            <span>{{model.CurrentPage.Number$}}</span>
-        </div>
-        <button value="{{model.CurrentPage.Number$::click}}" onmousedown="++this.value">Increment</button>
-        <starcounter-include partial="{{model.CurrentPage}}"></starcounter-include>
-    </template>
+    <dom-bind id="root-tmpl">
+        <template is="dom-bind">
+            <div>Number:
+                <span>{{model.CurrentPage.Number$}}</span>
+            </div>
+            <button value="{{model.CurrentPage.Number$::click}}" onmousedown="++this.value">Increment</button>
+            <starcounter-include partial="{{model.CurrentPage}}"></starcounter-include>
+        </template>
+    </dom-bind>
     <script>
         window.addEventListener('WebComponentsReady', function(e) {
             document.getElementById("root-tmpl").model = {
