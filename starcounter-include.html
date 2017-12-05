@@ -39,10 +39,6 @@ version: 3.0.0
             constructor(self) {
                 self = super(self);
                 this.createComponent();
-                const partialAttrib = this.getAttribute('partial');
-                const viewModelAttrib = this.getAttribute('view-model');
-                partialAttrib && this.attributeChangedCallback('partial', null, partialAttrib);
-                viewModelAttrib && this.attributeChangedCallback('view-model', null, viewModelAttrib);
             }
             /**
              * Stamp `imported-template` into Light DOM,
