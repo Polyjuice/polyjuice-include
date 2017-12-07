@@ -3,7 +3,9 @@
 <!-- <link rel="import" href="../../polymer/polymer.html"> -->
 <template>
 	<h1>Template included</h1>
-	<template is="dom-bind">
-		<p>Polymer's data binding {{model.doesItWork}}.</p>
-	</template>
+	<dom-bind>
+		<template is="dom-bind">
+			<p>Polymer's data binding {{model.doesItWork}}.</p>
+		</template>
+	</dom-bind>
 </template>

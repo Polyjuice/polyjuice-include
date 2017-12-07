@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
     <script src="../../../web-component-tester/browser.js"></script>
     <script src="../helpers/chainable-methods-for-partial.js"></script>
@@ -34,7 +34,7 @@
                 include.setAttribute('partial', '{}');
             });
             it('should clear inner `imported-template`', function () {
-                expect(include).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
+                expect(include).to.have.descendant('imported-template').that.is.a.clearImportedTemplate;
             });
         });
         describe('when created programatically and partial property is set to `{}`', function () {
@@ -43,7 +43,7 @@
                 include.partial = {};
             });
             it('should clear inner `imported-template`', function () {
-                expect(include).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
+                expect(include).to.have.descendant('imported-template').that.is.a.clearImportedTemplate;
             });
         });
         describe('when created in HTML with `partial="{}"`', function () {
@@ -51,7 +51,7 @@
                 include = fixture("starcounter-include");
             });
             it('should clear inner `imported-template`', function () {
-                expect(include).to.have.descendant('[is="imported-template"]').that.is.a.clearImportedTemplate;
+                expect(include).to.have.descendant('imported-template').that.is.a.clearImportedTemplate;
             });
         });
     });

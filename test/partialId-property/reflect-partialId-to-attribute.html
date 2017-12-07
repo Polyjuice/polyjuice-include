@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
     <script src="../../../web-component-tester/browser.js"></script>
     <script src="../helpers/chainable-methods-for-partial.js"></script>
@@ -38,9 +38,11 @@
         <template>
             <!-- nest to workaround test-fixture bug -->
             <div>
-                <template is="dom-bind">
-                    <starcounter-include partial="{{partial}}"></starcounter-include>
-                </template>
+                <dom-bind>
+                    <template is="dom-bind">
+                        <starcounter-include partial="{{partial}}"></starcounter-include>
+                    </template>
+                </dom-bind>
             </div>
         </template>
     </test-fixture>
@@ -129,7 +131,7 @@
         it('when it was set, then changed with Polymer dom-bind (`CompositionProvider` object), should reflect this change', function (done) {
             var domBind;
             container = fixture('dom-bind');
-            domBind = container.querySelector('[is="dom-bind"]');
+            domBind = container.querySelector('dom-bind');
             domBind.partial = getFullPartial();
 
             setTimeout(function onceDomBindStamped() {
@@ -150,7 +152,7 @@
         it('when it was set, then changed with Polymer dom-bind (just `CompositionProvider.PartialId` property), should reflect this change', function (done) {
             var domBind;
             container = fixture('dom-bind');
-            domBind = container.querySelector('[is="dom-bind"]');
+            domBind = container.querySelector('dom-bind');
             domBind.partial = getFullPartial();
 
             setTimeout(function onceDomBindStamped() {
