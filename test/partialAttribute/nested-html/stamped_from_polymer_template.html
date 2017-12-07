@@ -213,8 +213,8 @@
                     });
                 });
 
-                it('should forward the notification to `imported-template`', function () {
-                    expect(importedTemplate._setPendingPropertyOrPath).to.be.calledWith("model.scope1", scope)
+                it('should NOT forward the notification to `imported-template` - Polymer limitation', function () {
+                    expect(importedTemplate._setPendingPropertyOrPath).not.to.be.called;
                 });
             });
 
