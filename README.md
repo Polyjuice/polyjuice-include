@@ -135,16 +135,17 @@ Attribute     | Options  | Default      | Description
 Property   | Options           | Default | Description
 ---         | ---               | ---     | ---
 `partial`   | *Object*          |         | Object containing partial view-model, bindable with Polymer
-`partialId` | *String*          |         | Partial Id used to identify partial, usually it's fetched from `partial.CompositionProvider.PartialId`.
+`partialId` | *String*          |         | Partial Id used to identify partial, usually it's fetched from `partial.{CompositionProvider}.PartialId`.
 `viewModel` | *Object*          |         | Alias for `partial`
+`CompositionProvider` | *String* | `CompositionProvider_0` | Key/app name of composition provider. could be overwritten per instance `scInclude.CompositionProvider` or globally by changing the prototype, like: `customElements.get('starcounter-include').prototype.CompositionProvider = 'CustomProvider_7'`
 
 ## Events
 
 Name                                    | Detail                 | Description
 ---                                     | ---                    | ---
 `starcounter-include-composition-saved` | *String* stored layout | Triggered once composition is saved
-`partial-changed`                       | *Object* `{value: storedLayout, path: 'partial.CompositionProvider.Composition$'}` | Polymer notification protocol compilant event to notify about `partial.CompositionProvider.Composition$` change, triggered once composition is saved.
-`view-model-changed`                       | *Object* `{value: storedLayout, path: 'viewModel.CompositionProvider.Composition$'}` | Polymer notification protocol compilant event to notify about `partial.CompositionProvider.Composition$` change, triggered once composition is saved.
+`partial-changed`                       | *Object* `{value: storedLayout, path: 'partial.{CompositionProvider}.Composition$'}` | Polymer notification protocol compilant event to notify about `partial.{CompositionProvider}.Composition$` change, triggered once composition is saved.
+`view-model-changed`                       | *Object* `{value: storedLayout, path: 'viewModel.{CompositionProvider}.Composition$'}` | Polymer notification protocol compilant event to notify about `partial.{CompositionProvider}.Composition$` change, triggered once composition is saved.
 
 ## Test suite
 
