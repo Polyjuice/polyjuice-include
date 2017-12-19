@@ -49,7 +49,12 @@
             });
             it('should create shadowRoot with default slot', function () {
                 expect(scInclude.shadowRoot.querySelector('slot')).to.be.not.null;
-                expect(scInclude.shadowRoot.querySelector('slot')).to.be.instanceof(HTMLSlotElement);
+                // Polyfill does not have HTMLSlotElement
+                // expect(scInclude.shadowRoot.querySelector('slot')).to.be.instanceof(HTMLSlotElement);
+                // check by ducktyping
+                expect(scInclude.shadowRoot.querySelector('slot')).to.be.respondTo('assignedNodes');
+                // check if it's **default** slot
+                expect(scInclude.shadowRoot.querySelector('slot').name).to.be.falsy;
             });
         });
 

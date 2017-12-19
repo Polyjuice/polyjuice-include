@@ -7,13 +7,15 @@
     <title>starcounter-include basic test</title>
     <script src="../../../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../../../web-component-tester/browser.js"></script>
-    <script src="../../helpers/pre-config.js"></script>
+    <script src="../../helpers/composition-fixtures.js"></script>
+    <script src="../../helpers/compareHTMLStrings.js"></script>
 
     <link rel="import" href="../../../starcounter-include.html">
 </head>
 
 <body>
     <template id="composition"><div style="background: green;"><slot name="something"></slot><slot name="else"></slot></div></template>
+    <template id="composition-polyfilled"><div style="background: green;" class="style-scope starcounter-include"><slot name="something"></slot><slot name="else"></slot></div></template>
     <test-fixture id="element">
         <template>
             <starcounter-include>
@@ -29,7 +31,7 @@
         describe('when `.composition` property is set, then `.stamp` method is called, an element is added, another element is added asynchronously', function () {
             beforeEach(function (done) {
                 scInclude = fixture('element');
-                compositionTemplate = document.querySelector('#composition');
+                compositionTemplate = document.querySelector(isShadyDOMinUse ? '#composition-polyfilled' : '#composition');
     			scInclude.viewModel = {
     				CompositionProvider:{
     					Composition$: compositionTemplate.innerHTML
