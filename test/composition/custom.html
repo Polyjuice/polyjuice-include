@@ -12,7 +12,7 @@
     <script src="../helpers/chainable-methods-for-partial.js"></script>
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../../starcounter-include.html">
-    <script src="../helpers/disable-safari-CE.js"></script>
+
     <script src="../helpers/compareHTMLStrings.js"></script>
     <script src="../helpers/composition-fixtures.js"></script>
 </head>
@@ -34,7 +34,6 @@
     </test-fixture>
     <script>
         describe('starcounter-include when imports a partial with a custom composition', function () {
-
             var scInclude;
 
             afterEach(function (done) {
@@ -47,8 +46,8 @@
             });
             it('should use the initial composition', function () {
                 expect(scInclude.shadowRoot).to.be.not.null;
-               
-                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(REFERENCE_CUSTOM);
+
+                expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString(REFERENCE_CUSTOM);
             });
             describe('after partial property is replaced with a partial that contains a default composition', function () {
                 beforeEach(function (done) {
@@ -57,7 +56,7 @@
                 });
                 it('should use it as its composition', function () {
                     expect(scInclude.shadowRoot).to.be.not.null;
-                    assert(compareHTMLStrings(scInclude.shadowRoot.innerHTML, REFERENCE_DEFAULT));
+                    expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString(REFERENCE_DEFAULT);
                 });
             });
             describe('after partial property is replaced with a partial that contains a fallback composition', function () {
@@ -83,7 +82,7 @@
                 it('should return to default after resetting', function () {
                     scInclude._compositionChanged(""); //this is how starcounter-layout-html-editor resets
 
-                    assert(compareHTMLStrings(scInclude.shadowRoot.innerHTML, REFERENCE_DEFAULT));
+                    expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString(REFERENCE_DEFAULT);
                 });
                 it('should NOT overwrite Composition$', function () {
                     expect(scInclude.viewModel.CompositionProvider.Composition$).to.be.equal(composition$);
