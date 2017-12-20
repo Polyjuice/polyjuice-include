@@ -50,7 +50,6 @@ version: 4.0.0
                     const starcounterInclude = this;
                     this.defaultComposition = null;
                     const importedTemplate = document.createElement('imported-template');
-
                     importedTemplate.addEventListener('stamping', function fetchCompositions(event) {
                         var mergedComposition = null;
                         var templates = event.detail.querySelectorAll('template[is="declarative-shadow-dom"],template[is="starcounter-composition"]');
@@ -72,6 +71,9 @@ version: 4.0.0
                         // TODO: consider moving entire partialChanged or appendChild here
                         starcounterInclude._compositionChanged();
                     });
+
+                    const href = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
+                    href && (importedTemplate.href = href); 
 
                     this.appendChild(importedTemplate);
                     this.template = importedTemplate;
