@@ -50,7 +50,7 @@
             'v1/smoke/webcomponents-webcomponentsjs-issues-648.html' // add missing slots
         ];
         // in v1 environment
-        if (!isWebkit && Element.prototype.attachShadow && Node.prototype.getRootNode) {
+        if (Element.prototype.attachShadow && Node.prototype.getRootNode) {
             // test also forced v0
             // v0suites = v0suites.map(function(url) {
             //     return url + '?juicy-composition-shadow=v0'

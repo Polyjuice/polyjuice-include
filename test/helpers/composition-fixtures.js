@@ -1,5 +1,5 @@
 const isWebkit = navigator.vendor && navigator.vendor.indexOf("Apple") > -1;
-const useShadowDOMV1 = !isWebkit && Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
+const useShadowDOMV1 = Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
 const isShadyDOMinUse = typeof ShadyDOM !== 'undefined' && ShadyDOM.inUse;
 
 const REFERENCE_EXPLICIT = useShadowDOMV1 ?
