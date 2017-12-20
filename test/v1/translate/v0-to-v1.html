@@ -7,7 +7,8 @@
 
 	<script src="../../../../webcomponentsjs/webcomponents-lite.js"></script>
 	<script src="../../../../web-component-tester/browser.js"></script>
-	<script src="../../helpers/pre-config.js"></script>
+    <script src="../../helpers/composition-fixtures.js"></script>
+    <script src="../../helpers/compareHTMLStrings.js"></script>
 
 	<link rel="import" href="../../../starcounter-include.html">
 </head>
@@ -57,10 +58,30 @@
 		<slot select=".other-selector"></slot>
 		<slot name="untouched"></slot>
 	</template>
+	<template id="reference-composition-polyfilled">
+		<style class="style-scope starcounter-include">
+			.foo,
+			::slotted(p)/* FIXME V1 matches only direct children;*/,
+			.bar{
+				color: green;
+			}
+		</style>
+		<h2 class="style-scope starcounter-include">Custom Shadow DOM composition</h2>
+		<slot select="[slot='my-slot']" name="my-slot" class="style-scope starcounter-include"></slot>
+		<slot class="style-scope starcounter-include"></slot>
+		<slot    select="[slot='my-slot']"     name="my-slot" class="style-scope starcounter-include"></slot>
+		<slot     class="style-scope starcounter-include"></slot    >
+		<slot foo="bar" select="[slot='my-slot']" baz name="my-slot" class="style-scope starcounter-include"></slot>
+		<slot select="[slot='my-slot']" name="my-slot" class="style-scope starcounter-include"></slot>
+		<slot select="[name='my-slot']" class="style-scope starcounter-include"></slot>
+		<slot select=".other-selector" class="style-scope starcounter-include"></slot>
+		<slot name="untouched" class="style-scope starcounter-include"></slot>
+	</template>
 
 
 	<script>
 	describe('starcounter-include when stamps a composition which contains V0 `content` tags and `::content`', function () {
+		const REFERENCE_COMPOSITION = document.querySelector(isShadyDOMinUse? '#reference-composition-polyfilled' : '#reference-composition').innerHTML
 
 		var scInclude;
 		afterEach(function (done) {
@@ -81,7 +102,7 @@
 		it('should replace them with applicable `slot`s and `::slotted`', function () {
 			expect(scInclude.shadowRoot).to.be.not.null;
 			expect(scInclude.shadowRoot.innerHTML.trim()).to.be
-				.equal(document.querySelector('#reference-composition').innerHTML.trim());
+				.sameHTMLString(REFERENCE_COMPOSITION);
 		});
 		describe('after composition property is replaced with the new composition that also contains `content` tags and `::content`', function () {
 			beforeEach(function (done) {
@@ -91,7 +112,7 @@
 			it('should replace them with applicable content', function () {
 				expect(scInclude.shadowRoot).to.be.not.null;
 				expect(scInclude.shadowRoot.innerHTML.trim()).to.be
-					.equal(document.querySelector('#reference-composition').innerHTML.trim());
+					.sameHTMLString(REFERENCE_COMPOSITION);
 			});
 		});
 

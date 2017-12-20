@@ -11,10 +11,11 @@
 
     <script src="../../../web-component-tester/browser.js"></script>
     <script src="../helpers/chainable-methods-for-partial.js"></script>
+    <script src="../helpers/composition-fixtures.js"></script>
+    <script src="../helpers/compareHTMLStrings.js"></script>
 
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../../starcounter-include.html">
-    <script src="../helpers/disable-safari-CE.js"></script>
 </head>
 
 <body>
@@ -44,8 +45,8 @@
     <script>
     describe('starcounter-include when imports a template that contains <code>template is="starcounter-composition"</code>', function () {
         const isWebkit = navigator.vendor && navigator.vendor.indexOf("Apple") > -1;
-        const useShadowDOMV1 = !isWebkit && Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
-        const REFERENCE_COMPOSITION = useShadowDOMV1 ? '#reference-composition' : '#reference-composition-v1-to-v0'
+        const useShadowDOMV1 = Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
+        const REFERENCE_COMPOSITION = REFERENCE_DEFAULT;
 
         var scInclude;
         var partial = {
@@ -70,8 +71,8 @@
         });
         it('should use it as its composition', function () {
             expect(scInclude.shadowRoot).to.be.not.null;
-            expect(scInclude.shadowRoot.innerHTML.trim()).to.be
-                .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML.trim());
+            expect(scInclude.shadowRoot.innerHTML).to.be
+                .sameHTMLString(REFERENCE_COMPOSITION);
         });
         it('should call console warn with new name', function () {
             expect(console.warn).to.be.called;
@@ -84,8 +85,8 @@
             });
             it('should use it as its composition', function () {
                 expect(scInclude.shadowRoot).to.be.not.null;
-                expect(scInclude.shadowRoot.innerHTML.trim()).to.be
-                    .equal(document.querySelector(REFERENCE_COMPOSITION).innerHTML.trim());
+                expect(scInclude.shadowRoot.innerHTML).to.be
+                    .sameHTMLString(REFERENCE_COMPOSITION);
             });
         });
 
