@@ -1,0 +1,107 @@
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+
+    <script src="../../../../web-component-tester/browser.js"></script>
+    <!-- <script src="../../helpers/mock-htmlmerger.js"></script> -->
+
+    <script src="../../../../webcomponentsjs/webcomponents-lite.js"></script>
+
+
+    <link rel="import" href="../../../../polymer/polymer.html">
+    <script src="../../helpers/WCT-Polyfill_bugs_workaround.js"></script>
+    <!-- Will be loaded async <link rel="import" href="../../../starcounter-include.html"> -->
+</head>
+
+<body>
+    <div id="connected-fixture">
+        <starcounter-include></starcounter-include>
+    </div>
+    <div id="disconnected-fixture">
+        <starcounter-include></starcounter-include>
+    </div>
+    <script>
+        function createPartial() {
+            return {
+                'scope1': {
+                    'Html': 'scope1Html',
+                    'doesItWork': 'works!'
+                },
+                'scope2': {
+                    'Html': 'scope2Html;,/?:@&=+$',
+                    'doesItWork': 'works!'
+                },
+                'scope3': {
+                    'doesItWork': 'works!'
+                }
+            };
+        };
+        const MERGED_URL = '/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=';
+
+        describe('once element with viewModel property set before upgrade is upgraded', function () {
+            var container = document.querySelector('#container'),
+                disconnectedSCInclude, disconnectedPartial, connectedSCInclude, connectedPartial, importedTemplate;
+            before(function(done) {
+                disconnectedSCInclude = document.createElement('starcounter-include');
+                disconnectedSCInclude.viewModel = disconnectedPartial = createPartial();
+                connectedSCInclude = document.querySelector('#connected-fixture > starcounter-include');
+                connectedSCInclude.viewModel = connectedPartial = createPartial();
+                const link = document.createElement('link');
+                link.rel = 'import';
+                link.href = '../../../starcounter-include.html';
+                link.addEventListener('load', ()=>{
+                    done();
+                });
+                document.head.appendChild(link);
+
+            });
+            describe('connected element', function(){
+                beforeEach(()=>{
+                    importedTemplate = connectedSCInclude.querySelector_template_for_buggy_polyfill();
+                });
+                it('connected element should attach concatenated `Html` properties as href attribute and property for `<imported-template>`', function () {
+                    expect(importedTemplate.getAttribute("href")).to.equal(MERGED_URL);
+                    expect(importedTemplate.href).to.equal(MERGED_URL);
+                });
+                it('should NOT attach partial model to `imported-template` immediately', function () {
+                    expect(importedTemplate.model).to.equal(null);
+                });
+                it('should attach partial model to `imported-template` on `stamping`', function (done) {
+                    importedTemplate.addEventListener('stamping', function onceStamped(){
+                        importedTemplate.removeEventListener('stamping', onceStamped);
+                        expect(importedTemplate.model).to.equal(connectedPartial);
+                        done();
+                    });
+                });
+            });
+            describe('disconnected element, once connected', function(){
+                beforeEach(()=>{
+                    document.querySelector('#disconnected-fixture').appendChild(disconnectedSCInclude);
+                    importedTemplate = disconnectedSCInclude.querySelector_template_for_buggy_polyfill();
+                });
+                it('connected element should attach concatenated `Html` properties as href attribute and property for `<imported-template>`', function () {
+                    expect(importedTemplate.getAttribute("href")).to.equal(MERGED_URL);
+                    expect(importedTemplate.href).to.equal(MERGED_URL);
+                });
+                it('should NOT attach partial model to `imported-template` immediately', function () {
+                    expect(importedTemplate.model).to.equal(null);
+                });
+                it('should attach partial model to `imported-template` on `stamping`', function (done) {
+                    importedTemplate.addEventListener('stamping', function onceStamped(){
+                        importedTemplate.removeEventListener('stamping', onceStamped);
+                        expect(importedTemplate.model).to.equal(disconnectedPartial);
+                        done();
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
