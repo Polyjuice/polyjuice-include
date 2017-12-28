@@ -44,8 +44,7 @@
         const MERGED_URL = '/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=';
 
         describe('once element with viewModel property set before upgrade is upgraded', function () {
-            var container = document.querySelector('#container'),
-                disconnectedSCInclude, disconnectedPartial, connectedSCInclude, connectedPartial, importedTemplate;
+            var disconnectedSCInclude, disconnectedPartial, connectedSCInclude, connectedPartial, importedTemplate;
             before(function(done) {
                 disconnectedSCInclude = document.createElement('starcounter-include');
                 disconnectedSCInclude.viewModel = disconnectedPartial = createPartial();
