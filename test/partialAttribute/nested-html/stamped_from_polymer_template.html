@@ -111,38 +111,38 @@
                     done();
                 });
             });
-
-            describe('after `dom-bind`` changed the partial property', function () {
-                beforeEach(function(done) {
+            describe('and nodes were stamped', function(){
+                beforeEach((done)=>{
                     // IDEA: promisify juicy-html
                     importedTemplate.addEventListener('stamping', function onceStamped(){
                         importedTemplate.removeEventListener('stamping', onceStamped);
+                        done();
+                    });
+                });
+
+                describe('after `dom-bind`` changed the partial property', function () {
+                    beforeEach(function() {
                         domBind.set('model.Page', changedPartial);
-                        done();
+                    });
+
+                    it('should attach new `.Html` property as href attribute and property for `<imported-template>`', function () {
+                        expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
+                        expect(importedTemplate.href).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
+                    });
+                    it('should NOT attach new partial model to `imported-template` immediately', function () {
+                        expect(importedTemplate.model).to.equal(partial);
+                    });
+                    it('should attach new partial model to `imported-template` on `stamping`', function (done) {
+                        importedTemplate.addEventListener('stamping', function onceStamped(){
+                            expect(importedTemplate.model).to.equal(changedPartial);
+                            done();
+                        });
                     });
                 });
 
-                it('should attach new `.Html` property as href attribute and property for `<imported-template>`', function () {
-                    expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
-                    expect(importedTemplate.href).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
-                });
-                it('should NOT attach new partial model to `imported-template` immediately', function () {
-                    expect(importedTemplate.model).to.equal(partial);
-                });
-                it('should attach new partial model to `imported-template` on `stamping`', function (done) {
-                    importedTemplate.addEventListener('stamping', function onceStamped(){
-                        expect(importedTemplate.model).to.equal(changedPartial);
-                        done();
-                    });
-                });
-            });
-
-            describe('after `dom-bind`` changed the partial property to new one with the same Html', function () {
-                var changedPartialWithSameHtml;
-                beforeEach(function(done) {
-                    // IDEA: promisify juicy-html
-                    importedTemplate.addEventListener('stamping', function onceStamped(){
-                        importedTemplate.removeEventListener('stamping', onceStamped);
+                describe('after `dom-bind`` changed the partial property to new one with the same Html', function () {
+                    var changedPartialWithSameHtml;
+                    beforeEach(function() {
                         changedPartialWithSameHtml = {
                             'scope1': {
                                 'Html': 'scope1Html',
@@ -157,147 +157,140 @@
                             }
                         };
                         domBind.set('model.Page', changedPartialWithSameHtml);
-                        done();
+                    });
+
+                    it('should attach new `.Html` property as href attribute and propery for `<imported-template>`', function () {
+                        expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                        expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    });
+                    it('should attach new partial model to `imported-template` immediately', function () {
+                        expect(importedTemplate.model).to.equal(changedPartialWithSameHtml);
                     });
                 });
 
-                it('should attach new `.Html` property as href attribute and propery for `<imported-template>`', function () {
-                    expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                    expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                });
-                it('should attach new partial model to `imported-template` immediately', function () {
-                    expect(importedTemplate.model).to.equal(changedPartialWithSameHtml);
-                });
-            });
-
-            describe('after `dom-bind`` changed the sub-partial property (just one scope)', function () {
-                var changedScope;
-                beforeEach(function(done) {
-                    // IDEA: promisify juicy-html
-                    importedTemplate.addEventListener('stamping', function onceStamped(){
-                        importedTemplate.removeEventListener('stamping', onceStamped);
+                describe('after `dom-bind`` changed the sub-partial (just one scope), to a one that results in different merged Html', function () {
+                    var changedScope;
+                    beforeEach(function() {
+                        sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
                         changedScope = JSON.parse(JSON.stringify(changedPartial.scopeA));
                         domBind.set('model.Page.scope1', changedScope);
-                        done();
+                    });
+
+                    it('should attach new `.Html` property as href attribute and property for `<imported-template>`', function () {
+                        expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                        expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    });
+                    it('should NOT attach new partial model to `imported-template` immediately', function () {
+                        expect(importedTemplate.model).to.equal(partial);
+                    });
+                    it('should NOT notify `imported-template` (old nodes) with the new model changes immediately', function () {
+                        expect(importedTemplate._setPendingPropertyOrPath).not.to.be.called;
+                    });
+                    it('should attach new partial model to `imported-template` on `stamping`', function (done) {
+                        importedTemplate.addEventListener('stamping', function onceStamped(){
+                            expect(importedTemplate.model.scope1).to.equal(changedScope);
+                            done();
+                        });
                     });
                 });
 
-                it('should attach new `.Html` property as href attribute and property for `<imported-template>`', function () {
-                    expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                    expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                });
-                it('should NOT attach new partial model to `imported-template` immediately', function () {
-                    expect(importedTemplate.model).to.equal(partial);
-                });
-                it('should attach new partial model to `imported-template` on `stamping`', function (done) {
-                    importedTemplate.addEventListener('stamping', function onceStamped(){
-                        expect(importedTemplate.model.scope1).to.equal(changedScope);
-                        done();
-                    });
-                });
-            });
+                describe('after `dom-bind` re-set the sub-partial (just one scope) to the same instance', function () {
+                    var scope;
 
-            describe('after `dom-bind` re-set the sub-partial property (just one scope) to the same instance', function () {
-                var scope;
-
-                beforeEach(function(done) {
-                    // IDEA: promisify juicy-html
-                    sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
-                    importedTemplate.addEventListener('stamping', function onceStamped(){
-                        importedTemplate.removeEventListener('stamping', onceStamped);
+                    beforeEach(function() {
+                        sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
                         scope = domBind.get('model.Page.scope1');
                         domBind.set('model.Page.scope1', scope);
-                        done();
+                    });
+
+                    it('should NOT forward the notification to `imported-template` - Polymer limitation', function () {
+                        expect(importedTemplate._setPendingPropertyOrPath).not.to.be.called;
                     });
                 });
 
-                it('should NOT forward the notification to `imported-template` - Polymer limitation', function () {
-                    expect(importedTemplate._setPendingPropertyOrPath).not.to.be.called;
-                });
-            });
+                describe('after `dom-bind` changes the sub-partial\'s property of a view with an explicit composition', function () {
+                    var scope, include, newVal = "yeah", customComposition = "my custom composition", shadowRoot;
 
-            describe('after `dom-bind` changes the sub-partial property of a view with an explicit composition', function () {
-                var scope, include, newVal = "yeah", customComposition = "my custom composition";
-
-                beforeEach(function(done) {
-                    sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
-                    importedTemplate.addEventListener('stamping', function onceStamped(){
-                        importedTemplate.removeEventListener('stamping', onceStamped);
+                    beforeEach(function() {
+                        sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
                         include = container.querySelector('starcounter-include');
+                        // TODO: do we really want to tangle starcounter-layout-html-editor in the case that should be atomic as well?
                         include._compositionChanged(customComposition); //this is how starcounter-layout-html-editor uses it
+                        shadowRoot = include.shadowRoot;
                         domBind.set('model.Page.scope1.doesItWork', newVal);
-                        done();
+                    });
+
+                    it('should forward the notification to `imported-template`', function () {
+                        expect(importedTemplate._setPendingPropertyOrPath).to.be.calledWith("model.scope1.doesItWork", newVal);
+                    });
+
+                    it('should preserve the explicit composition', function () {
+                        // check the content
+                        expect(include.shadowRoot.innerHTML).to.be.equal(customComposition);
+                        // check if composition was not re-created => flashed
+                        expect(include.shadowRoot).to.equal(shadowRoot);
                     });
                 });
 
-                it('should forward the notification to `imported-template`', function () {
-                    expect(importedTemplate._setPendingPropertyOrPath).to.be.calledWith("model.scope1.doesItWork", newVal);
-                });
-
-                it('should preserve the explicit composition', function () {
-                    expect(include.shadowRoot.innerHTML).to.be.equal(customComposition);
-                });
-            });
-
-            describe('after `dom-bind`` changed the sub-partial property (just one scope) to new one with thethat results with the same merged Html', function () {
-                var changedScopeWithSameHtml;
-                beforeEach(function(done) {
-                    // IDEA: promisify juicy-html
-                    importedTemplate.addEventListener('stamping', function onceStamped(){
-                        importedTemplate.removeEventListener('stamping', onceStamped);
+                describe('after `dom-bind`` changed the sub-partial (just one scope) to new a one that results with the same merged Html', function () {
+                    var changedScopeWithSameHtml;
+                    beforeEach(function() {
+                        sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
                         changedScopeWithSameHtml = {
                             'Html': 'scope1Html',
                             'doesItWork': 'still works!'
                         };
                         domBind.set('model.Page.scope1', changedScopeWithSameHtml);
-                        done();
+                    });
+
+                    it('should keep same `.Html` property as href attribute and propery for `<imported-template>`', function () {
+                        expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                        expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    });
+                    it('should attach new partial model to `imported-template` immediately', function () {
+                        expect(importedTemplate.model.scope1).to.equal(changedScopeWithSameHtml);
+                    });
+                    it('should forward the notification to `imported-template` immediately', function () {
+                        expect(importedTemplate._setPendingPropertyOrPath).to.be.calledWith("model.scope1", changedScopeWithSameHtml);
                     });
                 });
 
-                it('should attach same `.Html` property as href attribute and propery for `<imported-template>`', function () {
-                    expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                    expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                });
-                it('should attach new partial model to `imported-template` immediately', function () {
-                    expect(importedTemplate.model.scope1).to.equal(changedScopeWithSameHtml);
-                });
-            });
+                describe('after `dom-bind`` changed the inner `Html` property', function () {
+                    beforeEach(function() {
+                        sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
+                        domBind.set('model.Page.scope1.Html', 'changedHtml');
+                    });
 
-            describe('after `dom-bind`` changed the inner `Html` property', function () {
-                beforeEach(function() {
-                    domBind.set('model.Page.scope1.Html', 'changedHtml');
-                });
-
-                it('should attach new `.Html` property as href attribute and property for `<imported-template>`', function () {
-                    expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                    expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                });
-                it('should attach same partial model to `imported-template` on `stamping`', function (done) {
-                    importedTemplate.addEventListener('stamping', function onceStamped(){
-                        expect(importedTemplate.model).to.equal(partial);
-                        done();
+                    it('should attach new `.Html` property as href attribute and property for `<imported-template>`', function () {
+                        expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                        expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                    });
+                    it('should NOT forward the notification to `imported-template` immediately', function () {
+                        expect(importedTemplate._setPendingPropertyOrPath).not.to.be.called;
+                    });
+                    it('should attach same partial model to `imported-template` on `stamping`', function (done) {
+                        importedTemplate.addEventListener('stamping', function onceStamped(){
+                            expect(importedTemplate.model).to.equal(partial);
+                            done();
+                        });
                     });
                 });
-            });
 
-            describe('after `dom-bind`` removed the inner `Html` property', function () {
-                beforeEach(function(done) {
-                    importedTemplate.addEventListener('stamping', function onceStamped(){
-                        importedTemplate.removeEventListener('stamping', onceStamped);
+                describe('after `dom-bind`` removed the inner `Html` property', function () {
+                    beforeEach(function() {
                         // not realy removing, but Polymer does not support anything better
                         // https://github.com/Polymer/polymer/issues/2565
                         domBind.set('model.Page.Html', null);
                         // domBind.set('model.Page.Html', undefined);
-                        done();
                     });
-                });
 
-                it('should attach `null` as href attribute and property for `<imported-template>`', function () {
-                    expect(importedTemplate.getAttribute("href")).to.equal(null);
-                    expect(importedTemplate.href).to.equal(null);
-                });
-                it('should attach same partial model to `imported-template`', function () {
-                    expect(importedTemplate.model).to.equal(partial);
+                    it('should attach `null` as href attribute and property for `<imported-template>`', function () {
+                        expect(importedTemplate.getAttribute("href")).to.equal(null);
+                        expect(importedTemplate.href).to.equal(null);
+                    });
+                    it('should attach same partial model to `imported-template`', function () {
+                        expect(importedTemplate.model).to.equal(partial);
+                    });
                 });
             });
         });
