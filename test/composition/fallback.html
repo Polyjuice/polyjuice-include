@@ -72,13 +72,13 @@
         describe('after composition is changed to explicit', function() {
             var explicitComposition = "explicit composition";
             beforeEach(function() {
-                scInclude._compositionChanged(explicitComposition);
+                scInclude.updateComposition(explicitComposition);
             });
             it('should render the explicit composition', function() {
                 expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
             });
             it('should return to fallback after resetting', function() {
-                scInclude._compositionChanged(""); //this is how starcounter-layout-html-editor resets
+                scInclude.updateComposition(""); //this is how starcounter-layout-html-editor resets
                 expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(REFERENCE_FALLBACK);
             });
             it('should NOT overwrite Composition$', function() {
@@ -87,7 +87,7 @@
             describe('after saveLayout() is called', function() {
                 beforeEach(function() {
                     scInclude.saveLayout();
-                    scInclude._compositionChanged(); //simulate notifyPath which can trigger _compositionChanged
+                    scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
                 });
                 it('should overwrite Composition$', function() {
                     expect(scInclude.viewModel.CompositionProvider.Composition$.trim()).to.be.equal(explicitComposition);

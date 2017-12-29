@@ -44,6 +44,7 @@
                 }
             };
         };
+        const MERGED_URL = '/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=';
         var changedPartial = {
             'scopeA': {
                 'Html': 'scopeAHtml',
@@ -82,8 +83,8 @@
             });
 
             it('should attach concatenated `Html` properties as href attribute and property for `<imported-template>`', function () {
-                expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                expect(importedTemplate.getAttribute("href")).to.equal(MERGED_URL);
+                expect(importedTemplate.href).to.equal(MERGED_URL);
             });
             it('should NOT attach partial model to `imported-template` immediately', function () {
                 expect(importedTemplate.model).to.equal(null);
@@ -160,8 +161,8 @@
                     });
 
                     it('should attach new `.Html` property as href attribute and propery for `<imported-template>`', function () {
-                        expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                        expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                        expect(importedTemplate.getAttribute("href")).to.equal(MERGED_URL);
+                        expect(importedTemplate.href).to.equal(MERGED_URL);
                     });
                     it('should attach new partial model to `imported-template` immediately', function () {
                         expect(importedTemplate.model).to.equal(changedPartialWithSameHtml);
@@ -215,7 +216,7 @@
                         sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
                         include = container.querySelector('starcounter-include');
                         // TODO: do we really want to tangle starcounter-layout-html-editor in the case that should be atomic as well?
-                        include._compositionChanged(customComposition); //this is how starcounter-layout-html-editor uses it
+                        include.updateComposition(customComposition); //this is how starcounter-layout-html-editor uses it
                         shadowRoot = include.shadowRoot;
                         domBind.set('model.Page.scope1.doesItWork', newVal);
                     });
@@ -244,8 +245,8 @@
                     });
 
                     it('should keep same `.Html` property as href attribute and propery for `<imported-template>`', function () {
-                        expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                        expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                        expect(importedTemplate.getAttribute("href")).to.equal(MERGED_URL);
+                        expect(importedTemplate.href).to.equal(MERGED_URL);
                     });
                     it('should attach new partial model to `imported-template` immediately', function () {
                         expect(importedTemplate.model.scope1).to.equal(changedScopeWithSameHtml);
