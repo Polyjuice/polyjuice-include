@@ -230,7 +230,14 @@ version: 4.0.1
                 }
             }
         }
-
+        /**
+         * @deprecated Use `starcounterInclude.shadowRoot` or `viewModel.{CompositionProvider}.Composition$`
+         * @alias #updateComposition
+         */
+        StarcounterIncludePrototype._compositionChanged = function(compositionString) {
+            console.warn('_compositionChanged, was renamed to updateComposition. Most probably you don\'t even need to use it. In most of the cases `starcounterInclude.shadowRoot` or changing the `viewModel.{CompositionProvider}.Composition$` should do the right thing.');
+            return this.updateComposition(compositionString);
+        };
         /**
          * Handles change of the composition.
          * If not given explicitely, fetches one from provider.
