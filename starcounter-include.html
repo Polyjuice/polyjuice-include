@@ -179,7 +179,7 @@ version: 4.0.1
         /**
          * Builds merged HTML URL.
          * If the URL is different than previous importedTemplate.href,
-         * cleares the template and #defaultComposition, then updates it.
+         * clears the template and #defaultComposition, then updates it.
          * TODO: Check if merged HTML URL should be changed,
          * Check if needed: Does nothing if there is no template
          * @returns {Boolean} was the href changed?
@@ -317,9 +317,9 @@ version: 4.0.1
             // If that's the same model, we still may need to bump
             if(sameModelAlreadyLoaded){
                 // yey we still support both names, lets strip one or another.
-                const subPath = (path.indexOf('partial.') === 0) && path.substr(8) ||
-                                (path.indexOf('viewModel.') === 0) && path.substr(10);
-                // check indexOf to optimeze match performance
+                const subPath = path.startsWith('partial.') && path.substr(8) ||
+                                path.startsWith('viewModel.') && path.substr(10);
+                // check indexOf to optimize match performance
                 const dotPos = subPath.indexOf('.');
                 // Update html and composition if needed
                 if (
@@ -340,7 +340,7 @@ version: 4.0.1
                 else if (
                     // it's sub-partial's .Html
                     // subPath.matches(/[^\.]\.Html/)
-                    subPath.indexOf('.Html') === subPath.length - 5 &&
+                    subPath.endsWith('.Html') &&
                     dotPos === subPath.lastIndexOf('.')
                 ){
                     this._updateHref();
@@ -353,7 +353,7 @@ version: 4.0.1
                 }
             } else {
                 // this.partialChanged(this.partial);
-                // Complately new partial, reload everything
+                // Completely new partial, reload everything
                 // TODO: check if we can even get to this point
                 if(!this._updateHref()){
                     this.template.model = this.partial;
