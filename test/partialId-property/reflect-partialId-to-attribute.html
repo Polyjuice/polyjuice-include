@@ -22,7 +22,7 @@
             <!-- nest to workaround test-fixture bug -->
             <div>
                 <starcounter-include partial="{
-                    &quot;CompositionProvider&quot;: {
+                    &quot;CompositionProvider_0&quot;: {
                         &quot;PartialId&quot;: &quot;given PartialId&quot;
                     },
                     &quot;Html&quot;: &quot;../templateToInclude.html&quot;,
@@ -63,7 +63,7 @@
     <test-fixture id="no-CompositionProvider.PartialId">
         <template>
             <div>
-                <starcounter-include partial="{&quot;Html&quot;: &quot;../old_templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;worked!&quot;, &quot;CompositionProvider&quot;: {}}"></starcounter-include>
+                <starcounter-include partial="{&quot;Html&quot;: &quot;../old_templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;worked!&quot;, &quot;CompositionProvider_0&quot;: {}}"></starcounter-include>
             </div>
         </template>
     </test-fixture>
@@ -71,7 +71,7 @@
         <template>
             <div>
                 <starcounter-include partial="{
-                    &quot;CompositionProvider&quot;: {
+                    &quot;CompositionProvider_0&quot;: {
                         &quot;PartialId&quot;: &quot;old PartialId&quot;,
                     },
                     &quot;Html&quot;: &quot;../templateToInclude.html&quot;,
@@ -86,7 +86,7 @@
         var scInclude;
         function getFullPartial() {
           return {
-              "CompositionProvider": {
+              "CompositionProvider_0": {
                   "PartialId": "given PartialId"
               },
               "Html": "../templateToInclude.html",
@@ -95,7 +95,7 @@
         }
         function getNewPartial() {
           return {
-            "CompositionProvider": {
+            "CompositionProvider_0": {
                 "PartialId": "new PartialId"
             },
             "Html": "../templateToInclude.html",
@@ -126,7 +126,7 @@
             expect(scInclude).to.have.HTMLAttribute('partial-id').equal('new PartialId');
         });
 
-        it('when it was set, then changed with Polymer dom-bind (`CompositionProvider` object), should reflect this change', function (done) {
+        it('when it was set, then changed with Polymer dom-bind (`CompositionProvider_0` object), should reflect this change', function (done) {
             var domBind;
             container = fixture('dom-bind');
             domBind = container.querySelector('dom-bind');
@@ -138,7 +138,7 @@
                 expect(scInclude).to.have.HTMLAttribute('partial-id').equal('given PartialId');
 
                 // change .PartialId
-                domBind.set('partial.CompositionProvider', {PartialId: "new PartialId"});
+                domBind.set('partial.CompositionProvider_0', {PartialId: "new PartialId"});
                 setTimeout(function oncePolymerNotificationPropagated() {
                     expect(scInclude.partialId).to.equal('new PartialId');
                     expect(scInclude).to.have.HTMLAttribute('partial-id').equal('new PartialId');
@@ -147,7 +147,7 @@
             }, 100);
         });
 
-        it('when it was set, then changed with Polymer dom-bind (just `CompositionProvider.PartialId` property), should reflect this change', function (done) {
+        it('when it was set, then changed with Polymer dom-bind (just `CompositionProvider_0.PartialId` property), should reflect this change', function (done) {
             var domBind;
             container = fixture('dom-bind');
             domBind = container.querySelector('dom-bind');
@@ -159,7 +159,7 @@
                 expect(scInclude).to.have.HTMLAttribute('partial-id').equal('given PartialId');
 
                 // change .PartialId
-                domBind.set('partial.CompositionProvider.PartialId', 'new PartialId');
+                domBind.set('partial.CompositionProvider_0.PartialId', 'new PartialId');
                 setTimeout(function oncePolymerNotificationPropagated() {
                     expect(scInclude.partialId).to.equal('new PartialId');
                     expect(scInclude).to.have.HTMLAttribute('partial-id').equal('new PartialId');

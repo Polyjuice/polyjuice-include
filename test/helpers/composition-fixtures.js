@@ -28,7 +28,7 @@ const REFERENCE_FALLBACK = useShadowDOMV1 ?
 
 function partialWithCustom() {
     return {
-        "CompositionProvider": {
+        "CompositionProvider_0": {
             "PartialId": "given PartialId",
             "Composition$": "customComposition!<slot></slot>"
         },
@@ -41,7 +41,7 @@ function partialWithCustom() {
 
 function partialWithDefault() {
     return {
-        "CompositionProvider": {
+        "CompositionProvider_0": {
             "PartialId": "given PartialId",
             "Composition$": ""
         },
@@ -54,7 +54,7 @@ function partialWithDefault() {
 
 function partialWithFallback() {
     return {
-        "CompositionProvider": {
+        "CompositionProvider_0": {
             "PartialId": "given PartialId",
             "Composition$": ""
         },

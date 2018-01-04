@@ -21,7 +21,7 @@
     <test-fixture id="initial-fixture">
         <template>
             <starcounter-include partial="{
-                &quot;CompositionProvider&quot;: {
+                &quot;CompositionProvider_0&quot;: {
                     &quot;PartialId&quot;: &quot;given PartialId&quot;,
                     &quot;Composition$&quot;: &quot;&quot;
                 },
@@ -82,7 +82,7 @@
                 expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(REFERENCE_FALLBACK);
             });
             it('should NOT overwrite Composition$', function() {
-                expect(scInclude.viewModel.CompositionProvider.Composition$).to.be.equal("");
+                expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal("");
             });
             describe('after saveLayout() is called', function() {
                 beforeEach(function() {
@@ -90,7 +90,7 @@
                     scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
                 });
                 it('should overwrite Composition$', function() {
-                    expect(scInclude.viewModel.CompositionProvider.Composition$.trim()).to.be.equal(explicitComposition);
+                    expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(explicitComposition);
                 });
                 it('should render the explicit composition', function() {
                     expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
