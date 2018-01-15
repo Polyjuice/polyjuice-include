@@ -1,5 +1,7 @@
+
 /* Safari re-orders attribs, that's why we need a little smarter way to compare HTML strings */
-chai.Assertion.addChainableMethod('sameHTMLString', function (ref) {
+chai.Assertion.addChainableMethod('sameHTMLString_ignoringShadyCSSPolyfillClasses', function (ref) {
+    const isShadyDOMinUse = typeof ShadyDOM !== 'undefined' && ShadyDOM.inUse;
     const parser = new DOMParser();
     const obj = chai.util.flag(this, 'object');
     expect(obj, 'value should be a string').to.be.a('string');
@@ -18,6 +20,15 @@ chai.Assertion.addChainableMethod('sameHTMLString', function (ref) {
     // compare children themselves
     for (let i = 0; i < childrenObj.length; i++) {
         const childObj = childrenObj[i];
+        // Ignore ShadyCSS classes until following issues are fixed:
+        // https://github.com/webcomponents/shadycss/issues/134
+        // https://github.com/webcomponents/webcomponentsjs/issues/883
+        if(isShadyDOMinUse){
+            childObj.classList.remove('style-scope', 'starcounter-include');
+            if(childObj.getAttribute('class') === ''){
+                childObj.removeAttribute('class')
+            }
+        }
         const childRef = childrenRef[i];
 
         // compare each child's node name
@@ -49,7 +60,7 @@ chai.Assertion.addChainableMethod('sameHTMLString', function (ref) {
               expected ${attribChildA.value} to equal ${attribChildB.value}`);
         }
         // check recursively
-        expect(childObj.innerHTML).to.be.sameHTMLString(childRef.innerHTML);
+        expect(childObj.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(childRef.innerHTML);
       }
 
 });
