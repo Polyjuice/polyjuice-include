@@ -47,7 +47,7 @@
             it('should use the initial composition', function () {
                 expect(scInclude.shadowRoot).to.be.not.null;
 
-                expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString(REFERENCE_CUSTOM);
+                expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_CUSTOM);
             });
             describe('after partial property is replaced with a partial that contains a default composition', function () {
                 beforeEach(function (done) {
@@ -56,7 +56,7 @@
                 });
                 it('should use it as its composition', function () {
                     expect(scInclude.shadowRoot).to.be.not.null;
-                    expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString(REFERENCE_DEFAULT);
+                    expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_DEFAULT);
                 });
             });
             describe('after partial property is replaced with a partial that contains a fallback composition', function () {
@@ -66,7 +66,7 @@
                 });
                 it('should use it as its composition', function () {
                     expect(scInclude.shadowRoot).to.be.not.null;
-                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(REFERENCE_FALLBACK);
+                    expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_FALLBACK);
                 });
             });
             describe('after composition is changed to explicit', function () {
@@ -82,7 +82,7 @@
                 it('should return to default after resetting', function () {
                     scInclude.updateComposition(""); //this is how starcounter-layout-html-editor resets
 
-                    expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString(REFERENCE_DEFAULT);
+                    expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_DEFAULT);
                 });
                 it('should NOT overwrite Composition$', function () {
                     expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal(composition$);

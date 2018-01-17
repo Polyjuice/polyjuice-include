@@ -72,7 +72,7 @@
         it('should use it as its composition', function () {
             expect(scInclude.shadowRoot).to.be.not.null;
             expect(scInclude.shadowRoot.innerHTML).to.be
-                .sameHTMLString(REFERENCE_COMPOSITION);
+                .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
         });
         it('should call console warn with new name', function () {
             expect(console.warn).to.be.called;
@@ -86,7 +86,7 @@
             it('should use it as its composition', function () {
                 expect(scInclude.shadowRoot).to.be.not.null;
                 expect(scInclude.shadowRoot.innerHTML).to.be
-                    .sameHTMLString(REFERENCE_COMPOSITION);
+                    .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
             });
         });
 

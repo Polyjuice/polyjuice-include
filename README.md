@@ -152,6 +152,18 @@ Name                                    | Detail                 | Description
  - start mock server  and simple dev static files server `npm run serve`
  - open local browser at [`127.0.0.1:8081/components/starcounter-include/test/`](http://127.0.0.1:8081/components/starcounter-include/test/)
 
+## Caveats
+
+### ShadyCSS
+
+In browsers with Shadow DOM polyfilled using [ShadyDOM](https://github.com/webcomponents/shadydom) and [ShadyCSS](https://github.com/webcomponents/shadycss), styles may still leak. This seems to be related to the limitation in the polyfill and its API.
+ - it does not cover Vanilla JS custom elements automatically and API does not provide sufficient methods to cover our case,
+ - shadow roots provided without template (compositions from DB) and different for every instance of the element seems not to be covered by polyfill at all,
+ - style scoping methods that transform HTML markup seems to be broken when element is being upgraded.
+ShadyCSS is going to be refactored soon, so we prefer to wait with heavy workarounds.
+
+Please prepare your selectors more carefully. Feel free to report issues with your specific use-cases. We will try to provide a solution that works now, and make sure we will eventually cover them in a nice way.
+
 ## [Contributing and Development](CONTRIBUTING.md)
 
 ## History

@@ -15,7 +15,6 @@
 
 <body>
     <template id="composition"><div style="background: green;"><slot name="something"></slot><slot name="else"></slot></div></template>
-    <template id="composition-polyfilled"><div style="background: green;" class="style-scope starcounter-include"><slot name="something"></slot><slot name="else"></slot></div></template>
     <test-fixture id="element">
         <template>
             <starcounter-include>
@@ -31,7 +30,7 @@
         describe('when `.composition` property is set, then `.stamp` method is called, an element is added, another element is added asynchronously', function () {
             beforeEach(function (done) {
                 scInclude = fixture('element');
-                compositionTemplate = document.querySelector(isShadyDOMinUse ? '#composition-polyfilled' : '#composition');
+                compositionTemplate = document.querySelector('#composition');
     			scInclude.viewModel = {
     				CompositionProvider_0:{
     					Composition$: compositionTemplate.innerHTML
@@ -56,7 +55,7 @@
                 });
             });
             it('eventually it should have shadowRoot with given Document Fragment', function () {
-                expect(scInclude.shadowRoot.innerHTML).to.equal(compositionTemplate.innerHTML);
+                expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(compositionTemplate.innerHTML);
             });
         });
     });

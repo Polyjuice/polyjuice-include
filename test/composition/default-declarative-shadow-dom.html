@@ -38,17 +38,10 @@
     <script>
     describe('starcounter-include when imports a template that contains <code>template is="declarative-shadow-dom"</code>', function () {
         const REFERENCE_COMPOSITION = REFERENCE_DEFAULT;
-        const REFERENCE_ALTERNATIVE_COMPOSITION = useShadowDOMV1 ?
-            isShadyDOMinUse ?
-                `
-        <h2 class="style-scope starcounter-include">Custom Shadow DOM alternative composition</h2>
-        <slot class="style-scope starcounter-include" name="my-slot"></slot>
-    ` :
-                `
+        const REFERENCE_ALTERNATIVE_COMPOSITION = useShadowDOMV1 ? `
         <h2>Custom Shadow DOM alternative composition</h2>
         <slot name="my-slot"></slot>
-    ` :
-            `
+    ` : `
         <h2>Custom Shadow DOM alternative composition</h2>
         <content name="my-slot" select="[slot='my-slot']"></content>
     `;
@@ -93,7 +86,7 @@
         it('should use it as its composition', function () {
             expect(scInclude.shadowRoot).to.be.not.null;
             expect(scInclude.shadowRoot.innerHTML.trim()).to.be
-                .sameHTMLString(REFERENCE_COMPOSITION);
+                .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
         });
         describe('after partial property is replaced with the partial that also does contain default composition', function () {
             beforeEach(function (done) {
@@ -103,7 +96,7 @@
             it('should use it as its composition', function () {
                 expect(scInclude.shadowRoot).to.be.not.null;
                 expect(scInclude.shadowRoot.innerHTML).to.be
-                    .sameHTMLString(REFERENCE_ALTERNATIVE_COMPOSITION);
+                    .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_ALTERNATIVE_COMPOSITION);
             });
         });
         describe('after composition is changed from custom subset to explicit', function() {
@@ -119,7 +112,7 @@
             it('should return to default after resetting', function() {
                 scInclude.updateComposition(""); //this is how starcounter-layout-html-editor resets
                 expect(scInclude.shadowRoot.innerHTML).to.be
-                    .sameHTMLString(REFERENCE_COMPOSITION);
+                    .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
             });
             it('should NOT overwrite Composition$', function() {
                 expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal(composition$);
@@ -145,7 +138,7 @@
             it('should use it as its composition', function () {
                 expect(scInclude.shadowRoot).to.be.not.null;
                 expect(scInclude.shadowRoot.innerHTML).to.be
-                    .sameHTMLString("custom!" + REFERENCE_ALTERNATIVE_COMPOSITION);
+                    .sameHTMLString_ignoringShadyCSSPolyfillClasses("custom!" + REFERENCE_ALTERNATIVE_COMPOSITION);
             });
             describe('after composition is changed from custom subset to explicit', function() {
                 var composition$;
@@ -160,7 +153,7 @@
                 it('should return to default after resetting', function() {
                     scInclude.updateComposition(""); //this is how starcounter-layout-html-editor resets
                     expect(scInclude.shadowRoot.innerHTML).to.be
-                        .sameHTMLString(REFERENCE_COMPOSITION + REFERENCE_ALTERNATIVE_COMPOSITION);
+                        .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION + REFERENCE_ALTERNATIVE_COMPOSITION);
                 });
                 it('should NOT overwrite Composition$', function() {
                     expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal(composition$);
