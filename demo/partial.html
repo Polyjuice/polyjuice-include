@@ -1,12 +1,22 @@
 <template>
     <dom-bind>
         <template is="dom-bind">
-            <div style="border: 2px solid blue">
                 <div>Number:
                     <span>{{model.Number$}}</span>
                 </div>
                 <button value="{{model.Number$::click}}" onmousedown="++this.value">Increment</button>
+        </template>
+        <template is="declarative-shadow-dom">
+            <style>
+                .wrap-my-button ::slotted(button) {
+                    background: green;
+                }
+            </style>
+
+            <div class="wrap-my-button">
+                <slot></slot>
             </div>
+            
         </template>
     </dom-bind>
 </template>
