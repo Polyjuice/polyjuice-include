@@ -12,6 +12,14 @@ For more details see articles:
 - ["Unobtrusive styling and composing 3rd party HTML content"](http://starcounter.io/unobtrusive-styling-composing-3rd-party-html-content/) - How to style them with Shadow DOM,
 - ["Layout compositions for HTML partials"](http://starcounter.io/layout-compositions-html-partials/) - How to use styles in Starcounter
 
+### Kinds of compositions
+
+`<starcounter-include>` recognizes 4 kinds of HTML compositions:
+
+- Fallback composition - a single `<slot></slot>` to display all things from light DOM in case no composition was provided
+- Default composition - composition found in the partial HTML view (`<template is="declarative-shadow-dom">` part)
+- Custom composition - stored composition provided in JSON by BlendingProvider
+- Temporary composition - explicit composition set directly in the shadow root of `starcounter-include` (for example by Chrome DevTools or `<starcounter-layout-html-editor>` in BlendingEditor)
 
 ### Small sample
 
