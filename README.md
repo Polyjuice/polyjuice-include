@@ -63,11 +63,6 @@ To produce
  - Easy way to attach composed Shadow DOM layouts
 
 
-## Related articles:
- - ["HTML partials/includes WebComponents-way"](http://starcounter.io/html-partialsincludes-webcomponents-way/) - How partials work,
- - ["Unobtrusive styling and composing 3rd party HTML content"](http://starcounter.io/unobtrusive-styling-composing-3rd-party-html-content/) - How to style them with Shadow DOM,
- - ["Layout compositions for HTML partials"](http://starcounter.io/layout-compositions-html-partials/) - How to use styles in Starcounter
-
 ### wiki
  - https://github.com/StarcounterPrefabs/Launcher/wiki/Partials
  - https://github.com/StarcounterPrefabs/Launcher/wiki/Layout-setup
