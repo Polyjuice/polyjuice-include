@@ -39,16 +39,8 @@ To produce
 <h1>Hello World</h1>
 ```
 
-## Demo/Examples
-:construction:
-[Example in Starcounter Fiddle!]()
-
-### [`<imported-template>` Demo/Example](https://github.com/Juicy/imported-template#demoexamples)
-
-
 ## Related custom elements
 
- - [`<imported-template>`](https://github.com/Juicy/imported-template) - includes HTML Template,
  - [`<starcounter-layout-html-editor>`](https://github.com/Starcounter/starcounter-layout-html-editor) - editor for Document Fragments
 
 ## Features
