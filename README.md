@@ -4,7 +4,8 @@
 `<starcounter-include>` is a custom element that let's you load HTML partials into your Starcounter page, it uses  
 
 - [`<imported-template>`](https://github.com/Juicy/imported-template) - You can take full control over loaded `<script>`s and `<link rel="import">`s. Thanks to HTML Imports - caching, script execution, etc. is completely native.
-- [`<juicy-composition>`](https://github.com/Juicy/juicy-composition) - You can use Shadow DOM v1 features to apply Document Fragment with custom HTML composition and slots to tune the layout of HTML Elements given by partial. It lets you blend and apply your desired look & feel to elements given by your and even other apps - which were mixed due to Starcounter mappings.
+
+You can use Shadow DOM v1 features to apply Document Fragment with custom HTML composition and slots to tune the presentation of HTML Elements given by the partial HTML view. It lets you blend and apply your desired look & feel to elements given by your and even other apps - which were mixed due to Starcounter mappings.
 
 For more details see articles:
 - ["HTML partials/includes WebComponents-way"](http://starcounter.io/html-partialsincludes-webcomponents-way/) - How partials work,
@@ -48,7 +49,6 @@ To produce
 ## Related custom elements
 
  - [`<imported-template>`](https://github.com/Juicy/imported-template) - includes HTML Template,
- - [`<juicy-composition>`](https://github.com/Juicy/juicy-composition) - applies Document Fragment to Shadow DOM,
  - [`<starcounter-layout-html-editor>`](https://github.com/Starcounter/starcounter-layout-html-editor) - editor for Document Fragments
 
 ## Features
