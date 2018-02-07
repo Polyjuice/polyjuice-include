@@ -1,7 +1,7 @@
 &lt;starcounter-include&gt; [![Build Status](https://travis-ci.org/Starcounter/starcounter-include.svg?branch=master)](https://travis-ci.org/Starcounter/starcounter-include)
 ==============
 
-`<starcounter-include>` is a custom element that let's you load HTML partials into your Starcounter page, it uses  
+`<starcounter-include>` is a custom element that lets you load partial HTML views into your Starcounter page, it uses  
 
 - [`<imported-template>`](https://github.com/Juicy/imported-template) - You can take full control over loaded `<script>`s and `<link rel="import">`s. Thanks to HTML Imports - caching, script execution, etc. is completely native.
 
@@ -54,13 +54,13 @@ To produce
 ## Features
 
  - Applies two-way databinding, even for nested asynchronously loaded `<polymer-element>`s,
- - Multiple (concatenated) templates per partial,
+ - Multiple (concatenated) templates per partial HTML view,
  - Polymer's `<template>` features (binding, repeat, if, etc.),
  - HTML Imports features:
   - Sends request for template only once (HTML Import's caching),
   - Supports `<script>, <link>, <style>` tags to be executed once,
   - Supports `<script>, <style>` tags per template instance.
- - Easy way to attach composed Shadow DOM layouts
+ - Easy way to attach presentation expressed in declarative Shadow DOM
 
 
 ### wiki
@@ -68,12 +68,12 @@ To produce
  - https://github.com/StarcounterPrefabs/Launcher/wiki/Layout-setup
  - https://github.com/StarcounterPrefabs/Launcher/wiki/include-template-in-Polyjuice
 
-### HTML Partial limitations
+### Partial HTML views limitations
 
  - It should be W3C compliant Document body,
  - It should contain at least one `<template>` tag in root node.
 
-### Partial conventions
+### Partial HTML views conventions
 
  - View-model contains `Html` property with path to file (:construction:, or just inline markup).
 
@@ -121,7 +121,7 @@ Or [download as ZIP](https://github.com/Starcounter/starcounter-include/archive/
 
 Attribute     | Options  | Default      | Description
 ---           | ---      | ---          | ---
-`partial`     | *JSON*   |              | Set to provide a partial. It's also a `partial` property.
+`partial`     | *JSON*   |              | Set to provide a partial HTML view. It's also a `partial` property.
 `partial-id`  | *String* |              | **Read-only** attribute that represents `PartialID` fetched from `partial` JSON. It's also a `partialId` property.
 `view-model`  | *JSON*   |              | Alias for `partial`
 
@@ -129,7 +129,7 @@ Attribute     | Options  | Default      | Description
 
 Property   | Options           | Default | Description
 ---         | ---               | ---     | ---
-`partial`   | *Object*          |         | Object containing partial view-model, bindable with Polymer
+`partial`   | *Object*          |         | Object containing partial JSON view-model, bindable with Polymer
 `partialId` | *String*          |         | Partial Id used to identify partial, usually it's fetched from `partial.{compositionProvider}.PartialId`.
 `viewModel` | *Object*          |         | Alias for `partial`
 `compositionProvider` | *String* | `CompositionProvider_0` | Key/app name of composition provider. could be overwritten per instance `scInclude.compositionProvider` or globally by changing the prototype, like: `customElements.get('starcounter-include').prototype.compositionProvider = 'CustomProvider_7'`
@@ -138,9 +138,9 @@ Property   | Options           | Default | Description
 
 Name                                    | Detail                 | Description
 ---                                     | ---                    | ---
-`starcounter-include-composition-saved` | *String* stored layout | Triggered once composition is saved
-`partial-changed`                       | *Object* `{value: storedLayout, path: 'partial.{compositionProvider}.Composition$'}` | Polymer notification protocol compliant event to notify about `partial.{compositionProvider}.Composition$` change, triggered once composition is saved.
-`view-model-changed`                       | *Object* `{value: storedLayout, path: 'viewModel.{compositionProvider}.Composition$'}` | Polymer notification protocol compliant event to notify about `partial.{compositionProvider}.Composition$` change, triggered once composition is saved.
+`starcounter-include-composition-saved` | *String* stored composition | Triggered once composition is saved
+`partial-changed`                       | *Object* `{value: storedComposition, path: 'partial.{compositionProvider}.Composition$'}` | Polymer notification protocol compliant event to notify about `partial.{compositionProvider}.Composition$` change, triggered once composition is saved.
+`view-model-changed`                       | *Object* `{value: storedComposition, path: 'viewModel.{compositionProvider}.Composition$'}` | Polymer notification protocol compliant event to notify about `partial.{compositionProvider}.Composition$` change, triggered once composition is saved.
 
 ## Test suite
 
