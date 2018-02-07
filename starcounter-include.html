@@ -250,7 +250,7 @@ version: 4.2.0
          */
         StarcounterIncludePrototype.updateComposition = function(compositionString) {
             if (compositionString) {
-                this.explicitComposition = compositionString;
+                this.temporaryComposition = compositionString;
                 return this._renderCompositionChange(compositionString, () => this.stringToDocumentFragment(compositionString));
             }
             else {
@@ -258,7 +258,7 @@ version: 4.2.0
 
                 if (compositionProvider) {
                     this.partialId = compositionProvider.PartialId;
-                    this.explicitComposition = null;
+                    this.temporaryComposition = null;
                     if (compositionString === "") {
                         //this is a request from starcounter-layout-html-editor to reset to default composition
                     }
@@ -295,12 +295,12 @@ version: 4.2.0
                 }
 
                 if (this.defaultComposition) {
-                    this.explicitComposition = null;
+                    this.temporaryComposition = null;
                     return this._renderCompositionChange(this.defaultComposition, () => this.defaultComposition.cloneNode(true));
                 }
 
-                if (!this.explicitComposition) {
-                    return this._renderCompositionChange("explicit", () => undefined);
+                if (!this.temporaryComposition) {
+                    return this._renderCompositionChange("temporary", () => undefined);
                 }
             }
         };
