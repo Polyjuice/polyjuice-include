@@ -32,7 +32,7 @@ SubPageViewModel = {
 ```
 You can put it on screen with
 ```html
-<starcounter-include partial="{{ SubPageViewModel }}"></starcounter-include>
+<starcounter-include view-model="{{ SubPageViewModel }}"></starcounter-include>
 ```
 To produce
 ```html
@@ -106,15 +106,15 @@ Or [download as ZIP](https://github.com/Starcounter/starcounter-include/archive/
 3. Start using it!
 
     ```html
-    <starcounter-include partial="{{ViewModel}}"></starcounter-include>
+    <starcounter-include view-model="{{ViewModel}}"></starcounter-include>
     ```
     or without mustache-style data-binding:
     ```js
-    document.querySelector("starcounter-include").partial = ViewModel;
+    document.querySelector("starcounter-include").viewModel = ViewModel;
     ```
     or with inline JSON:
     ```html
-    <starcounter-include partial="{&quot;Html&quot;: &quot;/path/to/file.html&quot;, &quot;some&quot;: &quot;data&quot;}"></starcounter-include>
+    <starcounter-include view-model="{&quot;Html&quot;: &quot;/path/to/file.html&quot;, &quot;some&quot;: &quot;data&quot;}"></starcounter-include>
     ```
 
 ## Attributes
