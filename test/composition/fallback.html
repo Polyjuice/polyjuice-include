@@ -69,7 +69,7 @@
                 expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_CUSTOM);
             });
         });
-        describe('after composition is changed to temporary', function() {
+        describe('after composition is changed via `updateComposition` method', function() {
             var temporaryComposition = "temporary composition";
             beforeEach(function() {
                 scInclude.updateComposition(temporaryComposition);

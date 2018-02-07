@@ -16,8 +16,8 @@ For more details see articles:
 
 `<starcounter-include>` recognizes 4 kinds of HTML compositions:
 
-- Fallback composition - a single `<slot></slot>` to display all things from light DOM in case no composition was provided
-- Default composition - composition found in the partial HTML view (`<template is="declarative-shadow-dom">` part)
+- Fallback composition - a single `<style>:host{display: block;}</style><slot></slot>` to display all things from light DOM in case no composition was provided
+- Default composition - composition (or multiple concatenated compositions) found in the partial HTML view (`<template is="declarative-shadow-dom">` part)
 - Custom composition - stored composition provided in JSON by BlendingProvider
 - Temporary composition - explicit composition set directly in the shadow root of `starcounter-include` (for example by Chrome DevTools or `<starcounter-layout-html-editor>` in BlendingEditor)
 
@@ -73,7 +73,7 @@ To produce
  - It should be W3C compliant Document body,
  - It should contain at least one `<template>` tag in root node.
 
-### Partial HTML views conventions
+### Partial JSON view-model conventions
 
  - View-model contains `Html` property with path to file (:construction:, or just inline markup).
 
@@ -121,7 +121,7 @@ Or [download as ZIP](https://github.com/Starcounter/starcounter-include/archive/
 
 Attribute     | Options  | Default      | Description
 ---           | ---      | ---          | ---
-`partial`     | *JSON*   |              | Set to provide a partial HTML view. It's also a `partial` property.
+`partial`     | *JSON*   |              | Set to provide partial JSON view-model. It's also a `partial` property.
 `partial-id`  | *String* |              | **Read-only** attribute that represents `PartialID` fetched from `partial` JSON. It's also a `partialId` property.
 `view-model`  | *JSON*   |              | Alias for `partial`
 

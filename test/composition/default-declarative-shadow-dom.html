@@ -99,7 +99,7 @@
                     .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_ALTERNATIVE_COMPOSITION);
             });
         });
-        describe('after composition is changed from custom subset to temporary', function() {
+        describe('after composition is changed from custom subset via `updateComposition` method', function() {
             var composition$;
             var temporaryComposition = "temporary composition";
             beforeEach(function() {
@@ -140,7 +140,7 @@
                 expect(scInclude.shadowRoot.innerHTML).to.be
                     .sameHTMLString_ignoringShadyCSSPolyfillClasses("custom!" + REFERENCE_ALTERNATIVE_COMPOSITION);
             });
-            describe('after composition is changed from custom subset to temporary', function() {
+            describe('after composition is changed from custom subset via `updateComposition` method', function() {
                 var composition$;
                 var temporaryComposition = "temporary composition";
                 beforeEach(function() {
