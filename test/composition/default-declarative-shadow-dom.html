@@ -99,15 +99,15 @@
                     .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_ALTERNATIVE_COMPOSITION);
             });
         });
-        describe('after composition is changed from custom subset to explicit', function() {
+        describe('after composition is changed from custom subset via `updateComposition` method', function() {
             var composition$;
-            var explicitComposition = "explicit composition";
+            var temporaryComposition = "temporary composition";
             beforeEach(function() {
                 composition$ = scInclude.viewModel.CompositionProvider_0.Composition$;
-                scInclude.updateComposition(explicitComposition);
+                scInclude.updateComposition(temporaryComposition);
             });
-            it('should render the explicit composition', function() {
-                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
+            it('should render the temporary composition', function() {
+                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
             });
             it('should return to default after resetting', function() {
                 scInclude.updateComposition(""); //this is how starcounter-layout-html-editor resets
@@ -123,10 +123,10 @@
                     scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
                 });
                 it('should overwrite Composition$', function() {
-                    expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(explicitComposition);
+                    expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(temporaryComposition);
                 });
-                it('should render the explicit composition', function() {
-                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
+                it('should render the temporary composition', function() {
+                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
                 });
             });
         });
@@ -140,15 +140,15 @@
                 expect(scInclude.shadowRoot.innerHTML).to.be
                     .sameHTMLString_ignoringShadyCSSPolyfillClasses("custom!" + REFERENCE_ALTERNATIVE_COMPOSITION);
             });
-            describe('after composition is changed from custom subset to explicit', function() {
+            describe('after composition is changed from custom subset via `updateComposition` method', function() {
                 var composition$;
-                var explicitComposition = "explicit composition";
+                var temporaryComposition = "temporary composition";
                 beforeEach(function() {
                     composition$ = scInclude.viewModel.CompositionProvider_0.Composition$;
-                    scInclude.updateComposition(explicitComposition);
+                    scInclude.updateComposition(temporaryComposition);
                 });
-                it('should render the explicit composition', function() {
-                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
+                it('should render the temporary composition', function() {
+                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
                 });
                 it('should return to default after resetting', function() {
                     scInclude.updateComposition(""); //this is how starcounter-layout-html-editor resets
@@ -164,10 +164,10 @@
                         scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
                     });
                     it('should overwrite Composition$', function() {
-                        expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(explicitComposition);
+                        expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(temporaryComposition);
                     });
-                    it('should render the explicit composition', function() {
-                        expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(explicitComposition);
+                    it('should render the temporary composition', function() {
+                        expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
                     });
                 });
             });

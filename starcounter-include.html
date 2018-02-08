@@ -48,7 +48,7 @@ version: 4.2.0
                 } else {
                     this.createShadowRoot();
                 }
-                // stamp composition
+                // stamp fallback composition
                 // like this.stampComposition() without an event
                 this.shadowRoot.innerHTML = defaultShadowCSS + defaultShadowDOM;
 
@@ -240,16 +240,17 @@ version: 4.2.0
         };
         /**
          * Handles change of the composition.
-         * If not given explicitely, fetches one from provider.
-         * If not given in provider, fetches one from imported template's default composition.
-         * If imported template does not have a default composition, uses fallback composition.
-         * Warning: the explicit composition might come from https://github.com/Starcounter/starcounter-layout-html-editor/blob/17b21f729facd9a8dcd4241fb5c48cb71de11af5/starcounter-layout-html-editor.html#L253
+         * Temporary composition can be given explicitely in the function argument
+         * If temporary composition not given, fetches custom composition from provider.
+         * If custom composition not given, fetches default composition from the imported template.
+         * If default composition not given, uses fallback composition.
+         * Warning: the temporary composition might come from https://github.com/Starcounter/starcounter-layout-html-editor/blob/17b21f729facd9a8dcd4241fb5c48cb71de11af5/starcounter-layout-html-editor.html#L253
          * @see .stampComposition
          * @param  {String} compositionString stringified HTML for new Shadow Root
          */
         StarcounterIncludePrototype.updateComposition = function(compositionString) {
             if (compositionString) {
-                this.explicitComposition = compositionString;
+                this.temporaryComposition = compositionString;
                 return this._renderCompositionChange(compositionString, () => this.stringToDocumentFragment(compositionString));
             }
             else {
@@ -257,7 +258,7 @@ version: 4.2.0
 
                 if (compositionProvider) {
                     this.partialId = compositionProvider.PartialId;
-                    this.explicitComposition = null;
+                    this.temporaryComposition = null;
                     if (compositionString === "") {
                         //this is a request from starcounter-layout-html-editor to reset to default composition
                     }
@@ -294,12 +295,12 @@ version: 4.2.0
                 }
 
                 if (this.defaultComposition) {
-                    this.explicitComposition = null;
+                    this.temporaryComposition = null;
                     return this._renderCompositionChange(this.defaultComposition, () => this.defaultComposition.cloneNode(true));
                 }
 
-                if (!this.explicitComposition) {
-                    return this._renderCompositionChange("explicit", () => undefined);
+                if (!this.temporaryComposition) {
+                    return this._renderCompositionChange("temporary", () => undefined);
                 }
             }
         };
@@ -440,7 +441,7 @@ version: 4.2.0
         }
         /**
          * Composition provider key.
-         * The place which the element will check for compositions.
+         * The place which the element will check for custom compositions.
          * Could be overwritten per instance or globally if you change the prototype.
          * @type {String}
          */

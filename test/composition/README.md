@@ -1,6 +1,6 @@
 There are that many kinds of compositions:
 
-explicit
+temporary
 custom
 custom subset with some default
 default
@@ -8,18 +8,18 @@ fallback
 
 Therefore, there are that many composition transitions to test:
 
-explicit to custom
-explicit to default
-explicit to fallback
+temporary to custom
+temporary to default
+temporary to fallback
 
-custom to explicit
+custom to temporary
 custom to default
 custom to fallback
 
-default to explicit
+default to temporary
 default to custom
 default to fallback
 
-fallback to explicit
+fallback to temporary
 fallback to custom
 fallback to default

@@ -209,14 +209,14 @@
                     });
                 });
 
-                describe('after `dom-bind` changes the sub-partial\'s property of a view with an explicit composition', function () {
-                    var scope, include, newVal = "yeah", customComposition = "my custom composition", shadowRoot;
+                describe('after `dom-bind` changes the sub-partial\'s property of a view that has a temporary composition', function () {
+                    var scope, include, newVal = "yeah", temporaryComposition = "my temporary composition", shadowRoot;
 
                     beforeEach(function() {
                         sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
                         include = container.querySelector('starcounter-include');
                         // TODO: do we really want to tangle starcounter-layout-html-editor in the case that should be atomic as well?
-                        include.updateComposition(customComposition); //this is how starcounter-layout-html-editor uses it
+                        include.updateComposition(temporaryComposition); //this is how starcounter-layout-html-editor uses it
                         shadowRoot = include.shadowRoot;
                         domBind.set('model.Page.scope1.doesItWork', newVal);
                     });
@@ -225,9 +225,9 @@
                         expect(importedTemplate._setPendingPropertyOrPath).to.be.calledWith("model.scope1.doesItWork", newVal);
                     });
 
-                    it('should preserve the explicit composition', function () {
+                    it('should preserve the temporary composition', function () {
                         // check the content
-                        expect(include.shadowRoot.innerHTML).to.be.equal(customComposition);
+                        expect(include.shadowRoot.innerHTML).to.be.equal(temporaryComposition);
                         // check if composition was not re-created => flashed
                         expect(include.shadowRoot).to.equal(shadowRoot);
                     });
