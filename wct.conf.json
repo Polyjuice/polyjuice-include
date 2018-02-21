@@ -8,7 +8,7 @@
             "browsers": [{
                 "browserName": "microsoftedge",
                 "platform": "Windows 10",
-                "version": ""
+                "version": "16"
             }, {
                 "browserName": "safari",
                 "platform": "OS X 10.11",
