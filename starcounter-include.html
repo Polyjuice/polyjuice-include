@@ -100,13 +100,10 @@ version: 4.2.0
                     const importedTemplate = document.createElement('imported-template');
                     importedTemplate.addEventListener('stamping', function fetchCompositions(event) {
                         var mergedComposition = null;
-                        var templates = event.detail.querySelectorAll('template[is="declarative-shadow-dom"],template[is="starcounter-composition"]');
+                        const templates = event.detail.querySelectorAll('template[is="declarative-shadow-dom"]');
                         if(templates.length){
-                            mergedComposition = document.createDocumentFragment()
+                            mergedComposition = document.createDocumentFragment();
                             for(const individualComposition of templates) {
-                                if(individualComposition.getAttribute('is') === 'starcounter-composition'){
-                                    console.warn('`starcounter-composition` was renamed to `declarative-shadow-dom`! Please update your markup, as the old name is likely to be not supported soon (in V1).')
-                                }
                                 mergedComposition.appendChild(individualComposition.content.cloneNode(true));
                             };
                         }
@@ -206,14 +203,8 @@ version: 4.2.0
         }
 
         function appendComposition(fragment, template) {
-            if (template.nodeName && template.nodeName == 'TEMPLATE') {
-                const name = template.getAttribute('is');
-                if (name === 'declarative-shadow-dom' || name === 'starcounter-composition') {
-                    if (name === 'starcounter-composition') {
-                        console.warn('`starcounter-composition` was renamed to `declarative-shadow-dom`! Please update your markup, as the old name is likely to be not supported soon (in V1).')
-                    }
-                    fragment.appendChild(template.content.cloneNode(true));
-                }
+            if (template.nodeName && template.nodeName == 'TEMPLATE' && template.getAttribute('is') === 'declarative-shadow-dom') {
+                fragment.appendChild(template.content.cloneNode(true));
             }
         }
         /**
