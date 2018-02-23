@@ -37,29 +37,12 @@
             //internals
             'internals/buildURL.html',
             // warning on dropped support for non-namespaced view-models
-            'non-namespaced/warning.html'
+            'non-namespaced/warning.html',
+            'shadowRoot/basic.html',
+            'shadowRoot/smoke/webcomponents-webcomponentsjs-issues-648.html'
         ];
-        var v0suites = [
-            'v0/basic.html',
-            'v0/translate/v1-to-v0.html', // translate between v0 and v1
-            'v0/smoke/webcomponents-webcomponentsjs-issues-648.html', // add missing slots
-            'v0/polyfill-next-selector.html' // use polyfill for styles
-        ];
-        var v1suites = [
-            'v1/basic.html',
-            'v1/translate/v0-to-v1.html', // translate between v0 and v1
-            'v1/smoke/webcomponents-webcomponentsjs-issues-648.html' // add missing slots
-        ];
-        // in v1 environment
-        if (Element.prototype.attachShadow && Node.prototype.getRootNode) {
-            // test also forced v0
-            // v0suites = v0suites.map(function(url) {
-            //     return url + '?juicy-composition-shadow=v0'
-            // });
-            suites = suites.concat(v1suites);
-        } else {
-            suites = suites.concat(v0suites);
-        }
+        
+        
         WCT.loadSuites(suites);
 
     </script>

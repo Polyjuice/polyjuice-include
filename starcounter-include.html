@@ -9,8 +9,6 @@ version: 4.2.0
 -->
 <!-- Import dependencies -->
 <link rel="import" href="../imported-template/imported-template.html">
-<link rel="import" href="../translate-shadowdom/translate-shadowdom.html">
-<!-- <link rel="import" href="/sys/console-log/console-log.html"> -->
 
 <script>
     (function() {
@@ -18,17 +16,9 @@ version: 4.2.0
 
         // still needed for .selectNode
         const isSafari = isWebkit && navigator.userAgent && !navigator.userAgent.match("CriOS");
-
-        const useShadowDOMV1 = Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
-        // && !(window.StarcounterInclude && window.StarcounterInclude.shadow === 'v0'));
-        const defaultShadowCSS = '<style>:host{display:block;}</style>';
-        const defaultShadowDOM = useShadowDOMV1 ? '<slot></slot>' : '<content select=":not([slot]),[slot=\'\']"></content>';
-
+        const fallBackComposition = '<style>:host{display:block;}</style><slot></slot>';
 
         class StarcounterInclude extends HTMLElement {
-            // static get shadow(){
-            //     return useShadowDOMV1;
-            // }
             static get observedAttributes() {
                 return ['partial', 'view-model', 'partialId'];
             }
@@ -42,15 +32,11 @@ version: 4.2.0
                 var partial = this.viewModel || this.partial || undefined;
                 checkForNonNamespaced(partial, this);
 
-                // build shadow DOM
-                if(useShadowDOMV1){
-                    this.attachShadow({mode: "open"});
-                } else {
-                    this.createShadowRoot();
-                }
+                this.attachShadow({mode: "open"});
+
                 // stamp fallback composition
                 // like this.stampComposition() without an event
-                this.shadowRoot.innerHTML = defaultShadowCSS + defaultShadowDOM;
+                this.shadowRoot.innerHTML = fallBackComposition;
 
                 // define a setter for partial attribute,
                 // so it could be change by VanillaJs without Polymer Template Binding
@@ -116,12 +102,12 @@ version: 4.2.0
                         var templates = event.detail.querySelectorAll('template[is="declarative-shadow-dom"],template[is="starcounter-composition"]');
                         if(templates.length){
                             mergedComposition = document.createDocumentFragment()
-                            Array.prototype.forEach.call(templates, function mergeContents(individualComposition) {
+                            for(const individualComposition of templates) {
                                 if(individualComposition.getAttribute('is') === 'starcounter-composition'){
                                     console.warn('`starcounter-composition` was renamed to `declarative-shadow-dom`! Please update your markup, as the old name is likely to be not supported soon (in V1).')
                                 }
                                 mergedComposition.appendChild(individualComposition.content.cloneNode(true));
-                            });
+                            };
                         }
                         starcounterInclude.defaultComposition = mergedComposition;
 
@@ -145,7 +131,6 @@ version: 4.2.0
             }
         }
         var StarcounterIncludePrototype = StarcounterInclude.prototype;
-        StarcounterIncludePrototype.shadow = useShadowDOMV1;
         StarcounterIncludePrototype.partial = null;
         StarcounterIncludePrototype.partialId = null;
         // StarcounterIncludePrototype.href = null;
@@ -403,7 +388,6 @@ version: 4.2.0
                     // Workaround for https://github.com/Starcounter/Starcounter/issues/3072
                     // as described in https://github.com/Starcounter/starcounter-include/issues/12
                     return htmls.length && (prefix + htmls.join('&')) || undefined;
-                    // return prefix + htmls.join('&');
                 }
             } else {
                 return undefined;
@@ -465,29 +449,16 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
 
         /**
          * Stamps new shadow root (overwrites existing),
-         * translates between V1 and V0
          * @fires stamped
          * @param {DocumentFragment} givenComposition
          */
         StarcounterIncludePrototype.stampComposition = function(givenComposition){
-            // console.log('stamp', this.partialId, this);
-            // document.importNode(givenComposition, true);
             // create shadowRoot if none
             const shadowRoot = this.shadowRoot;
 
             if (givenComposition !== undefined) {
                 // reset SD to default CSS
                 shadowRoot.innerHTML = '';
-                if(useShadowDOMV1){
-                    // translate givenComposition to current version of SD
-                    TranslateShadowDOM.v0tov1.fragment(givenComposition, true);
-                } else {
-                    // translate givenComposition to current version of SD
-                    TranslateShadowDOM.v1tov0.fragment(givenComposition, true);
-                }
-
-                var elems = givenComposition.querySelectorAll("content:not([select])");
-                Array.prototype.forEach.call(elems, (elem) => elem.setAttribute("select", ":not([slot]),[slot='']")); //workaround for https://github.com/tomalec/Translate-ShadowDOM/issues/3
 
                 shadowRoot.appendChild(givenComposition);
                 // polyfill `polyfill-next-selector` if needed
@@ -497,7 +468,7 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
                         WebComponents.ShadowCSS.insertDirectives
                     );
             } else if(shadowRoot){
-                shadowRoot.innerHTML = defaultShadowCSS + defaultShadowDOM;
+                shadowRoot.innerHTML = fallBackComposition;
             }
             this.dispatchEvent(new CustomEvent("stamped"));
         }
