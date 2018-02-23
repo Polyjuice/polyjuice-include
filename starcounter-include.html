@@ -16,9 +16,7 @@ version: 4.2.0
 
         // still needed for .selectNode
         const isSafari = isWebkit && navigator.userAgent && !navigator.userAgent.match("CriOS");
-        const defaultShadowCSS = '<style>:host{display:block;}</style>';
-        const defaultShadowDOM = '<slot></slot>';
-        const fallBackComposition = defaultShadowCSS + defaultShadowDOM;
+        const fallBackComposition = '<style>:host{display:block;}</style><slot></slot>';
 
         class StarcounterInclude extends HTMLElement {
             static get observedAttributes() {
