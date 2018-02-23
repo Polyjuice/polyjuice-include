@@ -16,8 +16,7 @@ version: 4.2.0
 
         // still needed for .selectNode
         const isSafari = isWebkit && navigator.userAgent && !navigator.userAgent.match("CriOS");
-        const defaultShadowCSS = '<style>:host{display:block;}</style>';
-        const defaultShadowDOM = '<slot></slot>';
+        const fallBackComposition = '<style>:host{display:block;}</style><slot></slot>';
 
         class StarcounterInclude extends HTMLElement {
             static get observedAttributes() {
@@ -37,7 +36,7 @@ version: 4.2.0
 
                 // stamp fallback composition
                 // like this.stampComposition() without an event
-                this.shadowRoot.innerHTML = defaultShadowCSS + defaultShadowDOM;
+                this.shadowRoot.innerHTML = fallBackComposition;
 
                 // define a setter for partial attribute,
                 // so it could be change by VanillaJs without Polymer Template Binding
@@ -460,7 +459,7 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
                         WebComponents.ShadowCSS.insertDirectives
                     );
             } else if(shadowRoot){
-                shadowRoot.innerHTML = defaultShadowCSS + defaultShadowDOM;
+                shadowRoot.innerHTML = fallBackComposition;
             }
             this.dispatchEvent(new CustomEvent("stamped"));
         }
