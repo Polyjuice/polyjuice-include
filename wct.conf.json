@@ -7,8 +7,7 @@
         "sauce": {
             "browsers": [{
                 "browserName": "microsoftedge",
-                "platform": "Windows 10",
-                "version": "16"
+                "platform": "Windows 10"
             }, {
                 "browserName": "safari",
                 "platform": "OS X 10.11",
