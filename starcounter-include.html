@@ -12,6 +12,10 @@ version: 4.2.0
 
 <script>
     (function() {
+        function warnAboutDeperecatedPartial() {
+            debugger
+            console.warn('`partial` attribute and property are deprecatrd from `starcounter-include` in fovour of (viewModel property or view-model attribute), they will soon be no longer be supported');
+        }
         const isWebkit = navigator.vendor && navigator.vendor.indexOf("Apple") > -1;
 
         // still needed for .selectNode
@@ -30,6 +34,11 @@ version: 4.2.0
                 this.defaultComposition = null;
                 var partialId = this.partialId;
                 var partial = this.viewModel || this.partial || undefined;
+                
+                if(this.partial) {
+                    warnAboutDeperecatedPartial();
+                }
+
                 checkForNonNamespaced(partial, this);
 
                 this.attachShadow({mode: "open"});
@@ -43,6 +52,9 @@ version: 4.2.0
                 Object.defineProperties(this, {
                     partial: {
                         set: function(newValue) {
+                            if(!this.settingPartialFromModel) {
+                                warnAboutDeperecatedPartial();
+                            }
                             partial = newValue;
                             checkForNonNamespaced(partial, this);
                             if(!this.template){
@@ -63,7 +75,9 @@ version: 4.2.0
                     },
                     viewModel: {
                         set: function(newValue) {
+                            this.settingPartialFromModel = true;
                             this.partial = newValue;
+                            this.settingPartialFromModel = false;
                         },
                         get: function() {
                             return this.partial;
@@ -153,9 +167,16 @@ version: 4.2.0
          * Set partial property if partial or viewm-model attribute was changed
          */
         StarcounterIncludePrototype.attributeChangedCallback = function(name, oldVal, newVal) {
-            if (name === "partial" || name === "view-model") {
+            if (name === "view-model") {
+                this.settingPartialFromModel = true;
                 this.partial = partialAttributeToProperty(this, newVal);
-                //d console.log("starcounter-partial attr changed");
+                this.settingPartialFromModel = false;
+            }
+            else if(name === "partial") {
+                if(!oldVal /* to warn only once */) { 
+                    warnAboutDeperecatedPartial();
+                }
+                this.partial = partialAttributeToProperty(this, newVal);
             }
         };
         /**
@@ -285,6 +306,9 @@ version: 4.2.0
 
         // Polymer doesn't set props on its own components, rather, it calls this function
         StarcounterIncludePrototype._setPendingProperty = function (path, value) {
+            if(path === 'partial') {
+                warnAboutDeperecatedPartial();
+            }
             this[path] = value;
         }
         /**

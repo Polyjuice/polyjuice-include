@@ -39,47 +39,47 @@
             describe("should remove `PartialId` property and `partial-id` attribute when", function() {
                 beforeEach(function() {
                     instance = fixture('nothing');
-                    instance.partial = clone(model);
+                    instance.viewModel = clone(model);
                 });
 
-                it('the `partial` attribute is changed to an empty string', function(done) {
+                it('the `viewModel` attribute is changed to an empty string', function(done) {
                     expectPartialToBeAttached();
-                    instance.setAttribute("partial", "");
+                    instance.setAttribute("view-model", "");
                     expectPartialToBeCleanedUp();
                     done();
                 });
 
-                it('when the `partial` property is changed to an empty string', function(done) {
+                it('when the `viewModel` property is changed to an empty string', function(done) {
                     expectPartialToBeAttached();
-                    instance.partial = "";
+                    instance.viewModel = "";
                     expectPartialToBeCleanedUp();
                     done();
                 });
 
-                it('when the `partial` property is changed to null', function(done) {
+                it('when the `viewModel` property is changed to null', function(done) {
                     expectPartialToBeAttached();
-                    instance.partial = null;
+                    instance.viewModel = null;
                     expectPartialToBeCleanedUp();
                     done();
                 });
 
-                it('when the `partial` property is changed to undefined', function(done) {
+                it('when the `viewModel` property is changed to undefined', function(done) {
                     expectPartialToBeAttached();
-                    instance.partial = undefined;
+                    instance.viewModel = undefined;
                     expectPartialToBeCleanedUp();
                     done();
                 });
 
-                it('when the `partial` property is changed to empty object', function(done) {
+                it('when the `viewModel` property is changed to empty object', function(done) {
                     expectPartialToBeAttached();
-                    instance.partial = {};
+                    instance.viewModel = {};
                     expectPartialToBeCleanedUp();
                     done();
                 });
 
-                it('when the `partial` property is changed to a partial without a PartialId', function(done) {
+                it('when the `viewModel` property is changed to a view-model without a PartialId', function(done) {
                     expectPartialToBeAttached();
-                    instance.partial = {
+                    instance.viewModel = {
                         "Html": "../templateToInclude.html",
                         "doesItWork": "works!"
                     };
@@ -87,9 +87,9 @@
                     done();
                 });
 
-                it('when the `partial` property is changed to a partial with empty PartialId', function(done) {
+                it('when the `viewModel` property is changed to a view-model with empty PartialId', function(done) {
                     expectPartialToBeAttached();
-                    instance.partial = {
+                    instance.viewModel = {
                         "Html": "../templateToInclude.html",
                         "CompositionProvider_0": {
                             "PartialId": ""
