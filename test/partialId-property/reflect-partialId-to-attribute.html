@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html>
 
@@ -21,7 +22,7 @@
         <template>
             <!-- nest to workaround test-fixture bug -->
             <div>
-                <starcounter-include view-model="{
+                <starcounter-include viewModel="{
                     &quot;CompositionProvider_0&quot;: {
                         &quot;PartialId&quot;: &quot;given PartialId&quot;
                     },
@@ -38,7 +39,7 @@
             <div>
                 <dom-bind>
                     <template is="dom-bind">
-                        <starcounter-include view-model="{{partial}}"></starcounter-include>
+                        <starcounter-include view-model="{{viewModel}}"></starcounter-include>
                     </template>
                 </dom-bind>
             </div>
@@ -84,7 +85,7 @@
     <script>
     describe('starcounter-include `view-model` attribute without `Html` on root level, but with some namespaces', function () {
         var scInclude;
-        function getFullPartial() {
+        function getFullViewModel() {
           return {
               "CompositionProvider_0": {
                   "PartialId": "given PartialId"
@@ -93,7 +94,7 @@
               "doesItWork": "works!"
           };
         }
-        function getNewPartial() {
+        function getNewViewModel() {
           return {
             "CompositionProvider_0": {
                 "PartialId": "new PartialId"
@@ -102,42 +103,32 @@
             "doesItWork": "works!"
           };
         }
-
         it('for element created programmatically property should be null, and there should bo no attribute', function () {
             scInclude = document.createElement('starcounter-include');
-
             expect(scInclude.partialId).to.be.null;
             expect(scInclude).to.have.HTMLAttribute('partial-id').null;
         });
-
-        it('when `partialId` property is assigned (inside `partial` attribute), `partial-id` attribute should reflect this change', function () {
+        it('when `partialId` property is assigned (inside `view-model` attribute), `partial-id` attribute should reflect this change', function () {
             scInclude = document.createElement('starcounter-include');
-            scInclude.setAttribute('view-model', JSON.stringify(getFullPartial()));
-
+            scInclude.setAttribute('view-model', JSON.stringify(getFullViewModel()));
             expect(scInclude.partialId).to.equal('given PartialId');
             expect(scInclude).to.have.HTMLAttribute('partial-id').equal('given PartialId');
         });
-
-        it('when it was set directly in HTML, then changed (entire `view-model` attribute), should reflect this change', function () {
+        it('when it was set directly in HTML, then changed (entire `partial` attribute), should reflect this change', function () {
             scInclude = fixture('reflected-partial-id').querySelector('starcounter-include');
-            scInclude.setAttribute('view-model', JSON.stringify(getNewPartial()));
-
+            scInclude.setAttribute('view-model', JSON.stringify(getNewViewModel()));
             expect(scInclude.partialId).to.equal('new PartialId');
             expect(scInclude).to.have.HTMLAttribute('partial-id').equal('new PartialId');
         });
-
         it('when it was set, then changed with Polymer dom-bind (`CompositionProvider_0` object), should reflect this change', function (done) {
             var domBind;
             container = fixture('dom-bind');
             domBind = container.querySelector('dom-bind');
-            domBind.viewModel = getFullPartial();
-
+            domBind.viewModel = getFullViewModel();
             setTimeout(function onceDomBindStamped() {
                 scInclude = container.querySelector('starcounter-include');
-                debugger
                 expect(scInclude.partialId).to.equal('given PartialId');
                 expect(scInclude).to.have.HTMLAttribute('partial-id').equal('given PartialId');
-
                 // change .PartialId
                 domBind.set('viewModel.CompositionProvider_0', {PartialId: "new PartialId"});
                 setTimeout(function oncePolymerNotificationPropagated() {
@@ -147,18 +138,15 @@
                 });
             }, 100);
         });
-
         it('when it was set, then changed with Polymer dom-bind (just `CompositionProvider_0.PartialId` property), should reflect this change', function (done) {
             var domBind;
             container = fixture('dom-bind');
             domBind = container.querySelector('dom-bind');
-            domBind.viewModel = getFullPartial();
-
+            domBind.viewModel = getFullViewModel();
             setTimeout(function onceDomBindStamped() {
                 scInclude = container.querySelector('starcounter-include');
                 expect(scInclude.partialId).to.equal('given PartialId');
                 expect(scInclude).to.have.HTMLAttribute('partial-id').equal('given PartialId');
-
                 // change .PartialId
                 domBind.set('viewModel.CompositionProvider_0.PartialId', 'new PartialId');
                 setTimeout(function oncePolymerNotificationPropagated() {
@@ -168,15 +156,12 @@
                 });
             }, 100);
         });
-
-        it('when it was set directly in HTML, then removed (entire `partial` property), should reflect this change - remove attribute, set property to null', function () {
+        it('when it was set directly in HTML, then removed (entire `view-model` property), should reflect this change - remove attribute, set property to null', function () {
             scInclude = fixture('reflected-partial-id').querySelector('starcounter-include');
             scInclude.removeAttribute('view-model');
-
             expect(scInclude.partialId).to.be.null;
             expect(scInclude).to.have.HTMLAttribute('partial-id').be.null;
         });
-
     });
     </script>
 

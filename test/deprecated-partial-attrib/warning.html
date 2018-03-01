@@ -9,6 +9,8 @@
     <script src="../../../web-component-tester/browser.js"></script>
     <script src="../helpers/chainable-methods-for-partial.js"></script>
 
+    <link rel="import" href="../../../polymer/polymer.html">
+
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../../starcounter-include.html">
     <script src="../helpers/WCT-Polyfill_bugs_workaround.js"></script>
@@ -18,113 +20,105 @@
 
     <test-fixture id="given-in-HTML">
         <template>
-            <starcounter-include partial="{&quot;Html&quot;: &quot;../templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;works!&quot;}"></starcounter-include>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include partial="{
+                        &quot;CompositionProvider_0&quot;: {
+                            &quot;PartialId&quot;: &quot;given PartialId&quot;
+                        },
+                        &quot;Html&quot;: &quot;../templateToInclude.html&quot;,
+                        &quot;doesItWork&quot;: &quot;works!&quot;
+                    }"></starcounter-include>
+            </div>
         </template>
     </test-fixture>
 
     <test-fixture id="given-in-JS">
         <template>
-            <starcounter-include></starcounter-include>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include></starcounter-include>
+            </div>
         </template>
     </test-fixture>
 
+    <test-fixture id="dom-bind">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <dom-bind>
+                    <template is="dom-bind">
+                        <starcounter-include partial="{{partial}}"></starcounter-include>
+                    </template>
+                </dom-bind>
+            </div>
+        </template>
+    </test-fixture>
 
     <script>
-        // describe('`partial` attribute is set/updated using HTML methods')
-        var scInclude, importedTemplate, previousModel;
-        describe('when non-namespaced JSON view-model is given (object that contains `Html` property)', function(){
-            // afterEach(function(){
-            //     if(scInclude.parentElement){
-            //         scInclude.parentElement.removeChild(scInclude);
-            //     }
-            // });
-            var model = () => ({
-                "Html": "../templateToInclude.html",
-                "doesItWork": "works!"
-            });
-
-            // var func = () => ({foo: 1})
-
-            beforeEach(function (done) {
+        var scInclude, domBind;
+        var partial = {
+            "App": {
+                "Html": "old_templateToInclude.html",
+                "doesItWork": "worked!"
+            }
+        };
+        describe('When partial attribute is set in HTML, a warning should be thrown', function () {
+            before(function (done) {
                 sinon.spy(console, 'warn');
-                // scInclude = fixture('default-composition');
-                // scInclude.partial = JSON.parse(JSON.stringify(partial));
-                // setTimeout(done, 500);
-                done();
+                fixture('given-in-HTML');
+                // wait for polyfills
+                setTimeout(done, 50);
             });
-            afterEach(function (done) {
+            it('should throw a warning about using `partial` attribute', function () {
+                expect(console.warn).to.be.called;
+            });
+            after(function () {
                 console.warn.restore();
-                // give more time to polyfill cleanup
-                setTimeout(done);
-            });
-            describe('in stamped HTML markup', function(){
-                beforeEach(function (done) {
-                    scInclude = fixture('given-in-HTML');
-                    // wait for polyfills
-                    setTimeout(done, 500);
-                });
-                it('should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
-                    expect(console.warn).to.be.called;
-                    expect(console.warn.args[1].join()).to.contain('namespaced');
-                    expect(console.warn.args[1].join()).to.contain('Self.GET');
-                    expect(console.warn.args[1].join()).to.contain('imported-template');
-                });
-                it('should throw a warning about "namespaced" view-model, that contains a reference to the element', function(){
-                    expect(console.warn).to.be.called;
-                    expect(console.warn.args[1]).to.contain(scInclude);
-                });
-                it('should throw a warning about "namespaced" view-model, that contains a reference to the view-model', function(){
-                    expect(console.warn).to.be.called;
-                    expect(console.warn.args[1]).to.contain(scInclude.viewModel);
-                });
-            });
-            describe('in JS', function(){
-                beforeEach(function (done) {
-                    scInclude = fixture('given-in-JS');
-                    // wait for polyfills
-                    setTimeout(done, 500);
-                });
-                describe('via `setAttribute`,', function(){
-                    beforeEach(function(){
-                        scInclude.setAttribute('view-model', JSON.stringify(model()));
-                    });
-                    it('should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
-                        expect(console.warn).to.be.called;
-                        expect(console.warn.args[1].join()).to.contain('namespaced');
-                        expect(console.warn.args[1].join()).to.contain('Self.GET');
-                        expect(console.warn.args[1].join()).to.contain('imported-template');
-                    });
-                    it('should throw a warning, that contains a reference to the element', function(){
-                        expect(console.warn).to.be.called;
-                        expect(console.warn.args[1]).to.contain(scInclude);
-                    });
-                    it('should throw a warning, that contains a reference to the view-model', function(){
-                        expect(console.warn).to.be.called;
-                        expect(console.warn.args[1]).to.contain(scInclude.viewModel);
-                    });
-                });
-                describe('via property,', function(){
-                    beforeEach(function(){
-                        scInclude.viewModel = model();
-                    });
-                    it('should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
-                        expect(console.warn).to.be.called;
-                        expect(console.warn.args[1].join()).to.contain('namespaced');
-                        expect(console.warn.args[1].join()).to.contain('Self.GET');
-                        expect(console.warn.args[1].join()).to.contain('imported-template');
-                    });
-                    it('should throw a warning, that contains a reference to the element', function(){
-                        expect(console.warn).to.be.called;
-                        expect(console.warn.args[1]).to.contain(scInclude);
-                    });
-                    it('should throw a warning, that contains a reference to the view-model', function(){
-                        expect(console.warn).to.be.called;
-                        expect(console.warn.args[1]).to.contain(scInclude.viewModel);
-                    });
-                });
-            });
+            })
         });
 
+        describe('When partial property is set via JS, a warning should be thrown', function () {
+            before(function (done) {
+                sinon.spy(console, 'warn');
+                scInclude = fixture('given-in-JS').querySelector('starcounter-include');
+                // wait for polyfills
+                setTimeout(done, 50);
+            });
+            it('should throw a warning about using `partial` property', function () {
+                // control test
+                expect(console.warn).to.be.not.called;
+
+                scInclude.partial = partial;
+
+                // test now
+                expect(console.warn).to.be.called;
+            });
+            after(function () {
+                console.warn.restore();
+            })
+        });
+
+        describe('When partial property is set via dom-bind, a warning should be thrown', function () {
+            before(function (done) {
+                sinon.spy(console, 'warn');
+                domBind = fixture('dom-bind').querySelector('dom-bind');
+                // wait for polyfills
+                setTimeout(done, 50);
+            });
+            it('should throw a warning about using `partial` property', function () {
+                // control test
+                expect(console.warn).to.be.not.called;
+
+                domBind.set('partial', partial);
+
+                // test now
+                expect(console.warn).to.be.called;
+            });
+            after(function () {
+                console.warn.restore();
+            })
+        });
     </script>
 
 </body>

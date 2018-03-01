@@ -18,7 +18,7 @@
 
     <test-fixture id="given-in-HTML">
         <template>
-            <starcounter-include partial="{&quot;Html&quot;: &quot;../templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;works!&quot;}"></starcounter-include>
+            <starcounter-include view-model="{&quot;Html&quot;: &quot;../templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;works!&quot;}"></starcounter-include>
         </template>
     </test-fixture>
 
@@ -65,17 +65,17 @@
                 });
                 it('should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
                     expect(console.warn).to.be.called;
-                    expect(console.warn.args[1].join()).to.contain('namespaced');
-                    expect(console.warn.args[1].join()).to.contain('Self.GET');
-                    expect(console.warn.args[1].join()).to.contain('imported-template');
+                    expect(console.warn.args[0].join()).to.contain('namespaced');
+                    expect(console.warn.args[0].join()).to.contain('Self.GET');
+                    expect(console.warn.args[0].join()).to.contain('imported-template');
                 });
                 it('should throw a warning about "namespaced" view-model, that contains a reference to the element', function(){
                     expect(console.warn).to.be.called;
-                    expect(console.warn.args[1]).to.contain(scInclude);
+                    expect(console.warn.args[0]).to.contain(scInclude);
                 });
                 it('should throw a warning about "namespaced" view-model, that contains a reference to the view-model', function(){
                     expect(console.warn).to.be.called;
-                    expect(console.warn.args[1]).to.contain(scInclude.viewModel);
+                    expect(console.warn.args[0]).to.contain(scInclude.viewModel);
                 });
             });
             describe('in JS', function(){
@@ -90,17 +90,17 @@
                     });
                     it('should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
                         expect(console.warn).to.be.called;
-                        expect(console.warn.args[1].join()).to.contain('namespaced');
-                        expect(console.warn.args[1].join()).to.contain('Self.GET');
-                        expect(console.warn.args[1].join()).to.contain('imported-template');
+                        expect(console.warn.args[0].join()).to.contain('namespaced');
+                        expect(console.warn.args[0].join()).to.contain('Self.GET');
+                        expect(console.warn.args[0].join()).to.contain('imported-template');
                     });
                     it('should throw a warning, that contains a reference to the element', function(){
                         expect(console.warn).to.be.called;
-                        expect(console.warn.args[1]).to.contain(scInclude);
+                        expect(console.warn.args[0]).to.contain(scInclude);
                     });
                     it('should throw a warning, that contains a reference to the view-model', function(){
                         expect(console.warn).to.be.called;
-                        expect(console.warn.args[1]).to.contain(scInclude.viewModel);
+                        expect(console.warn.args[0]).to.contain(scInclude.viewModel);
                     });
                 });
                 describe('via property,', function(){
@@ -109,17 +109,17 @@
                     });
                     it('should throw a warning about "namespaced" view-model, with a hint how to fix that ("Self.GET", "imported-template")', function(){
                         expect(console.warn).to.be.called;
-                        expect(console.warn.args[1].join()).to.contain('namespaced');
-                        expect(console.warn.args[1].join()).to.contain('Self.GET');
-                        expect(console.warn.args[1].join()).to.contain('imported-template');
+                        expect(console.warn.args[0].join()).to.contain('namespaced');
+                        expect(console.warn.args[0].join()).to.contain('Self.GET');
+                        expect(console.warn.args[0].join()).to.contain('imported-template');
                     });
                     it('should throw a warning, that contains a reference to the element', function(){
                         expect(console.warn).to.be.called;
-                        expect(console.warn.args[1]).to.contain(scInclude);
+                        expect(console.warn.args[0]).to.contain(scInclude);
                     });
                     it('should throw a warning, that contains a reference to the view-model', function(){
                         expect(console.warn).to.be.called;
-                        expect(console.warn.args[1]).to.contain(scInclude.viewModel);
+                        expect(console.warn.args[0]).to.contain(scInclude.viewModel);
                     });
                 });
             });
