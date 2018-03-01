@@ -12,7 +12,7 @@ version: 4.2.0
 
 <script>
     (function() {
-        function warnAboutDeperecatedPartial() {
+        function warnAboutDeprecatedPartial() {
             console.warn('`partial` attribute and property are deprecatrd from `starcounter-include` in fovour of (viewModel property or view-model attribute), they will soon be no longer be supported');
         }
         const isWebkit = navigator.vendor && navigator.vendor.indexOf("Apple") > -1;
@@ -32,13 +32,13 @@ version: 4.2.0
                 super();
                 this.defaultComposition = null;
                 var partialId = this.partialId;
-                var partial = this.viewModel || this.partial || undefined;
-                
+                var viewModel = this.viewModel || this.partial || undefined;
+
                 if(this.partial) {
-                    warnAboutDeperecatedPartial();
+                    warnAboutDeprecatedPartial();
                 }
 
-                checkForNonNamespaced(partial, this);
+                checkForNonNamespaced(viewModel, this);
 
                 this.attachShadow({mode: "open"});
 
@@ -51,35 +51,31 @@ version: 4.2.0
                 Object.defineProperties(this, {
                     partial: {
                         set: function(newValue) {
-                            if(!this.settingPartialFromModel) {
-                                warnAboutDeperecatedPartial();
-                            }
-                            partial = newValue;
-                            checkForNonNamespaced(partial, this);
+                            warnAboutDeprecatedPartial();
+                            this.viewModel = newValue;
+                        },
+                        get: function() {
+                            return this.viewModel;
+                        }
+                    },
+                    viewModel: {
+                        set: function(newValue) {
+                            viewModel = newValue;
+                            checkForNonNamespaced(newValue, this);
                             if(!this.template){
                                 // stamp imported tempalte attach href, and eventually model
                                 this.stampImportedTemplate();
                             } else {
                                 // just update href and model ONLY if there is no href change
                                 if(!this._updateHref()){
-                                    this.template.model = this.partial;
+                                    this.template.model = viewModel;
                                 }
                             }
                             // update composition, use custom one until content is fetched to avoid FOUC
                             this.updateComposition();
                         },
                         get: function() {
-                            return partial;
-                        }
-                    },
-                    viewModel: {
-                        set: function(newValue) {
-                            this.settingPartialFromModel = true;
-                            this.partial = newValue;
-                            this.settingPartialFromModel = false;
-                        },
-                        get: function() {
-                            return this.partial;
+                            return viewModel;
                         }
                     },
                     partialId: {
@@ -121,15 +117,15 @@ version: 4.2.0
                         }
                         starcounterInclude.defaultComposition = mergedComposition;
 
-                        if (this.model !== starcounterInclude.partial) {
+                        if (this.model !== starcounterInclude.viewModel) {
                             // update entire model
-                            this.model = starcounterInclude.partial;
+                            this.model = starcounterInclude.viewModel;
                         }
                         // put correct composition
                         starcounterInclude.updateComposition();
                     });
 
-                    const href = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
+                    const href = buildURL(this.viewModel, this.mergedHtmlPrefix, this.defaultHtml);
                     href && (importedTemplate.href = href);
 
                     this.appendChild(importedTemplate);
@@ -141,7 +137,7 @@ version: 4.2.0
             }
         }
         var StarcounterIncludePrototype = StarcounterInclude.prototype;
-        StarcounterIncludePrototype.partial = null;
+        StarcounterIncludePrototype.viewModel = null;
         StarcounterIncludePrototype.partialId = null;
         // StarcounterIncludePrototype.href = null;
         StarcounterIncludePrototype.mergedHtmlPrefix = '/sc/htmlmerger?';
@@ -152,7 +148,7 @@ version: 4.2.0
          */
         function partialAttributeToProperty(element, attrVal) {
 
-            var attrVal = element.getAttribute("partial") || element.getAttribute("view-model");
+            var attrVal = element.getAttribute("view-model") || element.getAttribute("partial");
             if(!attrVal){
                 // no value
                 return undefined;
@@ -163,19 +159,17 @@ version: 4.2.0
             }
         }
         /**
-         * Set partial property if partial or viewm-model attribute was changed
+         * Set partial property if partial or view-model attribute was changed
          */
         StarcounterIncludePrototype.attributeChangedCallback = function(name, oldVal, newVal) {
             if (name === "view-model") {
-                this.settingPartialFromModel = true;
-                this.partial = partialAttributeToProperty(this, newVal);
-                this.settingPartialFromModel = false;
+                this.viewModel = partialAttributeToProperty(this, newVal);
             }
             else if(name === "partial") {
-                if(!oldVal /* to warn only once */) { 
-                    warnAboutDeperecatedPartial();
+                if(!oldVal /* to warn only once */) {
+                    warnAboutDeprecatedPartial();
                 }
-                this.partial = partialAttributeToProperty(this, newVal);
+                this.viewModel = partialAttributeToProperty(this, newVal);
             }
         };
         /**
@@ -191,7 +185,7 @@ version: 4.2.0
             if(!this.template){
                 return;
             }
-            var href = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
+            var href = buildURL(this.viewModel, this.mergedHtmlPrefix, this.defaultHtml);
             if (href !== this.template.href) {
                 if (this.template.href) {
                     this.defaultComposition = null;
@@ -250,7 +244,7 @@ version: 4.2.0
                 return this._renderCompositionChange(compositionString, () => this.stringToDocumentFragment(compositionString));
             }
             else {
-                const compositionProvider = this.partial && this.partial[this.compositionProvider];
+                const compositionProvider = this.viewModel && this.viewModel[this.compositionProvider];
 
                 if (compositionProvider) {
                     this.partialId = compositionProvider.PartialId;
@@ -264,9 +258,9 @@ version: 4.2.0
                             const merged = this.stringToDocumentFragment(this.storedLayout);
 
                             if (compositionProvider.ViewUris) {
-                                const keys = Object.keys(this.partial);
+                                const keys = Object.keys(this.viewModel);
                                 for(let key of keys) {
-                                    const scoped = this.partial[key];
+                                    const scoped = this.viewModel[key];
                                     if (scoped && scoped.Html && compositionProvider.ViewUris.indexOf(scoped.Html) === -1) {
                                         if (this.defaultComposition) {
                                             this.template.scopedNodes.forEach((nodes) => {
@@ -306,7 +300,7 @@ version: 4.2.0
         // Polymer doesn't set props on its own components, rather, it calls this function
         StarcounterIncludePrototype._setPendingProperty = function (path, value) {
             if(path === 'partial') {
-                warnAboutDeperecatedPartial();
+                warnAboutDeprecatedPartial();
             }
             this[path] = value;
         }
@@ -318,7 +312,7 @@ version: 4.2.0
         */
         StarcounterIncludePrototype._setPendingPropertyOrPath = function (path, value) {
 
-            var sameModelAlreadyLoaded = this.template.model === this.partial;
+            var sameModelAlreadyLoaded = this.template.model === this.viewModel;
             const newPath = path.replace("partial.", "model.")
                 .replace("viewModel.", "model.");
             // If that's the same model, we still may need to bump
@@ -363,7 +357,7 @@ version: 4.2.0
                 // Completely new partial, reload everything
                 // TODO: check if we can even get to this point
                 if(!this._updateHref()){
-                    this.template.model = this.partial;
+                    this.template.model = this.viewModel;
                 }
                 this.updateComposition();
             }
@@ -414,7 +408,7 @@ version: 4.2.0
          */
         StarcounterIncludePrototype.saveLayout = function(compositionStr){
             compositionStr = compositionStr || this.shadowRoot.innerHTML;
-            this.partial[this.compositionProvider].Composition$ = compositionStr;
+            this.viewModel[this.compositionProvider].Composition$ = compositionStr;
             this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: compositionStr}));
             // trigger polymer-notification-protocol-compilant event
             var notificationPath = this.compositionProvider + '.Composition$';
