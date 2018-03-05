@@ -43,47 +43,47 @@
             describe("should remove Composition when", function() {
                 beforeEach(function() {
                     instance = fixture('nothing');
-                    instance.partial = clone(model);
+                    instance.viewModel = clone(model);
                 });
 
-                it('the `partial` attribute is changed to an empty string', function(done) {
+                it('the `view-model` attribute is changed to an empty string', function(done) {
                     expect(instance).to.have.compositionAttached;
-                    instance.setAttribute("partial", "");
+                    instance.setAttribute("view-model", "");
                     expect(instance).to.have.compositionCleanedUp;
                     done();
                 });
 
-                it('when the `partial` property is changed to an empty string', function(done) {
+                it('when the `viewModel` property is changed to an empty string', function(done) {
                     expect(instance).to.have.compositionAttached;
-                    instance.partial = "";
+                    instance.viewModel = "";
                     expect(instance).to.have.compositionCleanedUp;
                     done();
                 });
 
-                it('when the `partial` property is changed to null', function(done) {
+                it('when the `viewModel` property is changed to null', function(done) {
                     expect(instance).to.have.compositionAttached;
-                    instance.partial = null;
+                    instance.viewModel = null;
                     expect(instance).to.have.compositionCleanedUp;
                     done();
                 });
 
-                it('when the `partial` property is changed to undefined', function(done) {
+                it('when the `viewModel` property is changed to undefined', function(done) {
                     expect(instance).to.have.compositionAttached;
-                    instance.partial = undefined;
+                    instance.viewModel = undefined;
                     expect(instance).to.have.compositionCleanedUp;
                     done();
                 });
 
-                it('when the `partial` property is changed to empty object', function(done) {
+                it('when the `viewModel` property is changed to empty object', function(done) {
                     expect(instance).to.have.compositionAttached;
-                    instance.partial = {};
+                    instance.viewModel = {};
                     expect(instance).to.have.compositionCleanedUp;
                     done();
                 });
 
-                it('when the `partial` property is changed to a partial without Composition$', function(done) {
+                it('when the `viewModel` property is changed to a view-model without Composition$', function(done) {
                     expect(instance).to.have.compositionAttached;
-                    instance.partial = {
+                    instance.viewModel = {
                         "Html": "../templateToInclude.html",
                         "doesItWork": "works!"
                     };
@@ -91,9 +91,9 @@
                     done();
                 });
 
-                it('when the `partial` property is changed to a partial with empty Composition$', function(done) {
+                it('when the `viewModel` property is changed to a view-model with empty Composition$', function(done) {
                     expect(instance).to.have.compositionAttached;
-                    instance.partial = {
+                    instance.viewModel = {
                         "Html": "../templateToInclude.html",
                         "CompositionProvider_0": {
                             "Composition$": "",

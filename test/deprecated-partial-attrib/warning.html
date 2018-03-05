@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../helpers/chainable-methods-for-partial.js"></script>
+
+    <link rel="import" href="../../../polymer/polymer.html">
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../starcounter-include.html">
+    <script src="../helpers/WCT-Polyfill_bugs_workaround.js"></script>
+</head>
+
+<body>
+
+    <test-fixture id="given-in-HTML">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include partial="{
+                        &quot;CompositionProvider_0&quot;: {
+                            &quot;PartialId&quot;: &quot;given PartialId&quot;
+                        },
+                        &quot;Html&quot;: &quot;../templateToInclude.html&quot;,
+                        &quot;doesItWork&quot;: &quot;works!&quot;
+                    }"></starcounter-include>
+            </div>
+        </template>
+    </test-fixture>
+
+    <test-fixture id="given-in-JS">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <starcounter-include></starcounter-include>
+            </div>
+        </template>
+    </test-fixture>
+
+    <test-fixture id="dom-bind">
+        <template>
+            <!-- nest to workaround test-fixture bug -->
+            <div>
+                <dom-bind>
+                    <template is="dom-bind">
+                        <starcounter-include partial="{{partial}}"></starcounter-include>
+                    </template>
+                </dom-bind>
+            </div>
+        </template>
+    </test-fixture>
+
+    <script>
+        var scInclude, domBind;
+        var partial = {
+            "App": {
+                "Html": "old_templateToInclude.html",
+                "doesItWork": "worked!"
+            }
+        };
+        describe('When partial attribute is set in HTML, a warning should be thrown', function () {
+            before(function (done) {
+                sinon.spy(console, 'warn');
+                fixture('given-in-HTML');
+                // wait for polyfills
+                setTimeout(done, 50);
+            });
+            it('should throw a warning about using `partial` attribute', function () {
+                expect(console.warn).to.be.called;
+            });
+            after(function () {
+                console.warn.restore();
+            })
+        });
+
+        describe('When partial property is set via JS, a warning should be thrown', function () {
+            before(function (done) {
+                sinon.spy(console, 'warn');
+                scInclude = fixture('given-in-JS').querySelector('starcounter-include');
+                // wait for polyfills
+                setTimeout(done, 50);
+            });
+            it('should throw a warning about using `partial` property', function () {
+                // control test
+                expect(console.warn).to.be.not.called;
+
+                scInclude.partial = partial;
+
+                // test now
+                expect(console.warn).to.be.called;
+            });
+            after(function () {
+                console.warn.restore();
+            })
+        });
+
+        describe('When partial property is set via dom-bind, a warning should be thrown', function () {
+            before(function (done) {
+                sinon.spy(console, 'warn');
+                domBind = fixture('dom-bind').querySelector('dom-bind');
+                // wait for polyfills
+                setTimeout(done, 50);
+            });
+            it('should throw a warning about using `partial` property', function () {
+                // control test
+                expect(console.warn).to.be.not.called;
+
+                domBind.set('partial', partial);
+
+                // test now
+                expect(console.warn).to.be.called;
+            });
+            after(function () {
+                console.warn.restore();
+            })
+        });
+    </script>
+
+</body>
+
+</html>

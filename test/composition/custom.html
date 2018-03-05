@@ -20,7 +20,7 @@
 <body>
     <test-fixture id="initial-fixture">
         <template>
-            <starcounter-include partial="{
+            <starcounter-include view-model="{
                 &quot;CompositionProvider_0&quot;: {
                     &quot;PartialId&quot;: &quot;given PartialId&quot;,
                     &quot;Composition$&quot;: &quot;customComposition!<slot></slot>&quot;
@@ -33,7 +33,7 @@
         </template>
     </test-fixture>
     <script>
-        describe('starcounter-include when imports a partial with a custom composition', function () {
+        describe('starcounter-include when imports a view-model with a custom composition', function () {
             var scInclude;
 
             afterEach(function (done) {
@@ -49,9 +49,9 @@
 
                 expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_CUSTOM);
             });
-            describe('after partial property is replaced with a partial that contains a default composition', function () {
+            describe('after viewModel property is replaced with a view-model that contains a default composition', function () {
                 beforeEach(function (done) {
-                    scInclude.partial = partialWithDefault();
+                    scInclude.viewModel = partialWithDefault();
                     setTimeout(done, 500);
                 });
                 it('should use it as its composition', function () {
@@ -59,9 +59,9 @@
                     expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_DEFAULT);
                 });
             });
-            describe('after partial property is replaced with a partial that contains a fallback composition', function () {
+            describe('after viewModel property is replaced with a view-model that contains a fallback composition', function () {
                 beforeEach(function (done) {
-                    scInclude.partial = partialWithFallback();
+                    scInclude.viewModel = partialWithFallback();
                     setTimeout(done, 500);
                 });
                 it('should use it as its composition', function () {
@@ -100,10 +100,10 @@
                     });
                 });
             });
-            describe('after partial property is replaced with itself', function () {
+            describe('after view-model property is replaced with itself', function () {
                 it('should keep using the existing composition', function (done) { //otherwise ViewKeeper (aka workspaces) do not keep state in Firefox and Edge
                     var old = scInclude.shadowRoot.querySelector("slot,content");
-                    scInclude.partial = scInclude.partial;
+                    scInclude.viewModel = scInclude.viewModel;
                     setTimeout(function () {
                         expect(old).to.be.not.null;
                         expect(old).to.be.equal(scInclude.shadowRoot.querySelector("slot,content"));

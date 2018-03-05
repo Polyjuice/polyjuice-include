@@ -15,18 +15,18 @@
 
         // Load and run all tests (.html, .js):
         var suites = [
-            'partialAttribute/not_provided.html',
-            'partialAttribute/not_stamped_from_polymer_template.html',
-            'partialAttribute/cleanup_removed_partial_Html.html',
-            'partialAttribute/cleanup_removed_partial_PartialId.html',
-            'partialAttribute/cleanup_removed_partial_Layout.html',
+            'view-model-attribute/not_provided.html',
+            'view-model-attribute/not_stamped_from_polymer_template.html',
+            'view-model-attribute/cleanup_removed_partial_Html.html',
+            'view-model-attribute/cleanup_removed_partial_PartialId.html',
+            'view-model-attribute/cleanup_removed_partial_Layout.html',
             // {} -> null workaround
-            'partialAttribute/set_to_empty_object.html',
+            'view-model-attribute/set_to_empty_object.html',
             // scoped partials
-            'partialAttribute/nested-html/given_in_HTML.html',
-            'partialAttribute/nested-html/given_in_JS.html',
-            'partialAttribute/nested-html/stamped_from_polymer_template.html',
-            'partialAttribute/nested-html/property-set-before-CEupgrade.html',
+            'view-model-attribute/nested-html/given_in_HTML.html',
+            'view-model-attribute/nested-html/given_in_JS.html',
+            'view-model-attribute/nested-html/stamped_from_polymer_template.html',
+            'view-model-attribute/nested-html/property-set-before-CEupgrade.html',
             // partialId reflection
             'partialId-property/reflect-partialId-to-attribute.html',
             // compositions
@@ -35,6 +35,8 @@
             'composition/fallback.html',
             //internals
             'internals/buildURL.html',
+            // warning about deprecated "partial" attribute
+            'deprecated-partial-attrib/warning.html',
             // warning on dropped support for non-namespaced view-models
             'non-namespaced/warning.html',
             'shadowRoot/basic.html',

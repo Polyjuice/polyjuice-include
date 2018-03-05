@@ -23,7 +23,7 @@
     <template id="fixture">
         <dom-bind>
             <template is="dom-bind">
-                <starcounter-include partial="{{model.Page}}"></starcounter-include>
+                <starcounter-include view-model="{{model.Page}}"></starcounter-include>
             </template>
         </dom-bind>
     </template>
@@ -68,9 +68,9 @@
                 var fixture = document.querySelector('#fixture');
                 var clone = document.importNode(fixture.content, true);
                 domBind = clone.querySelector('dom-bind');
-                partial = createPartial();
+                viewModel = createPartial();
                 domBind.model = {
-                    Page: partial
+                    Page: viewModel
                 };
                 domBind.addEventListener('dom-change', function(){
                     include = container.querySelector('starcounter-include');
@@ -86,13 +86,13 @@
                 expect(importedTemplate.getAttribute("href")).to.equal(MERGED_URL);
                 expect(importedTemplate.href).to.equal(MERGED_URL);
             });
-            it('should NOT attach partial model to `imported-template` immediately', function () {
+            it('should NOT attach view-model to `imported-template` immediately', function () {
                 expect(importedTemplate.model).to.equal(null);
             });
             it('should attach partial model to `imported-template` on `stamping`', function (done) {
                 importedTemplate.addEventListener('stamping', function onceStamped(){
                     importedTemplate.removeEventListener('stamping', onceStamped);
-                    expect(importedTemplate.model).to.equal(partial);
+                    expect(importedTemplate.model).to.equal(viewModel);
                     done();
                 });
             });
@@ -131,7 +131,7 @@
                         expect(importedTemplate.href).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
                     });
                     it('should NOT attach new partial model to `imported-template` immediately', function () {
-                        expect(importedTemplate.model).to.equal(partial);
+                        expect(importedTemplate.model).to.equal(viewModel);
                     });
                     it('should attach new partial model to `imported-template` on `stamping`', function (done) {
                         importedTemplate.addEventListener('stamping', function onceStamped(){
@@ -141,7 +141,7 @@
                     });
                 });
 
-                describe('after `dom-bind`` changed the partial property to new one with the same Html', function () {
+                describe('after `dom-bind`` changed the view-model property to new one with the same Html', function () {
                     var changedPartialWithSameHtml;
                     beforeEach(function() {
                         changedPartialWithSameHtml = {
@@ -164,7 +164,7 @@
                         expect(importedTemplate.getAttribute("href")).to.equal(MERGED_URL);
                         expect(importedTemplate.href).to.equal(MERGED_URL);
                     });
-                    it('should attach new partial model to `imported-template` immediately', function () {
+                    it('should attach new view-model model to `imported-template` immediately', function () {
                         expect(importedTemplate.model).to.equal(changedPartialWithSameHtml);
                     });
                 });
@@ -181,13 +181,13 @@
                         expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                         expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                     });
-                    it('should NOT attach new partial model to `imported-template` immediately', function () {
-                        expect(importedTemplate.model).to.equal(partial);
+                    it('should NOT attach new view-model model to `imported-template` immediately', function () {
+                        expect(importedTemplate.model).to.equal(viewModel);
                     });
                     it('should NOT notify `imported-template` (old nodes) with the new model changes immediately', function () {
                         expect(importedTemplate._setPendingPropertyOrPath).not.to.be.called;
                     });
-                    it('should attach new partial model to `imported-template` on `stamping`', function (done) {
+                    it('should attach new view-model model to `imported-template` on `stamping`', function (done) {
                         importedTemplate.addEventListener('stamping', function onceStamped(){
                             expect(importedTemplate.model.scope1).to.equal(changedScope);
                             done();
@@ -271,7 +271,7 @@
                     });
                     it('should attach same partial model to `imported-template` on `stamping`', function (done) {
                         importedTemplate.addEventListener('stamping', function onceStamped(){
-                            expect(importedTemplate.model).to.equal(partial);
+                            expect(importedTemplate.model).to.equal(viewModel);
                             done();
                         });
                     });
@@ -290,7 +290,7 @@
                         expect(importedTemplate.href).to.equal(null);
                     });
                     it('should attach same partial model to `imported-template`', function () {
-                        expect(importedTemplate.model).to.equal(partial);
+                        expect(importedTemplate.model).to.equal(viewModel);
                     });
                 });
             });

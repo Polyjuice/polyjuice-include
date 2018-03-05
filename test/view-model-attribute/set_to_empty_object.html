@@ -17,7 +17,7 @@
 
 <body>
     <test-fixture id="starcounter-include">
-        <template><starcounter-include partial="{}"></starcounter-include></template>
+        <template><starcounter-include view-model="{}"></starcounter-include></template>
     </test-fixture>
 
     <script>
@@ -27,25 +27,25 @@
             setTimeout(done);
         });
         var include;
-        describe('when created programatically and partial attribute is set to `"{}"`', function () {
+        describe('when created programatically and view-model attribute is set to `"{}"`', function () {
             beforeEach(function () {
                 include = document.createElement("starcounter-include");
-                include.setAttribute('partial', '{}');
+                include.setAttribute('view-model', '{}');
             });
             it('should clear inner `imported-template`', function () {
                 expect(include).to.have.descendant('imported-template').that.is.a.clearImportedTemplate;
             });
         });
-        describe('when created programatically and partial property is set to `{}`', function () {
+        describe('when created programatically and view-model property is set to `{}`', function () {
             beforeEach(function () {
                 include =  document.createElement("starcounter-include");
-                include.partial = {};
+                include.viewModel = {};
             });
             it('should clear inner `imported-template`', function () {
                 expect(include).to.have.descendant('imported-template').that.is.a.clearImportedTemplate;
             });
         });
-        describe('when created in HTML with `partial="{}"`', function () {
+        describe('when created in HTML with `view-model="{}"`', function () {
             beforeEach(function () {
                 include = fixture("starcounter-include");
             });

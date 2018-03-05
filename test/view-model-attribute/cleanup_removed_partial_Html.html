@@ -21,7 +21,7 @@
     </test-fixture>
 
     <script>
-        describe('cleanup after removed partial', function() {
+        describe('cleanup after removed view-model', function() {
             afterEach(function (done) {
                 // give more time to polyfill cleanup
                 setTimeout(done);
@@ -36,33 +36,33 @@
 
             beforeEach(function() {
                 instance = fixture('nothing');
-                instance.partial = clone(model);
+                instance.viewModel = clone(model);
             });
 
-            it('when the `partial` attribute is changed to an empty string', function(done) {
+            it('when the `view-model` attribute is changed to an empty string', function(done) {
                 expectPartialToBeAttached();
-                instance.setAttribute("partial", "");
+                instance.setAttribute("view-model", "");
                 expectPartialToBeCleanedUp();
                 done();
             });
 
-            it('when the `partial` property is changed to an empty string', function(done) {
+            it('when the `view-model` property is changed to an empty string', function(done) {
                 expectPartialToBeAttached();
-                instance.partial = "";
+                instance.viewModel = "";
                 expectPartialToBeCleanedUp();
                 done();
             });
 
-            it('when the `partial` property is changed to null', function(done) {
+            it('when the `viewModel` property is changed to null', function(done) {
                 expectPartialToBeAttached();
-                instance.partial = null;
+                instance.viewModel = null;
                 expectPartialToBeCleanedUp();
                 done();
             });
 
-            it('when the `partial` property is changed to undefined', function(done) {
+            it('when the `viewModel` property is changed to undefined', function(done) {
                 expectPartialToBeAttached();
-                instance.partial = undefined;
+                instance.viewModel = undefined;
                 expectPartialToBeCleanedUp();
                 done();
             });
@@ -70,16 +70,16 @@
             // --
             // This functionality is being discussed at
             // https://github.com/Starcounter/starcounter-include/issues/12
-            it('when the `partial` property is changed to empty object', function(done) {
+            it('when the `viewModel` property is changed to empty object', function(done) {
                 expectPartialToBeAttached();
-                instance.partial = {};
+                instance.viewModel = {};
                 expectPartialToBeCleanedUp();
                 done();
             });
 
-            xit('when the `partial` property is changed to an object without Html', function(done) {
+            xit('when the `viewModel` property is changed to an object without Html', function(done) {
                 expectPartialToBeAttached();
-                instance.partial = {
+                instance.viewModel = {
                     "doesItWork": "works!"
                 };
                 expectPartialToBeCleanedUp();
@@ -87,9 +87,9 @@
             });
             // --
 
-            it('when the `partial` property is changed to an object with empty Html sub-property, should request new HTML from just `/sc/htmlmerger?AppA=` - for example to get default declarative Shadow DOM composition', function(done) {
+            it('when the `viewModel` property is changed to an object with empty Html sub-property, should request new HTML from just `/sc/htmlmerger?AppA=` - for example to get default declarative Shadow DOM composition', function(done) {
                 expectPartialToBeAttached();
-                instance.partial = {
+                instance.viewModel = {
                     "AppA":{
                         "Html": "",
                         "doesItWork": "works!"

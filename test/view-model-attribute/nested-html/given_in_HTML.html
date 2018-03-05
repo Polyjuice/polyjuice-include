@@ -17,7 +17,7 @@
 <body>
     <test-fixture id="nested-html">
         <template>
-            <starcounter-include partial="{
+            <starcounter-include view-model="{
                 &quot;scope1&quot;: {
                     &quot;Html&quot;: &quot;scope1Html&quot;,
                     &quot;doesItWork&quot;: &quot;works!&quot;
@@ -41,12 +41,12 @@
     </test-fixture>
     <test-fixture id="old">
         <template>
-            <starcounter-include partial="{&quot;App&quot;: {&quot;Html&quot;: &quot;old_templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;worked!&quot;}}"></starcounter-include>
+            <starcounter-include view-model="{&quot;App&quot;: {&quot;Html&quot;: &quot;old_templateToInclude.html&quot;, &quot;doesItWork&quot;: &quot;worked!&quot;}}"></starcounter-include>
         </template>
     </test-fixture>
 
     <script>
-    describe('starcounter-include with `partial` attribute without `Html` on root level, but with some namespaces', function () {
+    describe('starcounter-include with `view-model` attribute without `Html` on root level, but with some namespaces', function () {
         afterEach(function (done) {
             // give more time to polyfill cleanup
             setTimeout(done);
@@ -78,7 +78,7 @@
 
                 it('for element created programmatically', function (done) {
                     scInclude = document.createElement('starcounter-include');
-                    scInclude.setAttribute('partial', JSON.stringify(model));
+                    scInclude.setAttribute('view-model', JSON.stringify(model));
 
                     let importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
 
@@ -90,15 +90,15 @@
                     document.body.appendChild(scInclude);
 
                     importedTemplate.addEventListener('stamping', function onceStamped(){
-                        expect(importedTemplate.model).to.equal(scInclude.partial);
+                        expect(importedTemplate.model).to.equal(scInclude.viewModel);
                         done();
                     });
                 });
 
                 it('for element created and changed programmatically', function (done) {
                     scInclude = document.createElement('starcounter-include');
-                    scInclude.setAttribute('partial', JSON.stringify(oldModel));
-                    scInclude.setAttribute('partial', JSON.stringify(model));
+                    scInclude.setAttribute('view-model', JSON.stringify(oldModel));
+                    scInclude.setAttribute('view-model', JSON.stringify(model));
 
                     let importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
 
@@ -109,7 +109,7 @@
                     document.body.appendChild(scInclude);
 
                     importedTemplate.addEventListener('stamping', function onceStamped(){
-                        expect(importedTemplate.model).to.equal(scInclude.partial);
+                        expect(importedTemplate.model).to.equal(scInclude.viewModel);
                         done();
                     });
                 });
@@ -124,14 +124,14 @@
                     expect(importedTemplate.model).to.equal(null);
 
                     importedTemplate.addEventListener('stamping', function onceStamped(){
-                        expect(importedTemplate.model).to.equal(scInclude.partial);
+                        expect(importedTemplate.model).to.equal(scInclude.viewModel);
                         done();
                     });
                 });
 
                 it('if value was set after element was attached', function (done) {
                     scInclude = fixture('nothing');
-                    scInclude.setAttribute('partial', JSON.stringify(model));
+                    scInclude.setAttribute('view-model', JSON.stringify(model));
 
                     let importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
 
@@ -140,14 +140,14 @@
                     expect(importedTemplate.model).to.equal(null);
 
                     importedTemplate.addEventListener('stamping', function onceStamped(){
-                        expect(importedTemplate.model).to.equal(scInclude.partial);
+                        expect(importedTemplate.model).to.equal(scInclude.viewModel);
                         done();
                     });
                 });
 
                 it('if value was changed after element was attached', function (done) {
                     scInclude = fixture('old');
-                    scInclude.setAttribute('partial', JSON.stringify(model));
+                    scInclude.setAttribute('view-model', JSON.stringify(model));
 
                     let importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
 
@@ -156,7 +156,7 @@
                     expect(importedTemplate.model).to.equal(null);
 
                     importedTemplate.addEventListener('stamping', function onceStamped(){
-                        expect(importedTemplate.model).to.equal(scInclude.partial);
+                        expect(importedTemplate.model).to.equal(scInclude.viewModel);
                         done();
                     });
                 });
@@ -166,8 +166,8 @@
                     let importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
 
                     importedTemplate.addEventListener('stamping', function afterAttached(){
-                        let oldModel = scInclude.partial;
-                        scInclude.setAttribute('partial', JSON.stringify(model));
+                        let oldModel = scInclude.viewModel;
+                        scInclude.setAttribute('view-model', JSON.stringify(model));
 
                         expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                         expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
@@ -176,7 +176,7 @@
                         importedTemplate.removeEventListener('stamping', afterAttached);
 
                         importedTemplate.addEventListener('stamping', function onceStamped(){
-                            expect(importedTemplate.model).to.equal(scInclude.partial);
+                            expect(importedTemplate.model).to.equal(scInclude.viewModel);
                             done();
                         });
                     });
@@ -189,12 +189,12 @@
                     importedTemplate.addEventListener('stamping', function afterAttached(){
                         importedTemplate.removeEventListener('stamping', afterAttached);
                         setTimeout(function(){
-                            let oldModel = scInclude.partial;
-                            scInclude.setAttribute('partial', JSON.stringify(oldModel));
+                            let oldModel = scInclude.viewModel;
+                            scInclude.setAttribute('view-model', JSON.stringify(oldModel));
 
                             expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                             expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                            expect(importedTemplate.model).to.equal(scInclude.partial);
+                            expect(importedTemplate.model).to.equal(scInclude.viewModel);
                             done();
                         });
                     });
@@ -203,7 +203,7 @@
                 it('if value was set after element was detached (model not yet attached)', function () {
                     scInclude = fixture('nothing');
                     scInclude.parentElement.removeChild(scInclude);
-                    scInclude.setAttribute('partial', JSON.stringify(model));
+                    scInclude.setAttribute('view-model', JSON.stringify(model));
 
                     let importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
 
@@ -216,7 +216,7 @@
                     scInclude = fixture('nothing');
                     let parent = scInclude.parentElement;
                     scInclude.parentElement.removeChild(scInclude);
-                    scInclude.setAttribute('partial', JSON.stringify(model));
+                    scInclude.setAttribute('view-model', JSON.stringify(model));
                     // re-attach element
                     parent.appendChild(scInclude);
 
@@ -225,7 +225,7 @@
                     importedTemplate.addEventListener('stamping', function onceStamped(){
                         expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                         expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                        expect(importedTemplate.model).to.equal(scInclude.partial);
+                        expect(importedTemplate.model).to.equal(scInclude.viewModel);
                         done();
                     });
 
@@ -234,7 +234,7 @@
                 it('if value was changed after element was detached (model not yet attached)', function (done) {
                     scInclude = fixture('old');
                     scInclude.parentElement.removeChild(scInclude);
-                    scInclude.setAttribute('partial', JSON.stringify(model));
+                    scInclude.setAttribute('view-model', JSON.stringify(model));
                     let importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
 
                     expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
@@ -242,7 +242,7 @@
                     expect(importedTemplate.model).to.equal(null);
 
                     importedTemplate.addEventListener('stamping', function onceStamped(){
-                        expect(importedTemplate.model).to.equal(scInclude.partial);
+                        expect(importedTemplate.model).to.equal(scInclude.viewModel);
                         done();
                     });
                 });
@@ -251,7 +251,7 @@
                     scInclude = fixture('old');
                     let parent = scInclude.parentElement;
                     scInclude.parentElement.removeChild(scInclude);
-                    scInclude.setAttribute('partial', JSON.stringify(model));
+                    scInclude.setAttribute('view-model', JSON.stringify(model));
                     // re-attach element
                     parent.appendChild(scInclude);
 
@@ -260,7 +260,7 @@
                     importedTemplate.addEventListener('stamping', function onceStamped(){
                         expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                         expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                        expect(importedTemplate.model).to.equal(scInclude.partial);
+                        expect(importedTemplate.model).to.equal(scInclude.viewModel);
                         done();
                     });
                 });
