@@ -30,6 +30,7 @@ version: 5.0.0
             */
             constructor() {
                 super();
+                this.cleanAfterNewIsLoaded = [];
                 this.defaultComposition = null;
                 var partialId = this.partialId;
                 var viewModel = this.viewModel || this.partial || undefined;
@@ -71,8 +72,6 @@ version: 5.0.0
                                     this.template.model = viewModel;
                                 }
                             }
-                            // update composition, use custom one until content is fetched to avoid FOUC
-                            this.updateComposition();
                         },
                         get: function() {
                             return viewModel;
@@ -130,6 +129,7 @@ version: 5.0.0
 
                     this.appendChild(importedTemplate);
                     this.template = importedTemplate;
+                    importedTemplate.clear = function(){}; //noop (or: remove that.clear(); in imported-template)
                 }
             }
             connectedCallback(){
@@ -189,7 +189,7 @@ version: 5.0.0
             if (href !== this.template.href) {
                 if (this.template.href) {
                     this.defaultComposition = null;
-                    this.template.clear();
+                    this.cleanAfterNewIsLoaded = Array.from(this.children);
                 }
                 // set the new value, unify falsy to null
                 this.template.href = href || null;
@@ -465,29 +465,46 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
             const shadowRoot = this.shadowRoot;
 
             if (givenComposition !== undefined) {
-                // reset SD to default CSS
-                shadowRoot.innerHTML = '';
-                
                 const links = givenComposition.querySelectorAll("link[rel=stylesheet]");
                 let remainingLinks = links.length;
+                    var oldChilds = Array.from(shadowRoot.children);
+                    var childs = Array.from(givenComposition.children);
 
                 var linkLoaded = () => {
                     remainingLinks--;
                     if(remainingLinks == 0) {
-                        this.style.visibility = "visible";
+                        //reverse is needed because otherwise dom-bind can't clean itself up
+                        this.cleanAfterNewIsLoaded.reverse().forEach(child => {
+                            if (child !== this.template && child.parentNode) {
+                                child.parentNode.removeChild(child);
+                            }
+                        });
+                        oldChilds.forEach(child => {
+                            child.parentNode.removeChild(child);
+                        });
+                        childs.forEach(child => {
+                            child.style.display = "";
+                        });
                     }
                 };
 
                 if (remainingLinks > 0) {
                     //workaround for FOUC https://github.com/Starcounter/starcounter-include/issues/93
-                    this.style.visibility = "hidden";
                     links.forEach(link => {
                         link.addEventListener("load", linkLoaded); //200 OK
                         link.addEventListener("error", linkLoaded); //404 Not Found
                     });
+                    childs.forEach(child => {
+                       child.style.display = "none";
+                       shadowRoot.appendChild(child);
+                    });
+                }
+                else {
+                    // reset SD to default CSS
+                    shadowRoot.innerHTML = '';
+                    shadowRoot.appendChild(givenComposition);
                 }
 
-                shadowRoot.appendChild(givenComposition);
                 // polyfill `polyfill-next-selector` if needed
                 typeof WebComponents !== 'undefined' && WebComponents.ShadowCSS &&
                     WebComponents.ShadowCSS.replaceTextInStyles(
