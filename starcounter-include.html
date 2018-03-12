@@ -12,9 +12,28 @@ version: 5.0.0
 
 <script>
     (function() {
+
+        const CSSCache = new Map();
+        async function fetchStyle(url) {
+            if(CSSCache.get(url)) {
+                return CSSCache.get(url).cloneNode(true);
+            } else {
+                const css = await fetch(url).then(res => res.text());
+                const style = document.createElement('style');
+                style.setAttribute('data-added-by',"starcounter-include");
+                style.innerHTML = css;
+                CSSCache.set(url, style);
+                return style;
+            }
+        }
+
+        // cache uniform asynchronously
+        fetchStyle('/sys/uniform.css/uniform.css');
+
         function warnAboutDeprecatedPartial() {
             console.warn('`partial` attribute and property are deprecatrd from `starcounter-include` in fovour of (viewModel property or view-model attribute), they will soon be no longer be supported');
         }
+
         const isWebkit = navigator.vendor && navigator.vendor.indexOf("Apple") > -1;
 
         // still needed for .selectNode
@@ -106,12 +125,18 @@ version: 5.0.0
                     const starcounterInclude = this;
                     this.defaultComposition = null;
                     const importedTemplate = document.createElement('imported-template');
-                    importedTemplate.addEventListener('stamping', function fetchCompositions(event) {
+                    importedTemplate.addEventListener('stamping', async function fetchCompositions(event) {
                         var mergedComposition = null;
                         const templates = event.detail.querySelectorAll('template[is="declarative-shadow-dom"]');
                         if(templates.length){
                             mergedComposition = document.createDocumentFragment();
                             for(const individualComposition of templates) {
+                                const styleSheetLinks = individualComposition.content.querySelectorAll('link[rel="stylesheet"]');
+                                for(const link of styleSheetLinks) {
+                                    const style = await fetchStyle(link.href);
+                                    link.insertAdjacentElement('beforebegin', style);
+                                    link.remove();
+                                }
                                 mergedComposition.appendChild(individualComposition.content.cloneNode(true));
                             };
                         }
