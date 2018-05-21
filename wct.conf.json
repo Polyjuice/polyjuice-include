@@ -1,22 +1,24 @@
 {
-    "verbose": false,
-    "plugins": {
-        "local": {
-            "browsers": ["chrome", "firefox"]
-        },
-        "sauce": {
-            "browsers": [{
-                "browserName": "microsoftedge",
-                "platform": "Windows 10"
-            }, {
-                "browserName": "safari",
-                "platform": "OS X 10.11",
-                "version": "10"
-            }]
-        }
+  "verbose": false,
+  "plugins": {
+    "local": {
+      "browsers": ["chrome", "firefox"]
     },
-    "proxy":{
-        "path": "sc",
-        "target": "http://127.0.0.1:9999/sc"
+    "sauce": {
+      "browsers": [
+        {
+          "browserName": "microsoftedge",
+          "platform": "Windows 10"
+        },
+        {
+          "browserName": "safari",
+          "platform": "OS X 10.13"
+        }
+      ]
     }
+  },
+  "proxy": {
+    "path": "sc",
+    "target": "http://127.0.0.1:9999/sc"
+  }
 }
