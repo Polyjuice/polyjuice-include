@@ -296,6 +296,7 @@ version: 5.0.0
         };
         // to fool Polymer into thinking `starcounter-include` is a polymer element thus forwarding notifications to it.
         StarcounterIncludePrototype.__dataHasAccessor = {partial: true, viewModel: true};
+        StarcounterIncludePrototype.__isPropertyEffectsClient = true;
 
         // Polymer doesn't set props on its own components, rather, it calls this function
         StarcounterIncludePrototype._setPendingProperty = function (path, value) {
