@@ -1,0 +1,197 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <script>
+        window.JuicyComposition = {shadow: 'v0'};
+    </script>
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../helpers/chainable-methods-for-partial.js"></script>
+    <script src="../helpers/composition-fixtures.js"></script>
+    <script src="../helpers/compareHTMLStrings.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../starcounter-include.html">
+</head>
+
+<body>
+    <test-fixture id="host-composition">
+        <template>
+            <starcounter-include partial="{
+                &quot;CompositionProvider_0&quot;: {
+                    &quot;PartialId&quot;: &quot;given PartialId&quot;,
+                    &quot;Composition$&quot;: &quot;&quot;
+                },
+                &quot;App&quot;: {
+                    &quot;Html&quot;: &quot;template_w_declarative-shadow-dom.html&quot;,
+                    &quot;doesItWork&quot;: &quot;works!&quot;
+                }
+            }">
+            <template is="declarative-shadow-dom" mode="host">
+                <h2>Host Shadow DOM composition</h2>
+                <slot></slot>
+            </template></starcounter-include>
+        </template>
+    </test-fixture>
+
+
+    <script>
+    describe('starcounter-include that contain <code>template is="declarative-shadow-dom" mode="host"</code> when imports a template', function () {
+        const REFERENCE_COMPOSITION = REFERENCE_HOST;
+        const REFERENCE_ALTERNATIVE_COMPOSITION = useShadowDOMV1 ? `
+        <h2>Custom Shadow DOM alternative composition</h2>
+        <slot name="my-slot"></slot>
+    ` : `
+        <h2>Custom Shadow DOM alternative composition</h2>
+        <content name="my-slot" select="[slot='my-slot']"></content>
+    `;
+
+        var scInclude;
+        var alternativePartial = {
+            "CompositionProvider_0": {
+                "PartialId": "given PartialId",
+                "Composition$": "",
+                "ViewUris": []
+            },
+            "App": {
+                "Html": "template_w_declarative-shadow-dom-alternative.html",
+                "doesItWork": "works!"
+            }
+        };
+        var alternativePartialWithTwo = {
+            "CompositionProvider_0": {
+                "PartialId": "given PartialId",
+                "Composition$": "custom!",
+                "ViewUris": ["template_w_declarative-shadow-dom.html"]
+            },
+            "App1": {
+                "Html": "template_w_declarative-shadow-dom.html",
+                "doesItWork": "works!"
+            },
+            "App2": {
+                "Html": "template_w_declarative-shadow-dom-alternative.html",
+                "doesItWork": "works!"
+            }
+        };
+
+        afterEach(function (done) {
+            // give more time to polyfill cleanup
+            setTimeout(done);
+        });
+        beforeEach(function (done) {
+            scInclude = fixture('host-composition');
+            // scInclude.partial = JSON.parse(JSON.stringify(partial));
+            setTimeout(done, 500);
+        });
+        it('should use it as its composition', function () {
+            expect(scInclude.shadowRoot).to.be.not.null;
+            expect(scInclude.shadowRoot.innerHTML.trim()).to.be
+                .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
+        });
+        describe('after partial property is replaced with the partial that also does contain default composition', function () {
+            beforeEach(function (done) {
+                scInclude.partial = JSON.parse(JSON.stringify(alternativePartial));
+                setTimeout(done, 500);
+            });
+            it('should still use host- as its composition', function () {
+                expect(scInclude.shadowRoot).to.be.not.null;
+                expect(scInclude.shadowRoot.innerHTML).to.be
+                    .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
+            });
+        });
+        describe('after composition is changed from custom subset via `updateComposition` method', function() {
+            var composition$;
+            var temporaryComposition = "temporary composition";
+            beforeEach(function() {
+                composition$ = scInclude.viewModel.CompositionProvider_0.Composition$;
+                scInclude.updateComposition(temporaryComposition);
+            });
+            it('should render the temporary composition', function() {
+                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
+            });
+            it('should return to host after resetting', function() {
+                scInclude.updateComposition(""); //this is how starcounter-layout-html-editor resets
+                expect(scInclude.shadowRoot.innerHTML).to.be
+                    .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
+            });
+            it('should NOT overwrite Composition$', function() {
+                expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal(composition$);
+            });
+            describe('after saveLayout() is called', function() {
+                beforeEach(function() {
+                    scInclude.saveLayout();
+                    scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
+                });
+                it('should overwrite Composition$', function() {
+                    expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(temporaryComposition);
+                });
+                it('should render the temporary composition', function() {
+                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
+                });
+            });
+        });
+        describe('after partial property is replaced with the partial that does custom subset composition', function () {
+            beforeEach(function (done) {
+                scInclude.partial = JSON.parse(JSON.stringify(alternativePartialWithTwo));
+                setTimeout(done, 500);
+            });
+            it('should use it as its composition', function () {
+                expect(scInclude.shadowRoot).to.be.not.null;
+                expect(scInclude.shadowRoot.innerHTML).to.be
+                    .sameHTMLString_ignoringShadyCSSPolyfillClasses("custom!" + REFERENCE_ALTERNATIVE_COMPOSITION);
+            });
+            describe('after composition is changed from custom subset via `updateComposition` method', function() {
+                var composition$;
+                var temporaryComposition = "temporary composition";
+                beforeEach(function() {
+                    composition$ = scInclude.viewModel.CompositionProvider_0.Composition$;
+                    scInclude.updateComposition(temporaryComposition);
+                });
+                it('should render the temporary composition', function() {
+                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
+                });
+                it('should return to host after resetting', function() {
+
+                    scInclude.updateComposition(""); //this is how starcounter-layout-html-editor resets
+                    expect(scInclude.shadowRoot.innerHTML).to.be
+                        .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
+                });
+                it('should NOT overwrite Composition$', function() {
+                    expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal(composition$);
+                });
+                describe('after saveLayout() is called', function() {
+                    beforeEach(function() {
+                        scInclude.saveLayout();
+                        scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
+                    });
+                    it('should overwrite Composition$', function() {
+                        expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(temporaryComposition);
+                    });
+                    it('should render the temporary composition', function() {
+                        expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
+                    });
+                });
+            });
+        });
+        describe('after partial property is replaced with itself', function () {
+            it('should keep using the existing composition', function (done) { //otherwise ViewKeeper (aka workspaces) do not keep state in Firefox and Edge
+                var old  = scInclude.shadowRoot.querySelector("h2");
+                scInclude.partial = scInclude.partial;
+                setTimeout(function() {
+                    expect(old).to.be.not.null;
+                    expect(old).to.be.equal(scInclude.shadowRoot.querySelector("h2"));
+                    done();
+                }, 500);
+            });
+        });
+
+    });
+    </script>
+
+</body>
+
+</html>

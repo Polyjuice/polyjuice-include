@@ -97,6 +97,18 @@ version: 5.0.1
                 });
             }
             /**
+             * Returns host composition to clone (if have one)
+             * @readonly
+             * @type {DocumentFragment}
+             */
+            get hostComposition() {
+                const template = Array.from(this.children).find((element)=>{
+                    return element.matches
+                        && element.matches('template[is="declarative-shadow-dom"][mode="host"]')
+                    });
+                return template && template.content || false;
+            }
+            /**
              * Stamp `imported-template` into Light DOM,
              * attach `stamping` listener to gather Shadow DOM layout compositions
              * (declarative-shadow-dom)
@@ -232,7 +244,8 @@ version: 5.0.1
          * Handles change of the composition.
          * Temporary composition can be given explicitely in the function argument
          * If temporary composition not given, fetches custom composition from provider.
-         * If custom composition not given, fetches default composition from the imported template.
+         * If custom composition not given, fetches host composition from the child `template`.
+         * If host composition not given, fetches default composition from the imported template.
          * If default composition not given, uses fallback composition.
          * Warning: the temporary composition might come from https://github.com/Starcounter/starcounter-layout-html-editor/blob/17b21f729facd9a8dcd4241fb5c48cb71de11af5/starcounter-layout-html-editor.html#L253
          * @see .stampComposition
@@ -284,6 +297,10 @@ version: 5.0.1
                     this.partialId = null;
                 }
 
+                if (this.hostComposition) {
+                    this.temporaryComposition = null;
+                    return this._renderCompositionChange(this.hostComposition, () => this.hostComposition.cloneNode(true));
+                }
                 if (this.defaultComposition) {
                     this.temporaryComposition = null;
                     return this._renderCompositionChange(this.defaultComposition, () => this.defaultComposition.cloneNode(true));
