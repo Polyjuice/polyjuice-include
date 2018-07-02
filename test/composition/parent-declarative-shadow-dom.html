@@ -31,8 +31,26 @@
                     &quot;doesItWork&quot;: &quot;works!&quot;
                 }
             }">
-            <template is="declarative-shadow-dom" presentation="parent">
-                <h2>Host Shadow DOM composition</h2>
+            <template is="declarative-shadow-dom">
+                <h2>Parent Shadow DOM composition</h2>
+                <slot></slot>
+            </template></starcounter-include>
+        </template>
+    </test-fixture>
+    <test-fixture id="other-presentation">
+        <template>
+            <starcounter-include partial="{
+                &quot;CompositionProvider_0&quot;: {
+                    &quot;PartialId&quot;: &quot;given PartialId&quot;,
+                    &quot;Composition$&quot;: &quot;&quot;
+                },
+                &quot;App&quot;: {
+                    &quot;Html&quot;: &quot;template_w_declarative-shadow-dom.html&quot;,
+                    &quot;doesItWork&quot;: &quot;works!&quot;
+                }
+            }">
+            <template is="declarative-shadow-dom" presentation="foo">
+                <h2>Parent Shadow DOM composition</h2>
                 <slot></slot>
             </template></starcounter-include>
         </template>
@@ -40,7 +58,7 @@
 
 
     <script>
-    describe('starcounter-include that contain <code>template is="declarative-shadow-dom" presentation="parent"</code> when imports a template', function () {
+    describe('starcounter-include that contain <code>template is="declarative-shadow-dom"</code> child node when imports a template', function () {
         const REFERENCE_COMPOSITION = REFERENCE_HOST;
         const REFERENCE_ALTERNATIVE_COMPOSITION = useShadowDOMV1 ? `
         <h2>Custom Shadow DOM alternative composition</h2>
@@ -91,6 +109,10 @@
             expect(scInclude.shadowRoot).to.be.not.null;
             expect(scInclude.shadowRoot.innerHTML.trim()).to.be
                 .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
+        });
+        it('should attach `parent` as a value of the `presentation` attribute, to the templates', function () {
+            expect(scInclude.firstElementChild).to.have
+                .HTMLAttribute('presentation').equal('parent');
         });
         describe('after partial property is replaced with the partial that also does contain default composition', function () {
             beforeEach(function (done) {
@@ -189,6 +211,25 @@
             });
         });
 
+    });
+    describe('starcounter-include that contain <code>template is="declarative-shadow-dom"</code> child node with <code>presentation</code> attribute other than `parent`, when imports a template', function () {
+        const REFERENCE_COMPOSITION = REFERENCE_HOST;
+        var scInclude;
+
+        afterEach(function (done) {
+            // give more time to polyfill cleanup
+            setTimeout(done);
+        });
+        beforeEach(function (done) {
+            scInclude = fixture('other-presentation');
+            // scInclude.partial = JSON.parse(JSON.stringify(partial));
+            setTimeout(done, 500);
+        });
+        it('should NOT use it as its composition, should use "default" one instead', function () {
+            expect(scInclude.shadowRoot).to.be.not.null;
+            expect(scInclude.shadowRoot.innerHTML.trim()).to.be
+                .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_DEFAULT);
+        });
     });
     </script>
 

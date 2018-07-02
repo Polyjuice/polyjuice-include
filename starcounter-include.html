@@ -108,10 +108,11 @@ version: 5.0.1
                     const importedTemplate = document.createElement('imported-template');
                     importedTemplate.addEventListener('stamping', function fetchCompositions(event) {
                         var mergedComposition = null;
-                        const templates = event.detail.querySelectorAll('template[is="declarative-shadow-dom"]');
+                        const templates = event.detail.querySelectorAll('template[is="declarative-shadow-dom"][presentation=default],template[is="declarative-shadow-dom"]:not([presentation])');
                         if(templates.length){
                             mergedComposition = document.createDocumentFragment();
                             for(const individualComposition of templates) {
+                                individualComposition.setAttribute('presentation', 'default');
                                 mergedComposition.appendChild(individualComposition.content.cloneNode(true));
                             };
                         }
@@ -289,10 +290,11 @@ version: 5.0.1
                 const parentCompositionTemplate = Array.from(this.children)
                     .find((element)=>{
                         return element.matches
-                            && element.matches('template[is="declarative-shadow-dom"][presentation="parent"]')
+                            && element.matches('template[is="declarative-shadow-dom"][presentation="parent"],template[is="declarative-shadow-dom"]:not([presentation])')
                     });
                 const parentComposition = parentCompositionTemplate && parentCompositionTemplate.content;
                 if (parentComposition) {
+                    parentCompositionTemplate.setAttribute('presentation', 'parent');
                     this.temporaryComposition = null;
                     return this._renderCompositionChange(parentComposition, () => parentComposition.cloneNode(true));
                 }
