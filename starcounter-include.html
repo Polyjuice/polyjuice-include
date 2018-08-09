@@ -482,6 +482,25 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
             if (givenComposition !== undefined) {
                 // reset SD to default CSS
                 shadowRoot.innerHTML = '';
+                
+                const links = givenComposition.querySelectorAll("link[rel=stylesheet]");
+                let remainingLinks = links.length;
+
+                var linkLoaded = () => {
+                    remainingLinks--;
+                    if(remainingLinks == 0) {
+                        this.style.visibility = "visible";
+                    }
+                };
+
+                if (remainingLinks > 0) {
+                    //workaround for FOUC https://github.com/Starcounter/starcounter-include/issues/93
+                    this.style.visibility = "hidden";
+                    links.forEach(link => {
+                        link.addEventListener("load", linkLoaded); //200 OK
+                        link.addEventListener("error", linkLoaded); //404 Not Found
+                    });
+                }
 
                 shadowRoot.appendChild(givenComposition);
                 // polyfill `polyfill-next-selector` if needed
