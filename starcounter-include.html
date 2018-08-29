@@ -15,15 +15,43 @@ version: 5.1.0
         function warnAboutDeprecatedPartial() {
             console.warn('`partial` attribute and property are deprecated from `starcounter-include` in favour of (viewModel property or view-model attribute), they will soon be no longer be supported');
         }
+        const BLOCKING_LINKS_SELECTOR = 'link[rel="stylesheet"i]:not([async]),link[rel="import"i]:not([async]),enlighted-link:not([async])';
+
         const isWebkit = navigator.vendor && navigator.vendor.indexOf("Apple") > -1;
 
         // still needed for .selectNode
         const isSafari = isWebkit && navigator.userAgent && !navigator.userAgent.match("CriOS");
         const fallBackComposition = '<style>:host{display:block;}</style><slot></slot>';
 
+        /**
+         * Returns a rejectable promise to load (or fail to load) all blocking
+         * link elements in given scope.
+         * @param  {Node} scope scope to be queried for the elements
+         * @return {Promise|null} `.reject()`able promise that all links will be loaded,
+         *                        or `null` if there are none
+         */
+        function blockingLinksLoaded(scope){
+            const links = scope.querySelectorAll(BLOCKING_LINKS_SELECTOR);
+            if(links.length === 0){
+                return null;
+            }
+            let rejectDefer;
+            const promise = new Promise((resolveAll, rejectAll) => {
+                Promise.all(Array.from(links).map((link)=>{
+                    return new Promise((resolve, reject)=>{
+                        link.addEventListener('load', resolve);
+                        link.addEventListener('error', resolve);
+                    });
+                })).then(resolveAll);
+                rejectDefer = rejectAll;
+            });
+            promise.reject = rejectDefer;
+            return promise;
+        }
+
         class StarcounterInclude extends HTMLElement {
             static get observedAttributes() {
-                return ['partial', 'view-model', 'partialId'];
+                return ['partial', 'view-model', 'partialId', 'loading-presentation', 'loading-content'];
             }
             /**
             * Create shadowRoot, define property setters, set initial partial.
@@ -106,9 +134,15 @@ version: 5.1.0
                     const starcounterInclude = this;
                     this.defaultComposition = null;
                     const importedTemplate = document.createElement('imported-template');
+                    // on importing
+                    importedTemplate.addEventListener('stamped', ()=>{
+                        this.setAttribute('loading-content','');
+                        this.blockingLightLinksLoaded && this.blockingLightLinksLoaded.reject();
+                    });
                     importedTemplate.addEventListener('stamping', function fetchCompositions(event) {
                         var mergedComposition = null;
-                        const templates = event.detail.querySelectorAll('template[is="declarative-shadow-dom"][presentation=default],template[is="declarative-shadow-dom"]:not([presentation])');
+                        const fragment = event.detail;
+                        const templates = fragment.querySelectorAll('template[is="declarative-shadow-dom"][presentation=default],template[is="declarative-shadow-dom"]:not([presentation])');
                         if(templates.length){
                             mergedComposition = document.createDocumentFragment();
                             for(const individualComposition of templates) {
@@ -117,6 +151,17 @@ version: 5.1.0
                             };
                         }
                         starcounterInclude.defaultComposition = mergedComposition;
+                        // wait for blocking (not `[async]`) links
+                        const blockingLightLinksLoaded = blockingLinksLoaded(fragment);
+                        this.blockingLightLinksLoaded = blockingLightLinksLoaded;
+                        if(blockingLightLinksLoaded){
+                            blockingLightLinksLoaded.then(()=>{
+                                starcounterInclude.removeAttribute('loading-content');
+                            });
+                        } else {
+                            starcounterInclude.removeAttribute('loading-content');
+                        }
+
 
                         if (this.model !== starcounterInclude.viewModel) {
                             // update entire model
@@ -163,14 +208,25 @@ version: 5.1.0
          * Set partial property if partial or view-model attribute was changed
          */
         StarcounterIncludePrototype.attributeChangedCallback = function(name, oldVal, newVal) {
-            if (name === "view-model") {
-                this.viewModel = partialAttributeToProperty(this, newVal);
-            }
-            else if(name === "partial") {
-                if(!oldVal /* to warn only once */) {
-                    warnAboutDeprecatedPartial();
-                }
-                this.viewModel = partialAttributeToProperty(this, newVal);
+            switch(name){
+                case "view-model":
+                    this.viewModel = partialAttributeToProperty(this, newVal);
+                    break;
+                case "partial":
+                    if(!oldVal /* to warn only once */) {
+                        warnAboutDeprecatedPartial();
+                    }
+                    this.viewModel = partialAttributeToProperty(this, newVal);
+                    break;
+                // Not to overwrite existing compositions, change BlendingEditor,
+                // partialToStandaloneHTMLProvider, and due to lack of
+                // custom-elements default styles
+                // https://github.com/w3c/webcomponents/issues/468
+                // , we need to make single rule inline
+                case "loading-presentation":
+                case "loading-content":
+                    this.style.visibility = (this.hasAttribute('loading-presentation') || this.hasAttribute('loading-content')) ?
+                        'hidden' : 'visible';
             }
         };
         /**
@@ -476,13 +532,25 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
          * @param {DocumentFragment} givenComposition
          */
         StarcounterIncludePrototype.stampComposition = function(givenComposition){
-            // create shadowRoot if none
             const shadowRoot = this.shadowRoot;
+            this.blockingShadowLinksLoaded && this.blockingShadowLinksLoaded.reject();
 
             if (givenComposition !== undefined) {
+                this.setAttribute('loading-presentation', '');
                 // reset SD to default CSS
                 shadowRoot.innerHTML = '';
 
+                // wait for blocking (not `[async]`) links
+                const blockingShadowLinksLoaded = blockingLinksLoaded(givenComposition);
+                this.blockingShadowLinksLoaded = blockingShadowLinksLoaded;
+
+                if(blockingShadowLinksLoaded){
+                    blockingShadowLinksLoaded.then(()=>{
+                        this.removeAttribute('loading-presentation');
+                    });
+                } else {
+                    this.removeAttribute('loading-presentation');
+                }
                 shadowRoot.appendChild(givenComposition);
                 // polyfill `polyfill-next-selector` if needed
                 typeof WebComponents !== 'undefined' && WebComponents.ShadowCSS &&
@@ -500,6 +568,19 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
             console.error('clear is not yet defined!');
         }
 
+        // Desired use of upcomming Web Platform feature,
+        // so we would not have to implement all `loading-*` attributes and
+        // fallback composition logic.
+        // customElements.define('starcounter-include', StarcounterInclude,
+        //         { style: new CSSStyleSheet(`
+        //             :element([loading-content]),
+        //             :element([loading-presentation]){
+        //                 visibility:hidden !important;
+        //             }
+        //             :element{
+        //                 display:block;
+        //             }`)}
+        // );
         customElements.define('starcounter-include', StarcounterInclude);
     })();
 </script>
