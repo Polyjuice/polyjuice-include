@@ -15,7 +15,7 @@ version: 5.1.0
         function warnAboutDeprecatedPartial() {
             console.warn('`partial` attribute and property are deprecated from `starcounter-include` in favour of (viewModel property or view-model attribute), they will soon be no longer be supported');
         }
-        const BLOCKING_LINKS_SELECTOR = 'link[rel="stylesheet"i]:not([async]),link[rel="import"i]:not([async]),enlighted-link:not([async])';
+        const BLOCKING_LINKS_SELECTOR = 'link[rel="stylesheet"]:not([async]),link[rel="import"]:not([async]),enlighted-link:not([async])';
 
         const isWebkit = navigator.vendor && navigator.vendor.indexOf("Apple") > -1;
 
