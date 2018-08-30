@@ -8,6 +8,7 @@
     <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
     <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../helpers/compareHTMLStrings.js"></script>
 
     <link rel="import" href="../../starcounter-include.html">
 </head>
@@ -118,7 +119,7 @@
         chai.Assertion.addProperty('compositionCleanedUp', function () {
           var obj = chai.util.flag(this, 'object');
           new chai.Assertion(obj).to.be.instanceof(HTMLElement);
-          new chai.Assertion(obj.shadowRoot.innerHTML).to.equal(DEFAULT_COMPOSITION);
+          new chai.Assertion(obj.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(DEFAULT_COMPOSITION);
         });
     </script>
 

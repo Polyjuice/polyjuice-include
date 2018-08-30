@@ -7,6 +7,7 @@
     <title>starcounter-include composition basic test</title>
     <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../helpers/compareHTMLStrings.js"></script>
     <link rel="import" href="../../../polymer/polymer.html">
 
     <link rel="import" href="../../starcounter-include.html">
@@ -75,7 +76,7 @@
             it('should create shadowRoot with given Document Fragment', function () {
                 expect(scInclude).to.have.property('shadowRoot');
                 // expect(scInclude.shadowRoot).to.have.property('innerHTML', compositionTemplate.innerHTML);
-                expect(scInclude.shadowRoot.innerHTML).to.equal(composition);
+                expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(composition);
             });
             it('should distribute its children, which has `slot` attribute matching slot(content) tag within given shadow DOM', function () {
                 expect(scInclude.children[1].assignedSlot).to.be.not.null;
