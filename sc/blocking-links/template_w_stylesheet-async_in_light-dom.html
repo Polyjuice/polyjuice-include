@@ -1,0 +1,9 @@
+<template>
+    <link async rel="stylesheet" href="/components/starcounter-include/sc/blocking-links/styles.css">
+    <h1 slot="my-slot">Template included</h1>
+    <template is="declarative-shadow-dom">
+        <h2>Default Shadow DOM presentation</h2>
+        <slot name="my-slot"></slot>
+        <slot></slot>
+    </template>
+</template>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../helpers/chainable-methods-for-partial.js"></script>
+
+    <link rel="import" href="../../../polymer/polymer.html">
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../starcounter-include.html">
+    <script src="../helpers/WCT-Polyfill_bugs_workaround.js"></script>
+    <link rel="import" href="../../../enlighted-link/enlighted-link.html">
+</head>
+
+<body>
+
+    <div id="testFixtureConatiner"></div>
+
+    <script>
+        const COMPOSITIONS = {
+            BLOCKING:{
+                "stylesheet": `<link rel="stylesheet" href="/components/starcounter-include/sc/blocking-links/styles.css">`,
+                "enlighted-link": `<enlighted-link rel="import" href="/components/starcounter-include/sc/blocking-links/import.html"></enlighted-link>`
+            },
+            ASYNC:{
+                "stylesheet": `<link async rel="stylesheet" href="/components/starcounter-include/sc/blocking-links/styles.css">`,
+                "enlighted-link": `<enlighted-link async rel="import" href="/components/starcounter-include/sc/blocking-links/import.html"></enlighted-link>`
+            }
+        };
+
+        var scInclude, importedTemplate;
+        describe(`imported content`,()=>{
+            beforeEach(function (done) {
+                scInclude = document.createElement('starcounter-include');
+                testFixtureConatiner.appendChild(scInclude);
+                importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
+                importedTemplate.addEventListener('stamping', ()=>{
+                    setTimeout(done);
+                });
+                scInclude.viewModel = {
+                    App: {
+                        Html: `templateTo.html`,
+                        doesItWork: "worked!"
+                    }
+                };
+            });
+            afterEach(()=>{
+                testFixtureConatiner.innerHTML = '';
+            });
+
+            ['stylesheet', 'enlighted-link'].forEach((linkType)=>{
+                describe('when presentation is set (via `updateComposition`) to the one that contains a ', function () {
+                    describe(` \`${linkType}\` element without \`async\` attribute`, function () {
+                        beforeEach(function () {
+                            scInclude.updateComposition(COMPOSITIONS.BLOCKING[linkType]);
+                        });
+
+                        it('should set `loading-presentation` attribute on itself', function () {
+                            expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal("");
+                        });
+                        it('should have `visibility` style set to `hidden`', function () {
+                            expect(scInclude.style).to.have.property('visibility').equal('hidden');
+                        });
+                        describe('after content is stamped, and all imports are loaded', ()=>{
+                            beforeEach(function (done) {
+                                setTimeout(done, 500);
+                            });
+                            it('should no longer have `loading-presentation` attribute on itself', function () {
+                                expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal(null);
+                            });
+                            it('should have `visibility` style set to `visible`', function () {
+                                expect(scInclude.style).to.have.property('visibility').equal('visible');
+                            });
+                        });
+                    });
+                    describe(`\`${linkType}\` element with \`async\` attribute`, function () {
+                        beforeEach(function () {
+                            scInclude.updateComposition(COMPOSITIONS.BLOCKING[linkType]);
+                        });
+
+                        it('should set `loading-presentation` attribute on itself', function () {
+                            expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal("");
+                        });
+                        it('should have `visibility` style set to `hidden`', function () {
+                            expect(scInclude.style).to.have.property('visibility').equal('hidden');
+                        });
+                        describe('after content is stamped, but before imports are loaded', ()=>{
+                            beforeEach(function (done) {
+                                setTimeout(done, 500);
+                            });
+                            it('should NOT still have `loading-presentation` attribute on itself', function () {
+                                expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal(null);
+                            });
+                            it('should have `visibility` style set to `visible`', function () {
+                                expect(scInclude.style).to.have.property('visibility').equal('visible');
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

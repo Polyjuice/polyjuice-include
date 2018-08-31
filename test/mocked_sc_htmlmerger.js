@@ -14,9 +14,10 @@ connect().use('/sc/htmlmerger', function fooMiddleware(req, res, next) {
         // res.write("Chunk");
         const parts = pair.split('=');
         const appName = parts[0];
-        const fileName = parts[1];
+        let fileName = parts[1];
         content += `<imported-template-scope scope="${appName}"><template><meta itemprop="juicy-composition-scope" content="${appName}"/></template>`;
         if(fileName){
+            fileName = fileName.replace('%2F','/');
             if(fs.existsSync(servingDirectory + fileName)){
                 content +=  fs.readFileSync(servingDirectory + fileName, 'utf8');
             } else {
@@ -26,8 +27,10 @@ connect().use('/sc/htmlmerger', function fooMiddleware(req, res, next) {
         content += `</imported-template-scope>`;
     })
     res.setHeader('Content-Type', 'text/html');
-    res.end(content);
-    next();
+    setTimeout(()=>{
+        res.end(content)
+        next();
+    }, 50);
 }).listen(9999, function() {
     console.log('Mocked SC Server running on 9999...');
 });
