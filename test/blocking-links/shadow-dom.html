@@ -53,7 +53,7 @@
                 testFixtureConatiner.innerHTML = '';
             });
 
-            ['stylesheet', 'enlighted-link'].forEach((linkType)=>{
+            ['stylesheet'/*, 'enlighted-link'*/].forEach((linkType)=>{
                 describe('when presentation is set (via `updateComposition`) to the one that contains a ', function () {
                     describe(` \`${linkType}\` element without \`async\` attribute`, function () {
                         beforeEach(function () {

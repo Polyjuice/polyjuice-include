@@ -60,8 +60,9 @@ To produce
  - HTML Imports features:
   - Sends request for template only once (HTML Import's caching),
   - Supports `<script>, <link>, <style>` tags to be executed once,
-  - Supports `<script>, <style>` tags per template instance.
- - Easy way to attach presentation expressed in declarative Shadow DOM
+  - Supports `<script>, <style>` tags per template instance,
+ - Easy way to attach presentation expressed in declarative Shadow DOM,
+ - Blocks rendering of Shadow DOM until `<link rel="stylesheet">`s are loaded (unless marked with `async` attribute).
 
 
 ### wiki
@@ -142,6 +143,11 @@ Name                                    | Detail                 | Description
 `starcounter-include-composition-saved` | *String* stored composition | Triggered once composition is saved
 `partial-changed`                       | *Object* `{value: storedComposition, path: 'partial.{compositionProvider}.Composition$'}` | Polymer notification protocol compliant event to notify about `partial.{compositionProvider}.Composition$` change, triggered once composition is saved.
 `view-model-changed`                       | *Object* `{value: storedComposition, path: 'viewModel.{compositionProvider}.Composition$'}` | Polymer notification protocol compliant event to notify about `partial.{compositionProvider}.Composition$` change, triggered once composition is saved.
+
+## Render-blocking links
+
+To mimic native behavior of markup for Declarative Shadow DOM and to avoid <abbr title="Flash Of Unstyled Content">FOUC</abbr> the element will "block rendering" until all `<link rel="stylesheet">`s are loaded or throw an error.
+You can opt-out by using the `async` attribute on your `<link>`. The blocked rendering is achieved by setting `visibility: hidden` on shadow host - `<strcounter-include>` element.
 
 ## Test suite
 

@@ -15,7 +15,7 @@ version: 5.1.0
         function warnAboutDeprecatedPartial() {
             console.warn('`partial` attribute and property are deprecated from `starcounter-include` in favour of (viewModel property or view-model attribute), they will soon be no longer be supported');
         }
-        const BLOCKING_LINKS_SELECTOR = 'link[rel="stylesheet"]:not([async]),link[rel="import"]:not([async]),enlighted-link:not([async])';
+        const BLOCKING_LINKS_SELECTOR = 'link[rel="stylesheet"]:not([async])';
 
         const isWebkit = navigator.vendor && navigator.vendor.indexOf("Apple") > -1;
 
@@ -134,11 +134,6 @@ version: 5.1.0
                     const starcounterInclude = this;
                     this.defaultComposition = null;
                     const importedTemplate = document.createElement('imported-template');
-                    // on importing
-                    importedTemplate.addEventListener('stamped', ()=>{
-                        this.setAttribute('loading-content','');
-                        this.blockingLightLinksLoaded && this.blockingLightLinksLoaded.reject();
-                    });
                     importedTemplate.addEventListener('stamping', function fetchCompositions(event) {
                         var mergedComposition = null;
                         const fragment = event.detail;
@@ -151,17 +146,6 @@ version: 5.1.0
                             };
                         }
                         starcounterInclude.defaultComposition = mergedComposition;
-                        // wait for blocking (not `[async]`) links
-                        const blockingLightLinksLoaded = blockingLinksLoaded(fragment);
-                        this.blockingLightLinksLoaded = blockingLightLinksLoaded;
-                        if(blockingLightLinksLoaded){
-                            blockingLightLinksLoaded.then(()=>{
-                                starcounterInclude.removeAttribute('loading-content');
-                            });
-                        } else {
-                            starcounterInclude.removeAttribute('loading-content');
-                        }
-
 
                         if (this.model !== starcounterInclude.viewModel) {
                             // update entire model
@@ -224,8 +208,7 @@ version: 5.1.0
                 // https://github.com/w3c/webcomponents/issues/468
                 // , we need to make single rule inline
                 case "loading-presentation":
-                case "loading-content":
-                    this.style.visibility = (this.hasAttribute('loading-presentation') || this.hasAttribute('loading-content')) ?
+                    this.style.visibility = (this.hasAttribute('loading-presentation')) ?
                         'hidden' : 'visible';
             }
         };
@@ -573,7 +556,6 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
         // fallback composition logic.
         // customElements.define('starcounter-include', StarcounterInclude,
         //         { style: new CSSStyleSheet(`
-        //             :element([loading-content]),
         //             :element([loading-presentation]){
         //                 visibility:hidden !important;
         //             }
