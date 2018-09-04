@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "web-component-tester": "^6.0.0",
-    "polymer": "^2.2.0"
+    "polymer": "^2.2.0",
+    "enlighted-link": "^0.1.0"
   }
 }
