@@ -147,7 +147,10 @@ Name                                    | Detail                 | Description
 ## Render-blocking links
 
 To mimic native behavior of markup for Declarative Shadow DOM and to avoid <abbr title="Flash Of Unstyled Content">FOUC</abbr> the element will "block rendering" until all `<link rel="stylesheet">`s are loaded or throw an error.
-You can opt-out by using the `async` boolean attribute on your `<link>`, like `<link rel="stylesheet" href="path/to/style.css" async>`. The blocked rendering is achieved by setting `visibility: hidden` on shadow host - `<strcounter-include>` element.
+
+You can opt-out by using the `async` boolean attribute on your `<link>`, like `<link rel="stylesheet" href="path/to/style.css" async>`.
+
+The blocked rendering is achieved by setting `visibility: hidden` on shadow host - `<strcounter-include>` element.
 
 ## Test suite
 
