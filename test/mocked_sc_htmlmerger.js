@@ -17,8 +17,8 @@ connect().use('/sc/htmlmerger', function fooMiddleware(req, res, next) {
         let fileName = parts[1];
         content += `<imported-template-scope scope="${appName}"><template><meta itemprop="juicy-composition-scope" content="${appName}"/></template>`;
         if(fileName){
-            fileName = fileName.replace('%2F','/');
-            if(fs.existsSync(servingDirectory + fileName)){
+            fileName = fileName.replace(/%2F/g, path.sep);
+            if(fs.existsSync(path.resolve(servingDirectory, fileName))){
                 content +=  fs.readFileSync(servingDirectory + fileName, 'utf8');
             } else {
                 content +=  '<template>file does not exist, but you\'re just mocking, right?</template>';
