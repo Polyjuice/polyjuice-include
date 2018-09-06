@@ -524,7 +524,7 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
             this.blockingShadowLinksLoaded && this.blockingShadowLinksLoaded.reject();
 
             if (givenComposition !== undefined) {
-                // reset SD to default CSS
+                // reset SD
                 shadowRoot.innerHTML = '';
 
                 // wait for blocking (not `[async]`) links
@@ -532,11 +532,14 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
                 this.blockingShadowLinksLoaded = blockingShadowLinksLoaded;
 
                 if(blockingShadowLinksLoaded){
+                    // We have some styles that need to be loaded
                     this.setAttribute('loading-presentation', '');
                     blockingShadowLinksLoaded.then(()=>{
                         this.removeAttribute('loading-presentation');
                     });
                 } else {
+                    // The new presentation is styled synchronously, no need to wait.
+                    // Remove the attribute if there is one from previous, unresolved styles
                     this.removeAttribute('loading-presentation');
                 }
                 shadowRoot.appendChild(givenComposition);
