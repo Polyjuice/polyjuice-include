@@ -55,6 +55,7 @@
                 'doesItWork': 'works!'
             }
         }
+        const CHANGED_URL = '/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml';
 
         describe('after `dom-bind`` was attached to DOM', function () {
             var container = document.querySelector('#container'),
@@ -121,22 +122,43 @@
                     });
                 });
 
-                describe('after `dom-bind`` changed the partial property', function () {
+                describe('after `dom-bind`` changed the view-model property', function () {
                     beforeEach(function() {
                         domBind.set('model.Page', changedPartial);
                     });
 
                     it('should attach new `.Html` property as href attribute and property for `<imported-template>`', function () {
-                        expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
-                        expect(importedTemplate.href).to.equal('/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml');
+                        expect(importedTemplate.getAttribute("href")).to.equal(CHANGED_URL);
+                        expect(importedTemplate.href).to.equal(CHANGED_URL);
                     });
-                    it('should NOT attach new partial model to `imported-template` immediately', function () {
+                    it('should NOT attach new model to `imported-template` immediately', function () {
                         expect(importedTemplate.model).to.equal(viewModel);
                     });
-                    it('should attach new partial model to `imported-template` on `stamping`', function (done) {
+                    it('should attach new model to `imported-template` on `stamping`', function (done) {
                         importedTemplate.addEventListener('stamping', function onceStamped(){
                             expect(importedTemplate.model).to.equal(changedPartial);
                             done();
+                        });
+                    });
+                    describe('and changed the view-model property once again, before content was stamped, to new one with the same Html', function () {
+                        var changedPartialWithSameHtml;
+                        beforeEach(function() {
+                            changedPartialWithSameHtml = JSON.parse(JSON.stringify(changedPartial));
+                            domBind.set('model.Page', changedPartialWithSameHtml);
+                        });
+
+                        it('should attach new `.Html` property as href attribute and propery for `<imported-template>`', function () {
+                            expect(importedTemplate.getAttribute("href")).to.equal(CHANGED_URL);
+                            expect(importedTemplate.href).to.equal(CHANGED_URL);
+                        });
+                        it('should NOT attach any new model to `imported-template` immediately, and keep the old one', function () {
+                            expect(importedTemplate.model).to.equal(viewModel);
+                        });
+                        it('should attach new model to `imported-template` on `stamping`', function (done) {
+                            importedTemplate.addEventListener('stamping', function onceStamped(){
+                                expect(importedTemplate.model).to.equal(changedPartialWithSameHtml);
+                                done();
+                            });
                         });
                     });
                 });
