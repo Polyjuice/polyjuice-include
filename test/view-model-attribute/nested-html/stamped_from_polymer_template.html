@@ -57,7 +57,7 @@
         }
         const CHANGED_URL = '/sc/htmlmerger?scopeA=scopeAHtml&scopeB=scopeBHtml';
 
-        describe('after `dom-bind`` was attached to DOM', function () {
+        describe('after `dom-bind` was attached to DOM', function () {
             var container = document.querySelector('#container'),
                 domBind, include, partial, importedTemplate;
             afterEach(function (done) {
@@ -122,7 +122,7 @@
                     });
                 });
 
-                describe('after `dom-bind`` changed the view-model property', function () {
+                describe('after `dom-bind` changed the view-model property', function () {
                     beforeEach(function() {
                         domBind.set('model.Page', changedPartial);
                     });
@@ -163,7 +163,7 @@
                     });
                 });
 
-                describe('after `dom-bind`` changed the view-model property to new one with the same Html', function () {
+                describe('after `dom-bind` changed the view-model property to new one with the same Html', function () {
                     var changedPartialWithSameHtml;
                     beforeEach(function() {
                         changedPartialWithSameHtml = {
@@ -191,9 +191,10 @@
                     });
                 });
 
-                describe('after `dom-bind`` changed the sub-partial (just one scope), to a one that results in different merged Html', function () {
-                    var changedScope;
+                describe('after `dom-bind` changed the sub-partial (just one scope), to a one that results in different merged Html', function () {
+                    var changedScope, oldScope;
                     beforeEach(function() {
+                        oldScope = viewModel.scope1;
                         sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
                         changedScope = JSON.parse(JSON.stringify(changedPartial.scopeA));
                         domBind.set('model.Page.scope1', changedScope);
@@ -203,8 +204,9 @@
                         expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                         expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
                     });
-                    it('should NOT attach new view-model model to `imported-template` immediately', function () {
+                    it('should NOT attach update this scope in the model of `imported-template` immediately', function () {
                         expect(importedTemplate.model).to.equal(viewModel);
+                        expect(importedTemplate.model.scope1).to.equal(oldScope);
                     });
                     it('should NOT notify `imported-template` (old nodes) with the new model changes immediately', function () {
                         expect(importedTemplate._setPendingPropertyOrPath).not.to.be.called;
@@ -255,7 +257,7 @@
                     });
                 });
 
-                describe('after `dom-bind`` changed the sub-partial (just one scope) to new a one that results with the same merged Html', function () {
+                describe('after `dom-bind` changed the sub-partial (just one scope) to new a one that results with the same merged Html', function () {
                     var changedScopeWithSameHtml;
                     beforeEach(function() {
                         sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
@@ -278,7 +280,7 @@
                     });
                 });
 
-                describe('after `dom-bind`` changed the inner `Html` property', function () {
+                describe('after `dom-bind` changed the inner `Html` property', function () {
                     beforeEach(function() {
                         sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
                         domBind.set('model.Page.scope1.Html', 'changedHtml');
@@ -299,7 +301,7 @@
                     });
                 });
 
-                describe('after `dom-bind`` removed the inner `Html` property', function () {
+                describe('after `dom-bind` removed the inner `Html` property', function () {
                     beforeEach(function() {
                         // not realy removing, but Polymer does not support anything better
                         // https://github.com/Polymer/polymer/issues/2565
