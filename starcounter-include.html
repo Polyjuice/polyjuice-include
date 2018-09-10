@@ -536,11 +536,13 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
                     this.setAttribute('loading-presentation', '');
                     blockingShadowLinksLoaded.then(()=>{
                         this.removeAttribute('loading-presentation');
+                        this.dispatchEvent(new CustomEvent('presentation-loaded'));
                     });
                 } else {
                     // The new presentation is styled synchronously, no need to wait.
                     // Remove the attribute if there is one from previous, unresolved styles
                     this.removeAttribute('loading-presentation');
+                    this.dispatchEvent(new CustomEvent('presentation-loaded'));
                 }
                 shadowRoot.appendChild(givenComposition);
                 // polyfill `polyfill-next-selector` if needed

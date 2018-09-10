@@ -23,12 +23,15 @@
 
     <script>
         const COMPOSITIONS = {
+            NOLINK:{
+                'link rel="stylesheet"': `<slot></slot>`
+            },
             BLOCKING:{
-                "stylesheet": `<link rel="stylesheet" href="/components/starcounter-include/sc/blocking-links/styles.css">`,
+                'link rel="stylesheet"': `<link rel="stylesheet" href="/components/starcounter-include/sc/blocking-links/styles.css">`,
                 "enlighted-link": `<enlighted-link rel="import" href="/components/starcounter-include/sc/blocking-links/import.html"></enlighted-link>`
             },
             ASYNC:{
-                "stylesheet": `<link async rel="stylesheet" href="/components/starcounter-include/sc/blocking-links/styles.css">`,
+                'link rel="stylesheet"': `<link async rel="stylesheet" href="/components/starcounter-include/sc/blocking-links/styles.css">`,
                 "enlighted-link": `<enlighted-link async rel="import" href="/components/starcounter-include/sc/blocking-links/import.html"></enlighted-link>`
             }
         };
@@ -53,9 +56,29 @@
                 testFixtureConatiner.innerHTML = '';
             });
 
-            ['stylesheet'/*, 'enlighted-link'*/].forEach((linkType)=>{
-                describe('when presentation is set (via `updateComposition`) to the one that contains a ', function () {
-                    describe(` \`${linkType}\` element without \`async\` attribute`, function () {
+            ['link rel="stylesheet"'/*, 'enlighted-link'*/].forEach((linkType)=>{
+                describe('when presentation is set (via `updateComposition`) to the one that contains ', function () {
+                    describe(`no \`${linkType}\` elements`, function () {
+                        let presentationLoadedEvent;
+                        beforeEach(function () {
+                            presentationLoadedEvent = sinon.spy();
+                            scInclude.addEventListener('presentation-loaded', function(){
+                                presentationLoadedEvent()
+                            });
+                            scInclude.updateComposition(COMPOSITIONS.NOLINK[linkType]);
+                        });
+
+                        it('should have no `loading-presentation` attribute set on itself', function () {
+                            expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal(null);
+                        });
+                        it('should have `visibility` style not set', function () {
+                            expect(scInclude.style).to.have.property('visibility').equal('');
+                        });
+                        it('should fire `presentation-loaded` event synchronously', function () {
+                            expect(presentationLoadedEvent).to.be.calledOnce;
+                        });
+                    });
+                    describe(`a \`${linkType}\` element without \`async\` attribute`, function () {
                         beforeEach(function () {
                             scInclude.updateComposition(COMPOSITIONS.BLOCKING[linkType]);
                         });
@@ -65,6 +88,17 @@
                         });
                         it('should have `visibility` style set to `hidden`', function () {
                             expect(scInclude.style).to.have.property('visibility').equal('hidden');
+                        });
+                        it('should fire `presentation-loaded` event once all links are loaded', function (done) {
+                            const presentationLoadedEvent = sinon.spy();
+                            scInclude.addEventListener('presentation-loaded', presentationLoadedEvent);
+                            setTimeout(function(){
+                                expect(presentationLoadedEvent).to.be.calledOnce;
+                                scInclude.shadowRoot.querySelectorAll('link[rel="stylesheet"]').forEach((link)=>{
+                                    expect(link.style).to.be.ok;
+                                });
+                                done();
+                            }, 500);
                         });
                         describe('after content is stamped, and all imports are loaded', ()=>{
                             beforeEach(function (done) {
@@ -77,8 +111,9 @@
                                 expect(scInclude.style).to.have.property('visibility').equal('visible');
                             });
                         });
+
                     });
-                    describe(`\`${linkType}\` element with \`async\` attribute`, function () {
+                    describe(`a \`${linkType}\` element with \`async\` attribute`, function () {
                         beforeEach(function () {
                             scInclude.updateComposition(COMPOSITIONS.BLOCKING[linkType]);
                         });
