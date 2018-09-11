@@ -15,7 +15,7 @@ version: 5.1.0
         function warnAboutDeprecatedPartial() {
             console.warn('`partial` attribute and property are deprecated from `starcounter-include` in favour of (viewModel property or view-model attribute), they will soon be no longer be supported');
         }
-        const BLOCKING_LINKS_SELECTOR = 'link[rel="stylesheet"]:not([async])';
+        const BLOCKING_LINKS_SELECTOR = 'link[rel="stylesheet"]';
         const DEFAULT_SHADOW_DOM_PRESENTATION_SELECTOR = 'template[is="declarative-shadow-dom"][presentation=default],template[is="declarative-shadow-dom"]:not([presentation])';
 
         const isWebkit = navigator.vendor && navigator.vendor.indexOf("Apple") > -1;
@@ -527,7 +527,7 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
                 // reset SD
                 shadowRoot.innerHTML = '';
 
-                // wait for blocking (not `[async]`) links
+                // wait for blocking links
                 const blockingShadowLinksLoaded = blockingLinksLoaded(givenComposition);
                 this.blockingShadowLinksLoaded = blockingShadowLinksLoaded;
 

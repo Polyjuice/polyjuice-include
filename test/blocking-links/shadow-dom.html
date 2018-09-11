@@ -23,16 +23,14 @@
 
     <script>
         const COMPOSITIONS = {
-            NOLINK:{
-                'link rel="stylesheet"': `<slot></slot>`
-            },
             BLOCKING:{
                 'link rel="stylesheet"': `<link rel="stylesheet" href="/components/starcounter-include/sc/blocking-links/styles.css">`,
                 "enlighted-link": `<enlighted-link rel="import" href="/components/starcounter-include/sc/blocking-links/import.html"></enlighted-link>`
             },
-            ASYNC:{
-                'link rel="stylesheet"': `<link async rel="stylesheet" href="/components/starcounter-include/sc/blocking-links/styles.css">`,
-                "enlighted-link": `<enlighted-link async rel="import" href="/components/starcounter-include/sc/blocking-links/import.html"></enlighted-link>`
+            NONBLOCKING:{
+                'no link elements': `<slot></slot>`,
+                'only `link rel="preload"`': `<enlighted-link rel="import" href="/components/starcounter-include/sc/blocking-links/import.html"></enlighted-link>`
+                // , 'enlighted-link rel="preload"': `<enlighted-link rel="preload" as="document" onload="this.rel='import'" href="/components/starcounter-include/sc/blocking-links/import.html"></enlighted-link>`
             }
         };
 
@@ -56,29 +54,9 @@
                 testFixtureConatiner.innerHTML = '';
             });
 
-            ['link rel="stylesheet"'/*, 'enlighted-link'*/].forEach((linkType)=>{
-                describe('when presentation is set (via `updateComposition`) to the one that contains ', function () {
-                    describe(`no \`${linkType}\` elements`, function () {
-                        let presentationLoadedEvent;
-                        beforeEach(function () {
-                            presentationLoadedEvent = sinon.spy();
-                            scInclude.addEventListener('presentation-loaded', function(){
-                                presentationLoadedEvent()
-                            });
-                            scInclude.updateComposition(COMPOSITIONS.NOLINK[linkType]);
-                        });
-
-                        it('should have no `loading-presentation` attribute set on itself', function () {
-                            expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal(null);
-                        });
-                        it('should have `visibility` style not set', function () {
-                            expect(scInclude.style).to.have.property('visibility').equal('');
-                        });
-                        it('should fire `presentation-loaded` event synchronously', function () {
-                            expect(presentationLoadedEvent).to.be.calledOnce;
-                        });
-                    });
-                    describe(`a \`${linkType}\` element without \`async\` attribute`, function () {
+            describe('when presentation is set (via `updateComposition`) to the one that contains ', function () {
+                ['link rel="stylesheet"'/*, 'enlighted-link'*/].forEach((linkType)=>{
+                    describe(`a \`${linkType}\` element`, function () {
                         beforeEach(function () {
                             scInclude.updateComposition(COMPOSITIONS.BLOCKING[linkType]);
                         });
@@ -113,27 +91,26 @@
                         });
 
                     });
-                    describe(`a \`${linkType}\` element with \`async\` attribute`, function () {
+                });
+                Object.keys(COMPOSITIONS.NONBLOCKING).forEach((linkType)=>{
+                    describe(linkType, function () {
+                        let presentationLoadedEvent;
                         beforeEach(function () {
-                            scInclude.updateComposition(COMPOSITIONS.BLOCKING[linkType]);
+                            presentationLoadedEvent = sinon.spy();
+                            scInclude.addEventListener('presentation-loaded', function(){
+                                presentationLoadedEvent()
+                            });
+                            scInclude.updateComposition(COMPOSITIONS.NONBLOCKING[linkType]);
                         });
 
-                        it('should set `loading-presentation` attribute on itself', function () {
-                            expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal("");
+                        it('should have no `loading-presentation` attribute set on itself', function () {
+                            expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal(null);
                         });
-                        it('should have `visibility` style set to `hidden`', function () {
-                            expect(scInclude.style).to.have.property('visibility').equal('hidden');
+                        it('should have `visibility` style not set', function () {
+                            expect(scInclude.style).to.have.property('visibility').equal('');
                         });
-                        describe('after content is stamped, but before imports are loaded', ()=>{
-                            beforeEach(function (done) {
-                                setTimeout(done, 500);
-                            });
-                            it('should NOT still have `loading-presentation` attribute on itself', function () {
-                                expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal(null);
-                            });
-                            it('should have `visibility` style set to `visible`', function () {
-                                expect(scInclude.style).to.have.property('visibility').equal('visible');
-                            });
+                        it('should fire `presentation-loaded` event synchronously', function () {
+                            expect(presentationLoadedEvent).to.be.calledOnce;
                         });
                     });
                 });

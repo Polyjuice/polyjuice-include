@@ -149,7 +149,10 @@ Name                                    | Detail                 | Description
 
 To mimic native behavior of markup for Declarative Shadow DOM and to avoid <abbr title="Flash Of Unstyled Content">FOUC</abbr> the element will "block rendering" until all `<link rel="stylesheet">`s are loaded or throw an error.
 
-You can opt-out by using the `async` boolean attribute on your `<link>`, like `<link rel="stylesheet" href="path/to/style.css" async>`.
+You can opt-out by using the same technique you can use to asynchronously load the stylesheet into a static document:
+```html
+<link rel="preload" href="/path/to/styles.css" as="style" onload="this.rel='stylesheet'">
+```
 
 The blocked rendering is achieved by setting `visibility: hidden` on shadow host - `<strcounter-include>` element.
 
