@@ -35,7 +35,7 @@
             LONGLASTING: {
                 //randomize URL to have some delay before load event
                 get 'link[rel="stylesheet"]'(){
-                    return `<link rel="stylesheet" href="/sc/long-lasting-request.css?${Math.random()}">`
+                    return `<link rel="stylesheet" href="/sc/long-lasting-request.css?${Math.random()}">`;
                 }
             }
         };
@@ -93,6 +93,8 @@
                                         resolve()
                                     });
                                     // Load lasting request is delayed for 800ms in mocked server
+                                    // Chrome does not fire load event for detached link,
+                                    //  so it will be forgotten.
                                     setTimeout(()=>{
                                         resolve()
                                     }, 500);
