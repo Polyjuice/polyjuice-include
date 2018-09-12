@@ -31,6 +31,14 @@ connect().use('/sc/htmlmerger', function fooMiddleware(req, res, next) {
         res.end(content)
         next();
     }, 50);
+}).use('/sc/long-lasting-request.css', function fooMiddleware(req, res, next) {
+    const content = '.foo{color: green;}';
+    // req.url starts with "/foo"
+    res.setHeader('Content-Type', 'text/css');
+    setTimeout(()=>{
+        res.end(content)
+        next();
+    }, 800);
 }).listen(9999, function() {
     console.log('Mocked SC Server running on 9999...');
 });

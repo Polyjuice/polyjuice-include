@@ -521,7 +521,7 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
          */
         StarcounterIncludePrototype.stampComposition = function(givenComposition){
             const shadowRoot = this.shadowRoot;
-            this.blockingShadowLinksLoaded && this.blockingShadowLinksLoaded.reject();
+            this.blockingShadowLinksLoaded && this.blockingShadowLinksLoaded.reject('composition-changed');
 
             if (givenComposition !== undefined) {
                 // reset SD
@@ -537,6 +537,12 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
                     blockingShadowLinksLoaded.then(()=>{
                         this.removeAttribute('loading-presentation');
                         this.dispatchEvent(new CustomEvent('presentation-loaded'));
+                    }, (reason) => {
+                        // forward uncought rejection
+                        // if reason is different than `composition-changed`
+                        if(reason !== 'composition-changed'){
+                            return Promise.reject(e);
+                        }
                     });
                 } else {
                     // The new presentation is styled synchronously, no need to wait.
