@@ -62,7 +62,7 @@ To produce
   - Supports `<script>, <link>, <style>` tags to be executed once,
   - Supports `<script>, <style>` tags per template instance,
  - Easy way to attach presentation expressed in declarative Shadow DOM,
- - Blocks rendering of Shadow DOM until `<link rel="stylesheet">`s are loaded (unless marked with `async` attribute).
+ - Blocks rendering of Shadow DOM until `<link rel="stylesheet">`s are loaded, unless loaded asynchronously (see below).
 
 
 ### wiki

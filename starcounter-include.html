@@ -538,7 +538,7 @@ Please make sure it's a result of \`Self.GET\` on serverside. If it's not a resu
                         this.removeAttribute('loading-presentation');
                         this.dispatchEvent(new CustomEvent('presentation-loaded'));
                     }, (reason) => {
-                        // forward uncought rejection
+                        // forward uncaught rejection
                         // if reason is different than `composition-changed`
                         if(reason !== 'composition-changed'){
                             return Promise.reject(e);
