@@ -462,11 +462,15 @@ version: 5.1.1
          */
         function checkForNonNamespaced(viewModel, element){
             if(viewModel && typeof viewModel.Html !== 'undefined'){
-                console.warn(`Your view-model is probably not namespaced!
-`, viewModel, `
-We no longer support those.
-Please make sure it's a result of \`Self.GET\` on serverside. If it's not a result of blending, then replace \`<starcounter-include view-model="{{viewModel}}">\` with  \`<div><imported-template model="{{viewModel}}" href="{{viewModel.Html}}"></imported-template></div>\`.
-`, element);
+                console.warn(`The view ${viewModel.Html} is enclosed in a red-dotted line, because it is incorrectly provided to <starcounter-include> without an app namespace. Your options are: 
+1. Request the blendable Json subtree with Self.GET. Then you can keep to use <starcounter-include> in HTML.
+2. Or, replace <starcounter-include> in HTML with <div><imported-template model="{{viewModel}}" href="{{viewModel.Html}}"></imported-template></div> to insert the Json subtree in a non-blendable fashion. Then you can keep your C# that assigns a Json instance to a parent object without Self.GET.`, viewModel, element);
+                element.setAttribute("style", "outline: 4px red dotted; outline-offset: -4px");
+                element.wasWarned = true;
+            }
+            else if(element.wasWarned) {
+                element.removeAttribute("style");
+                element.wasWarned = false;
             }
         };
 
