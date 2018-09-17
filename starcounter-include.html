@@ -470,7 +470,8 @@ version: 5.1.1
                 element.wasWarned = true;
             }
             else if(element.wasWarned) {
-                element.removeAttribute("style");
+                element.style.outline = null;
+                element.style.outlineOffset = null;
                 element.wasWarned = false;
             }
         };
