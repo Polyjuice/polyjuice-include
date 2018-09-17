@@ -464,8 +464,9 @@ version: 5.1.1
             if(viewModel && typeof viewModel.Html !== 'undefined'){
                 console.warn(`The view ${viewModel.Html} is enclosed in a red-dotted line, because it is incorrectly provided to <starcounter-include> without an app namespace. Your options are: 
 1. Request the blendable Json subtree with Self.GET. Then you can keep to use <starcounter-include> in HTML.
-2. Or, replace <starcounter-include> in HTML with <div><imported-template model="{{viewModel}}" href="{{viewModel.Html}}"></imported-template></div> to insert the Json subtree in a non-blendable fashion. Then you can keep your C# that assigns a Json instance to a parent object without Self.GET.`, viewModel, element);
-                element.setAttribute("style", "outline: 4px red dotted; outline-offset: -4px");
+2. Or, replace <starcounter-include> in HTML with <div><imported-template model="{{viewModel}}" href="{{viewModel.Html}}"></imported-template></div> to insert the Json subtree in a non-blendable fashion. Then you can keep your C# that assigns a Json instance to a parent object without Self.GET. In that case the view does not support declarative-shadow-dom.`, viewModel, element);
+                element.style.outline = "4px red dotted";
+                element.style.outlineOffset = "-4px";
                 element.wasWarned = true;
             }
             else if(element.wasWarned) {
