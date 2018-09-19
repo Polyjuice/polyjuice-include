@@ -502,11 +502,19 @@ version: 5.1.1
          */
         function checkForNonNamespaced(viewModel, element){
             if(viewModel && typeof viewModel.Html !== 'undefined'){
-                console.warn(`Your view-model is probably not namespaced!
-`, viewModel, `
-We no longer support those.
-Please make sure it's a result of \`Self.GET\` on serverside. If it's not a result of blending, then replace \`<starcounter-include view-model="{{viewModel}}">\` with  \`<div><imported-template model="{{viewModel}}" href="{{viewModel.Html}}"></imported-template></div>\`.
-`, element);
+                console.warn(`The view ${viewModel.Html} is enclosed in a red-dotted line, because it is incorrectly provided to <starcounter-include> without an app namespace. Your options are to either: 
+- Make it blendable by using Self.GET on server-side, or
+- Use <imported-template> instead of <starcounter-include> and remove declarative-shadow-dom from the nested view
+
+Read more at: https://starcounter.io/starcounter-include-non-namespaced-partial-view-models/`, viewModel, element);
+                element.style.outline = "4px red dotted";
+                element.style.outlineOffset = "-4px";
+                element.wasWarned = true;
+            }
+            else if(element.wasWarned) {
+                element.style.outline = null;
+                element.style.outlineOffset = null;
+                element.wasWarned = false;
             }
         };
 
