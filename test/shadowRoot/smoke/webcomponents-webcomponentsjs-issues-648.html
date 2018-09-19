@@ -48,7 +48,6 @@
                     div.setAttribute('slot', 'else');
                     div.innerHTML = 'Am I green?';
                     scInclude.appendChild(div);
-                    // expect(scInclude.shadowRoot.innerHTML).to.equal(compositionTemplate.innerHTML);
                     setTimeout(function(){
                         done();
                     });

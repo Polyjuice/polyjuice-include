@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+    <script src="../helpers/chainable-methods-for-partial.js"></script>
+
+    <link rel="import" href="../../../polymer/polymer.html">
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../starcounter-include.html">
+    <script src="../helpers/WCT-Polyfill_bugs_workaround.js"></script>
+    <link rel="import" href="../../../enlighted-link/enlighted-link.html">
+</head>
+
+<body>
+
+    <div id="testFixtureConatiner"></div>
+
+    <script>
+        const COMPOSITIONS = {
+            BLOCKING:{
+                'link[rel="stylesheet"]': `<link rel="stylesheet" href="/components/starcounter-include/sc/blocking-links/styles.css">`
+                // , "enlighted-link": `<enlighted-link rel="import" href="/components/starcounter-include/sc/blocking-links/import.html"></enlighted-link>`
+            },
+            NONBLOCKING:{
+                'no link elements': `<slot></slot>`,
+                'only `link[rel="preload"]`': `<link rel="preload" as="style" href="/components/starcounter-include/sc/blocking-links/styles.html">`
+                // , 'enlighted-link rel="preload"': `<enlighted-link rel="preload" as="document" onload="this.rel='import'" href="/components/starcounter-include/sc/blocking-links/import.html"></enlighted-link>`
+            },
+            LONGLASTING: {
+                //randomize URL to have some delay before load event
+                get 'link[rel="stylesheet"]'(){
+                    return `<link rel="stylesheet" href="/sc/long-lasting-request.css?${Math.random()}">`;
+                }
+            }
+        };
+
+        var scInclude, importedTemplate;
+        describe(`imported content`,()=>{
+            beforeEach(function (done) {
+                scInclude = document.createElement('starcounter-include');
+                testFixtureConatiner.appendChild(scInclude);
+                importedTemplate = scInclude.querySelector_template_for_buggy_polyfill();
+                importedTemplate.addEventListener('stamping', ()=>{
+                    setTimeout(done);
+                });
+                scInclude.viewModel = {
+                    App: {
+                        Html: `templateTo.html`,
+                        doesItWork: "worked!"
+                    }
+                };
+            });
+            afterEach(()=>{
+                testFixtureConatiner.innerHTML = '';
+            });
+
+            describe('when presentation is set (via `updateComposition`) to the one that contains ', function () {
+                Object.keys(COMPOSITIONS.BLOCKING).forEach((linkType)=>{
+                    describe(`a \`${linkType}\` element`, function () {
+                        beforeEach(function () {
+                            scInclude.updateComposition(COMPOSITIONS.BLOCKING[linkType]);
+                        });
+
+                        it('should set `loading-presentation` attribute on itself', function () {
+                            expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal("");
+                        });
+                        it('should have `visibility` style set to `hidden`', function () {
+                            expect(scInclude.style).to.have.property('visibility').equal('hidden');
+                        });
+                        it('should fire `presentation-loaded` event once all links are loaded', function (done) {
+                            const presentationLoadedEvent = sinon.spy();
+                            scInclude.addEventListener('presentation-loaded', presentationLoadedEvent);
+                            const newLink = scInclude.shadowRoot.querySelector(linkType);
+
+                            newLink.addEventListener('load', function(){
+                                expect(presentationLoadedEvent).to.be.calledOnce;
+                                expect(newLink.sheet.cssRules).to.have.lengthOf(1);
+                                done();
+                            });
+                        });
+                        describe('when presentation is set again after first one was stamped. Then, once first link is loaded or forgotten but before second one is loaded,', ()=>{
+                            var oldLink;
+                            beforeEach(function (done) {
+                                oldLink = scInclude.shadowRoot.querySelector(linkType);
+                                const oldLinkLoadedOrForgotten = new Promise((resolve, reject)=>{
+                                    oldLink.addEventListener('load', (e) => {
+                                        resolve()
+                                    });
+                                    // Load lasting request is delayed for 800ms in mocked server
+                                    // Chrome does not fire load event for detached link,
+                                    //  so it will be forgotten.
+                                    setTimeout(()=>{
+                                        resolve()
+                                    }, 500);
+                                }).then(done);
+                                scInclude.updateComposition(COMPOSITIONS.LONGLASTING[linkType]);
+                            });
+                            it('should keep `loading-presentation` attribute set on itself', function () {
+                                expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal("");
+                            });
+                            it('should have `visibility` style set to `hidden`', function () {
+                                expect(scInclude.style).to.have.property('visibility').equal('hidden');
+                            });
+                        });
+                        describe('when presentation is set again after first one was stamped and link was moved. Then, once first link is loaded before second one,', ()=>{
+                            var oldLink;
+                            beforeEach(function (done) {
+                                oldLink = scInclude.shadowRoot.querySelector(linkType);
+                                document.body.appendChild(oldLink);
+                                // load it only once
+                                new Promise((resolve)=>{
+                                    oldLink.addEventListener('load', e => resolve())
+                                }).then(done);
+                                scInclude.updateComposition(COMPOSITIONS.LONGLASTING[linkType]);
+                            });
+                            afterEach(function(){
+                                oldLink.parentNode && oldLink.parentNode.removeChild(oldLink);
+                            });
+                            it('should keep `loading-presentation` attribute set on itself', function () {
+                                expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal("");
+                            });
+                            it('should have `visibility` style set to `hidden`', function () {
+                                expect(scInclude.style).to.have.property('visibility').equal('hidden');
+                            });
+                            it('should fire `presentation-loaded` event once all links are loaded', function (done) {
+                                const presentationLoadedEvent = sinon.spy();
+                                scInclude.addEventListener('presentation-loaded', presentationLoadedEvent);
+                                const newLink = scInclude.shadowRoot.querySelector(linkType);
+                                // wait for delayed long lasting request > 800ms
+                                newLink.addEventListener('load', function(){
+                                    expect(presentationLoadedEvent).to.be.calledOnce;
+                                    expect(newLink.sheet.cssRules).to.have.lengthOf(1);
+                                    done();
+                                });
+                            });
+                        });
+                        describe('after content is stamped, and all imports are loaded', ()=>{
+                            beforeEach(function (done) {
+                                setTimeout(done, 500);
+                            });
+                            it('should no longer have `loading-presentation` attribute on itself', function () {
+                                expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal(null);
+                            });
+                            it('should have `visibility` style set to `visible`', function () {
+                                expect(scInclude.style).to.have.property('visibility').equal('visible');
+                            });
+                        });
+
+                    });
+                });
+                Object.keys(COMPOSITIONS.NONBLOCKING).forEach((linkType)=>{
+                    describe(linkType, function () {
+                        let presentationLoadedEvent;
+                        beforeEach(function () {
+                            presentationLoadedEvent = sinon.spy();
+                            scInclude.addEventListener('presentation-loaded', function(){
+                                presentationLoadedEvent()
+                            });
+                            scInclude.updateComposition(COMPOSITIONS.NONBLOCKING[linkType]);
+                        });
+
+                        it('should have no `loading-presentation` attribute set on itself', function () {
+                            expect(scInclude).to.have.HTMLAttribute('loading-presentation').equal(null);
+                        });
+                        it('should have `visibility` style not set', function () {
+                            expect(scInclude.style).to.have.property('visibility').equal('');
+                        });
+                        it('should fire `presentation-loaded` event synchronously', function () {
+                            expect(presentationLoadedEvent).to.be.calledOnce;
+                        });
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

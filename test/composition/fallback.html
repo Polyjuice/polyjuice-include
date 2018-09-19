@@ -47,7 +47,7 @@
         });
         it('should use the initial composition', function() {
             expect(scInclude.shadowRoot).to.be.not.null;
-            expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(REFERENCE_FALLBACK);
+            expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_FALLBACK);
         });
         describe('after partial property is replaced with a partial that contains a default composition', function() {
             beforeEach(function(done) {
@@ -75,11 +75,11 @@
                 scInclude.updateComposition(temporaryComposition);
             });
             it('should render the temporary composition', function() {
-                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
+                expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(temporaryComposition);
             });
             it('should return to fallback after resetting', function() {
                 scInclude.updateComposition(""); //this is how starcounter-layout-html-editor resets
-                expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(REFERENCE_FALLBACK);
+                expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_FALLBACK);
             });
             it('should NOT overwrite Composition$', function() {
                 expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal("");
@@ -90,10 +90,10 @@
                     scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
                 });
                 it('should overwrite Composition$', function() {
-                    expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(temporaryComposition);
+                    expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(temporaryComposition);
                 });
                 it('should render the temporary composition', function() {
-                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
+                    expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(temporaryComposition);
                 });
             });
         });
