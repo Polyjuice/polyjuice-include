@@ -76,13 +76,13 @@
                         it('should fire `presentation-loaded` event once all links are loaded', function (done) {
                             const presentationLoadedEvent = sinon.spy();
                             scInclude.addEventListener('presentation-loaded', presentationLoadedEvent);
-                            setTimeout(function(){
+                            const newLink = scInclude.shadowRoot.querySelector(linkType);
+
+                            newLink.addEventListener('load', function(){
                                 expect(presentationLoadedEvent).to.be.calledOnce;
-                                scInclude.shadowRoot.querySelectorAll('link[rel="stylesheet"]').forEach((link)=>{
-                                    expect(link.style).to.be.ok;
-                                });
+                                expect(newLink.sheet.cssRules).to.have.lengthOf(1);
                                 done();
-                            }, 500);
+                            });
                         });
                         describe('when presentation is set again after first one was stamped. Then, once first link is loaded or forgotten but before second one is loaded,', ()=>{
                             var oldLink;
@@ -131,14 +131,13 @@
                             it('should fire `presentation-loaded` event once all links are loaded', function (done) {
                                 const presentationLoadedEvent = sinon.spy();
                                 scInclude.addEventListener('presentation-loaded', presentationLoadedEvent);
+                                const newLink = scInclude.shadowRoot.querySelector(linkType);
                                 // wait for delayed long lasting request > 800ms
-                                setTimeout(function(){
+                                newLink.addEventListener('load', function(){
                                     expect(presentationLoadedEvent).to.be.calledOnce;
-                                    scInclude.shadowRoot.querySelectorAll('link[rel="stylesheet"]').forEach((link)=>{
-                                        expect(link.style).to.be.ok;
-                                    });
+                                    expect(newLink.sheet.cssRules).to.have.lengthOf(1);
                                     done();
-                                }, 999);
+                                });
                             });
                         });
                         describe('after content is stamped, and all imports are loaded', ()=>{
