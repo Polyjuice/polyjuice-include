@@ -30,7 +30,8 @@
             var instance;
             var model = {
                 "Html": "../templateToInclude.html",
-                "CompositionProvider_0": {
+                "BlendingProvider_0": {
+                    "Composition$": "", // <-- this requirement is put on us by a bug in ViewKeeper
                     "PartialId": "templateToInclude.html"
                 },
                 "doesItWork": "works!"
@@ -91,7 +92,8 @@
                     expectPartialToBeAttached();
                     instance.viewModel = {
                         "Html": "../templateToInclude.html",
-                        "CompositionProvider_0": {
+                        "BlendingProvider_0": {
+                            "Composition$": "", // <-- this requirement is put on us by a bug in ViewKeeper
                             "PartialId": ""
                         },
                         "doesItWork": "works!"
@@ -102,8 +104,8 @@
             });
 
             function expectPartialToBeAttached() {
-                expect(instance).to.have.HTMLAttribute('partial-id').equal(model.CompositionProvider_0.PartialId);
-                expect(instance.partialId).to.be.equal(model.CompositionProvider_0.PartialId);
+                expect(instance).to.have.HTMLAttribute('partial-id').equal(model.BlendingProvider_0.PartialId);
+                expect(instance.partialId).to.be.equal(model.BlendingProvider_0.PartialId);
             }
 
             function expectPartialToBeCleanedUp() {

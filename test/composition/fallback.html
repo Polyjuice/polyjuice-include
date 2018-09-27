@@ -21,7 +21,7 @@
     <test-fixture id="initial-fixture">
         <template>
             <starcounter-include partial="{
-                &quot;CompositionProvider_0&quot;: {
+                &quot;BlendingProvider_0&quot;: {
                     &quot;PartialId&quot;: &quot;given PartialId&quot;,
                     &quot;Composition$&quot;: &quot;&quot;
                 },
@@ -82,7 +82,7 @@
                 expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_FALLBACK);
             });
             it('should NOT overwrite Composition$', function() {
-                expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal("");
+                expect(scInclude.viewModel.BlendingProvider_0.Composition$).to.be.equal("");
             });
             describe('after saveLayout() is called', function() {
                 beforeEach(function() {
@@ -90,7 +90,7 @@
                     scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
                 });
                 it('should overwrite Composition$', function() {
-                    expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(temporaryComposition);
+                    expect(scInclude.viewModel.BlendingProvider_0.Composition$).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(temporaryComposition);
                 });
                 it('should render the temporary composition', function() {
                     expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(temporaryComposition);

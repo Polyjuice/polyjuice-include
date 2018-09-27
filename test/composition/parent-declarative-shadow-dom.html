@@ -22,7 +22,7 @@
     <test-fixture id="parent-composition">
         <template>
             <starcounter-include partial="{
-                &quot;CompositionProvider_0&quot;: {
+                &quot;BlendingProvider_0&quot;: {
                     &quot;PartialId&quot;: &quot;given PartialId&quot;,
                     &quot;Composition$&quot;: &quot;&quot;
                 },
@@ -40,7 +40,7 @@
     <test-fixture id="other-presentation">
         <template>
             <starcounter-include partial="{
-                &quot;CompositionProvider_0&quot;: {
+                &quot;BlendingProvider_0&quot;: {
                     &quot;PartialId&quot;: &quot;given PartialId&quot;,
                     &quot;Composition$&quot;: &quot;&quot;
                 },
@@ -70,7 +70,7 @@
 
         var scInclude;
         var alternativePartial = {
-            "CompositionProvider_0": {
+            "BlendingProvider_0": {
                 "PartialId": "given PartialId",
                 "Composition$": "",
                 "ViewUris": []
@@ -81,7 +81,7 @@
             }
         };
         var alternativePartialWithTwo = {
-            "CompositionProvider_0": {
+            "BlendingProvider_0": {
                 "PartialId": "given PartialId",
                 "Composition$": "custom!",
                 "ViewUris": ["template_w_declarative-shadow-dom.html"]
@@ -129,7 +129,7 @@
             var composition$;
             var temporaryComposition = "temporary composition";
             beforeEach(function() {
-                composition$ = scInclude.viewModel.CompositionProvider_0.Composition$;
+                composition$ = scInclude.viewModel.BlendingProvider_0.Composition$;
                 scInclude.updateComposition(temporaryComposition);
             });
             it('should render the temporary composition', function() {
@@ -141,7 +141,7 @@
                     .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
             });
             it('should NOT overwrite Composition$', function() {
-                expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal(composition$);
+                expect(scInclude.viewModel.BlendingProvider_0.Composition$).to.be.equal(composition$);
             });
             describe('after saveLayout() is called', function() {
                 beforeEach(function() {
@@ -149,7 +149,7 @@
                     scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
                 });
                 it('should overwrite Composition$', function() {
-                    expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(temporaryComposition);
+                    expect(scInclude.viewModel.BlendingProvider_0.Composition$.trim()).to.be.equal(temporaryComposition);
                 });
                 it('should render the temporary composition', function() {
                     expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
@@ -170,7 +170,7 @@
                 var composition$;
                 var temporaryComposition = "temporary composition";
                 beforeEach(function() {
-                    composition$ = scInclude.viewModel.CompositionProvider_0.Composition$;
+                    composition$ = scInclude.viewModel.BlendingProvider_0.Composition$;
                     scInclude.updateComposition(temporaryComposition);
                 });
                 it('should render the temporary composition', function() {
@@ -183,7 +183,7 @@
                         .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
                 });
                 it('should NOT overwrite Composition$', function() {
-                    expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal(composition$);
+                    expect(scInclude.viewModel.BlendingProvider_0.Composition$).to.be.equal(composition$);
                 });
                 describe('after saveLayout() is called', function() {
                     beforeEach(function() {
@@ -191,7 +191,7 @@
                         scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
                     });
                     it('should overwrite Composition$', function() {
-                        expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(temporaryComposition);
+                        expect(scInclude.viewModel.BlendingProvider_0.Composition$.trim()).to.be.equal(temporaryComposition);
                     });
                     it('should render the temporary composition', function() {
                         expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);

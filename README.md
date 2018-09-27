@@ -134,7 +134,8 @@ Property   | Options           | Default | Description
 `partial`   | *Object*          |         | Object containing partial JSON view-model, bindable with Polymer
 `partialId` | *String*          |         | Partial Id used to identify partial, usually it's fetched from `partial.{compositionProvider}.PartialId`.
 `viewModel` | *Object*          |         | Alias for `partial`
-`compositionProvider` | *String* | `CompositionProvider_0` | Key/app name of composition provider. could be overwritten per instance `scInclude.compositionProvider` or globally by changing the prototype, like: `customElements.get('starcounter-include').prototype.compositionProvider = 'CustomProvider_7'`
+`compositionProvider` | *String* | getter, see the source code | Key/app name of composition provider. could be overwritten per instance `scInclude.compositionProvider` or globally by changing the prototype, like: `customElements.get('starcounter-include').prototype.compositionProvider = 'CustomProvider_7'`.
+For the requirements on the `partial` object to read this from, see the source code and try to match the condition with your case.
 
 ## Events
 
