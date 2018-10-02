@@ -125,6 +125,25 @@ version: 5.2.0
                     }
                 });
             }
+
+            /**
+             * Composition provider key.
+             * The place which the element will check for custom compositions.
+             * Could be overwritten per instance or globally if you change the prototype.
+             * Could be static but due to flaws of the Blending app needs to be a getter.
+             * @type {String}
+             *
+             * 1. `LayoutInfo` is the only response added via `JsonResponseMerger.RegisterMergeCallback`,
+             * 2. `JsonResponseMerger.RegisterMergeCallback` adds siblings after any other regularly blended view-models => they get highest numbers,
+             * 3.  1 & 2 => composition provider is the last of BlendingProvider_* ,
+             * 4.  BlendingProvider has 3 responses at most.
+             *
+             * However, regardless of the reasons above, due to some weirdness and bugs of ViewKeeper it is not always the last one, and we should pick `_0` if it has composition.
+             * FIXME(tomalec): Please.
+            */
+            get compositionProvider(){
+                return this.partial.BlendingProvider_0 && (typeof this.partial.BlendingProvider_0.Composition$ !== 'undefined') && 'BlendingProvider_0' || this.partial.BlendingProvider_2 && 'BlendingProvider_2' || 'BlendingProvider_1';
+            }
             /**
              * Stamp `imported-template` into Light DOM,
              * attach `stamping` listener to gather Shadow DOM layout compositions
@@ -486,13 +505,6 @@ version: 5.2.0
             }
             return range.createContextualFragment(htmlStr);
         }
-        /**
-         * Composition provider key.
-         * The place which the element will check for custom compositions.
-         * Could be overwritten per instance or globally if you change the prototype.
-         * @type {String}
-         */
-        StarcounterIncludePrototype.compositionProvider = 'CompositionProvider_0';
 
         /**
          * Check if given viewModel is non-namespace (contains `.Html` property)
@@ -502,7 +514,7 @@ version: 5.2.0
          */
         function checkForNonNamespaced(viewModel, element){
             if(viewModel && typeof viewModel.Html !== 'undefined'){
-                console.warn(`The view ${viewModel.Html} is enclosed in a red-dotted line, because it is incorrectly provided to <starcounter-include> without an app namespace. Your options are to either: 
+                console.warn(`The view ${viewModel.Html} is enclosed in a red-dotted line, because it is incorrectly provided to <starcounter-include> without an app namespace. Your options are to either:
 - Make it blendable by using Self.GET on server-side, or
 - Use <imported-template> instead of <starcounter-include> and remove declarative-shadow-dom from the nested view
 

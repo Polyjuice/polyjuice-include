@@ -12,7 +12,7 @@ const REFERENCE_FALLBACK = useShadowDOMV1 ? `<style>:host{display:block;}</style
 
 function partialWithCustom() {
     return {
-        "CompositionProvider_0": {
+        "BlendingProvider_0": {
             "PartialId": "given PartialId",
             "Composition$": "customComposition!<slot></slot>"
         },
@@ -25,7 +25,7 @@ function partialWithCustom() {
 
 function partialWithDefault() {
     return {
-        "CompositionProvider_0": {
+        "BlendingProvider_0": {
             "PartialId": "given PartialId",
             "Composition$": ""
         },
@@ -38,7 +38,7 @@ function partialWithDefault() {
 
 function partialWithFallback() {
     return {
-        "CompositionProvider_0": {
+        "BlendingProvider_0": {
             "PartialId": "given PartialId",
             "Composition$": ""
         },
