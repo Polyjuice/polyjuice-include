@@ -290,40 +290,14 @@ version: 5.2.0
                 if (compositionProvider) {
                     this.partialId = compositionProvider.PartialId;
                     this.temporaryComposition = null;
+					// For backward compatibility
+					var compositionProviderComposition = compositionProvider.Composition || compositionProvider.Composition$;
                     if (compositionString === "") {
                         //this is a request from starcounter-layout-html-editor to reset to default composition
                     }
-                    else if (compositionProvider.Composition) {
-                        return this._renderCompositionChange(compositionProvider.Composition, () => {
-                            this.storedLayout = compositionProvider.Composition; //should always be string
-                            const merged = this.stringToDocumentFragment(this.storedLayout);
-
-                            if (compositionProvider.ViewUris) {
-                                const keys = Object.keys(this.viewModel);
-                                for(let key of keys) {
-                                    const scoped = this.viewModel[key];
-                                    if (scoped && scoped.Html && compositionProvider.ViewUris.indexOf(scoped.Html) === -1) {
-                                        if (this.defaultComposition) {
-                                            this.template.scopedNodes.forEach((nodes) => {
-                                                if(nodes.scope === key) {
-                                                    nodes.forEach((node) => appendComposition(merged, node));
-                                                }
-                                            });
-                                        }
-                                        else {
-                                            return false;
-                                        }
-                                    }
-                                }
-                            }
-
-                            return merged;
-                        });
-                    }
-                    //For backwards compatibility
-                    else if (compositionProvider.Composition$) {
-                        return this._renderCompositionChange(compositionProvider.Composition$, () => {
-                            this.storedLayout = compositionProvider.Composition$; //should always be string
+                    else if (compositionProviderComposition) {
+                        return this._renderCompositionChange(compositionProviderComposition, () => {
+                            this.storedLayout = compositionProviderComposition; //should always be string
                             const merged = this.stringToDocumentFragment(this.storedLayout);
 
                             if (compositionProvider.ViewUris) {
@@ -489,6 +463,7 @@ version: 5.2.0
          * @TODO: to be simplified after https://github.com/StarcounterApps/CompositionProvider/pull/13 is done
          */
         StarcounterIncludePrototype.saveLayout = function(compositionStr){
+			console.warn("This method of saving composition is deprecated and will be removed soon.");
             compositionStr = compositionStr || this.shadowRoot.innerHTML;
             this.viewModel[this.compositionProvider].Composition$ = compositionStr;
             this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: compositionStr}));
