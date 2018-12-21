@@ -463,7 +463,7 @@ version: 5.2.0
          * @TODO: to be simplified after https://github.com/StarcounterApps/CompositionProvider/pull/13 is done
          */
         StarcounterIncludePrototype.saveLayout = function(compositionStr){
-			console.warn("This method of saving composition is deprecated and will be removed soon. Please use current version of Blending app.");
+			console.warn("This method of saving composition is deprecated and will be removed soon. Please use the current version of Blending app.");
             compositionStr = compositionStr || this.shadowRoot.innerHTML;
             this.viewModel[this.compositionProvider].Composition$ = compositionStr;
             this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: compositionStr}));
