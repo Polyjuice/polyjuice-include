@@ -403,7 +403,6 @@ version: 5.3.0
                     this._updateHref();
                     return;
                 }
-                // TODO: handle just composition change add a test for a change for just model.{compositionProvider}.Composition
                 // Notify about model change
                 if (this.template._setPendingPropertyOrPath) {
                     this.template._setPendingPropertyOrPath(newPath, value);
@@ -460,7 +459,7 @@ version: 5.3.0
         /**
          * Saves given or current composition as stored one, notifies binding about it.
          * @param  {String} [compositionStr] composition to be saved, if not given current one will be used
-         * @TODO: to be simplified after https://github.com/StarcounterApps/CompositionProvider/pull/13 is done
+         * @deprecated
          */
         StarcounterIncludePrototype.saveLayout = function(compositionStr){
 			console.warn("This method of saving composition is deprecated and will be removed soon. Please use the current version of Blending app.");
