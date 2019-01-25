@@ -12,8 +12,8 @@ version: 5.3.0
 
 <script>
     (function() {
-        function warnAboutDeprecatedPartial() {
-            console.warn('`partial` attribute and property are deprecated from `starcounter-include` in favour of (viewModel property or view-model attribute), they will soon be no longer be supported');
+        function warnAboutDeprecatedPartial(element) {
+            console.warn('`partial` attribute and property are deprecated from `starcounter-include` in favour of (viewModel property or view-model attribute), they will soon be no longer be supported', element);
         }
         const BLOCKING_LINKS_SELECTOR = 'link[rel="stylesheet"]';
         const DEFAULT_SHADOW_DOM_PRESENTATION_SELECTOR = 'template[is="declarative-shadow-dom"][presentation=default],template[is="declarative-shadow-dom"]:not([presentation])';
@@ -64,7 +64,7 @@ version: 5.3.0
                 var viewModel = this.viewModel || this.partial || undefined;
 
                 if(this.partial) {
-                    warnAboutDeprecatedPartial();
+                    warnAboutDeprecatedPartial(this);
                 }
 
                 checkForNonNamespaced(viewModel, this);
@@ -80,7 +80,7 @@ version: 5.3.0
                 Object.defineProperties(this, {
                     partial: {
                         set: function(newValue) {
-                            warnAboutDeprecatedPartial();
+                            warnAboutDeprecatedPartial(this);
                             this.viewModel = newValue;
                         },
                         get: function() {
@@ -199,7 +199,7 @@ version: 5.3.0
                     break;
                 case "partial":
                     if(!oldVal /* to warn only once */) {
-                        warnAboutDeprecatedPartial();
+                        warnAboutDeprecatedPartial(this);
                     }
                     this.viewModel = partialAttributeToProperty(this, newVal);
                     break;
@@ -356,7 +356,7 @@ version: 5.3.0
         // Polymer doesn't set props on its own components, rather, it calls this function
         StarcounterIncludePrototype._setPendingProperty = function (path, value) {
             if(path === 'partial') {
-                warnAboutDeprecatedPartial();
+                warnAboutDeprecatedPartial(this);
             }
             this[path] = value;
         }
@@ -503,7 +503,7 @@ version: 5.3.0
          */
         function checkForNonNamespaced(viewModel, element){
             if(viewModel && typeof viewModel.Html !== 'undefined'){
-                console.warn(`The view ${viewModel.Html} is enclosed in a red-dotted line, because it is incorrectly provided to <starcounter-include> without an app namespace. Your options are to either: 
+                console.warn(`The view ${viewModel.Html} is enclosed in a red-dotted line, because it is incorrectly provided to <starcounter-include> without an app namespace. Your options are to either:
 - Make it blendable by using Self.GET on server-side, or
 - Use <imported-template> instead of <starcounter-include> and remove declarative-shadow-dom from the nested view
 
