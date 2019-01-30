@@ -84,18 +84,6 @@
             it('should NOT overwrite Composition$', function() {
                 expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal("");
             });
-            describe('after saveLayout() is called', function() {
-                beforeEach(function() {
-                    scInclude.saveLayout();
-                    scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
-                });
-                it('should overwrite Composition$', function() {
-                    expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(temporaryComposition);
-                });
-                it('should render the temporary composition', function() {
-                    expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(temporaryComposition);
-                });
-            });
         });
         describe('after partial property is replaced with itself', function() {
             it('should keep using the existing composition', function(done) { //otherwise ViewKeeper (aka workspaces) do not keep state in Firefox and Edge

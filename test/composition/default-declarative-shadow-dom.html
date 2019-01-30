@@ -139,18 +139,6 @@
             it('should NOT overwrite Composition$', function() {
                 expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal(composition$);
             });
-            describe('after saveLayout() is called', function() {
-                beforeEach(function() {
-                    scInclude.saveLayout();
-                    scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
-                });
-                it('should overwrite Composition$', function() {
-                    expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(temporaryComposition);
-                });
-                it('should render the temporary composition', function() {
-                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
-                });
-            });
         });
         describe('after partial property is replaced with the partial that does custom subset composition', function () {
             beforeEach(function (done) {
@@ -179,18 +167,6 @@
                 });
                 it('should NOT overwrite Composition$', function() {
                     expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal(composition$);
-                });
-                describe('after saveLayout() is called', function() {
-                    beforeEach(function() {
-                        scInclude.saveLayout();
-                        scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
-                    });
-                    it('should overwrite Composition$', function() {
-                        expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(temporaryComposition);
-                    });
-                    it('should render the temporary composition', function() {
-                        expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
-                    });
                 });
             });
         });

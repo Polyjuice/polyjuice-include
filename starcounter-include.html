@@ -456,22 +456,6 @@ version: 5.3.0
                 return undefined;
             }
         };
-        /**
-         * Saves given or current composition as stored one, notifies binding about it.
-         * @param  {String} [compositionStr] composition to be saved, if not given current one will be used
-         * @deprecated
-         */
-        StarcounterIncludePrototype.saveLayout = function(compositionStr){
-			console.warn("This method of saving composition is deprecated and will be removed soon. Please use the current version of Blending app.");
-            compositionStr = compositionStr || this.shadowRoot.innerHTML;
-            this.viewModel[this.compositionProvider].Composition$ = compositionStr;
-            this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: compositionStr}));
-            // trigger polymer-notification-protocol-compilant event
-            var notificationPath = this.compositionProvider + '.Composition$';
-            this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: compositionStr, path: 'partial.' + notificationPath}}));
-            this.dispatchEvent(new CustomEvent("view-model-changed", {detail: {value: compositionStr, path: 'viewModel.' + notificationPath}}));
-        };
-
         // stringToDocumentFragment(strHTML) from http://stackoverflow.com/a/25214113/868184
         /**
          * Creates DocumentFragment from a string.
