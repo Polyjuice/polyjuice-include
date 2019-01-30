@@ -296,8 +296,8 @@ version: 5.3.0
                         //this is a request from starcounter-layout-html-editor to reset to default composition
                     }
                     else if (compositionProviderComposition) {
+                        this.storedLayout = compositionProviderComposition; //should always be string
                         return this._renderCompositionChange(compositionProviderComposition, () => {
-                            this.storedLayout = compositionProviderComposition; //should always be string
                             const merged = this.stringToDocumentFragment(this.storedLayout);
 
                             if (compositionProvider.ViewUris) {
