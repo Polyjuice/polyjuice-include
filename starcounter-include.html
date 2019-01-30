@@ -402,6 +402,14 @@ version: 5.3.0
                 ){
                     this._updateHref();
                     return;
+                } else if (
+                    // Just the composition was changed
+                    // and it's different than already stored one
+                    subPath === this.compositionProvider + '.Composition' &&
+                    value != this.storedLayout
+                ) {
+                    this.updateComposition();
+                    return;
                 }
                 // Notify about model change
                 if (this.template._setPendingPropertyOrPath) {

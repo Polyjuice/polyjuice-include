@@ -25,7 +25,7 @@
         const isWebkit = navigator.vendor && navigator.vendor.indexOf("Apple") > -1;
 
         const useShadowDOMV1 = Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
-        const DEFAULT_COMPOSITION = useShadowDOMV1 ? '<style>:host{display:block;}</style><slot></slot>' : '<style>:host{display:block;}</style><content select=":not([slot]),[slot=\'\']"></content>';
+        const FALLBACK_COMPOSITION = useShadowDOMV1 ? '<style>:host{display:block;}</style><slot></slot>' : '<style>:host{display:block;}</style><content select=":not([slot]),[slot=\'\']"></content>';
         describe('cleanup changes of Composition', function() {
             afterEach(function (done) {
                 // give more time to polyfill cleanup
@@ -33,8 +33,8 @@
             });
             var instance;
             var model = {
-                "Html": "../templateToInclude.html",
                 "CompositionProvider_0": {
+                    "Html": "../templateToInclude.html",
                     "Composition": 'a Composition',
                     "PartialId": "given PartialId"
                 },
@@ -42,9 +42,11 @@
             };
 
             describe("should remove Composition when", function() {
-                beforeEach(function() {
+                beforeEach(function(done) {
                     instance = fixture('nothing');
                     instance.viewModel = clone(model);
+                    // wait for template to be stamped, and for the model to get attached
+                    setTimeout(done, 100);
                 });
 
                 it('the `view-model` attribute is changed to an empty string', function(done) {
@@ -105,6 +107,27 @@
                     expect(instance).to.have.compositionCleanedUp;
                     done();
                 });
+
+                it('when the `viewModel.CompositionProvider_0.Composition` property is changed to empty string via Polymer notification', function(done) {
+                    expect(instance).to.have.compositionAttached;
+
+                    // mimic dom-bind, propagating set property
+                    instance.viewModel.CompositionProvider_0.Composition = '';
+                    instance._setPendingPropertyOrPath('viewModel.CompositionProvider_0.Composition', '');
+
+                    expect(instance).to.have.compositionCleanedUp;
+                    done();
+                });
+                it('when the `viewModel.CompositionProvider_0.Composition` property is changed to `null` via Polymer notification', function(done) {
+                    expect(instance).to.have.compositionAttached;
+
+                    // mimic dom-bind, propagating set property
+                    instance.viewModel.CompositionProvider_0.Composition = null;
+                    instance._setPendingPropertyOrPath('viewModel.CompositionProvider_0.Composition', null);
+
+                    expect(instance).to.have.compositionCleanedUp;
+                    done();
+                });
             });
 
             function clone(obj) {
@@ -119,7 +142,7 @@
         chai.Assertion.addProperty('compositionCleanedUp', function () {
           var obj = chai.util.flag(this, 'object');
           new chai.Assertion(obj).to.be.instanceof(HTMLElement);
-          new chai.Assertion(obj.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(DEFAULT_COMPOSITION);
+          new chai.Assertion(obj.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(FALLBACK_COMPOSITION);
         });
     </script>
 
