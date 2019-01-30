@@ -17,6 +17,7 @@
     <link rel="import" href="../../../starcounter-include.html">
     <script src="../../helpers/WCT-Polyfill_bugs_workaround.js"></script>
     <script src="../../helpers/composition-fixtures.js"></script>
+    <script src="../../helpers/compareHTMLStrings.js"></script>
 </head>
 
 <body>
@@ -317,7 +318,7 @@
                     });
 
                     it('should change the shadowRoot to the fallback composition', function () {
-                        expect(include.shadowRoot.innerHTML).to.equal(REFERENCE_FALLBACK);
+                        expect(include.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_FALLBACK);
                     });
                 });
 
@@ -330,7 +331,7 @@
                     });
 
                     it('should change the shadowRoot to the fallback composition', function () {
-                        expect(include.shadowRoot.innerHTML).to.equal(REFERENCE_FALLBACK);
+                        expect(include.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_FALLBACK);
                     });
                 });
             });
