@@ -26,7 +26,7 @@
 
         const useShadowDOMV1 = Boolean(Element.prototype.attachShadow && Node.prototype.getRootNode);
         const DEFAULT_COMPOSITION = useShadowDOMV1 ? '<style>:host{display:block;}</style><slot></slot>' : '<style>:host{display:block;}</style><content select=":not([slot]),[slot=\'\']"></content>';
-        describe('cleanup changes of Composition$', function() {
+        describe('cleanup changes of Composition', function() {
             afterEach(function (done) {
                 // give more time to polyfill cleanup
                 setTimeout(done);
@@ -35,7 +35,7 @@
             var model = {
                 "Html": "../templateToInclude.html",
                 "CompositionProvider_0": {
-                    "Composition$": 'a Composition',
+                    "Composition": 'a Composition',
                     "PartialId": "given PartialId"
                 },
                 "doesItWork": "works!"
@@ -82,7 +82,7 @@
                     done();
                 });
 
-                it('when the `viewModel` property is changed to a view-model without Composition$', function(done) {
+                it('when the `viewModel` property is changed to a view-model without Composition', function(done) {
                     expect(instance).to.have.compositionAttached;
                     instance.viewModel = {
                         "Html": "../templateToInclude.html",
@@ -92,12 +92,12 @@
                     done();
                 });
 
-                it('when the `viewModel` property is changed to a view-model with empty Composition$', function(done) {
+                it('when the `viewModel` property is changed to a view-model with empty Composition', function(done) {
                     expect(instance).to.have.compositionAttached;
                     instance.viewModel = {
                         "Html": "../templateToInclude.html",
                         "CompositionProvider_0": {
-                            "Composition$": "",
+                            "Composition": "",
                             "PartialId": ""
                         },
                         "doesItWork": "works!"

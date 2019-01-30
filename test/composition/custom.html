@@ -23,7 +23,7 @@
             <starcounter-include view-model="{
                 &quot;CompositionProvider_0&quot;: {
                     &quot;PartialId&quot;: &quot;given PartialId&quot;,
-                    &quot;Composition$&quot;: &quot;customComposition!<slot></slot>&quot;
+                    &quot;Composition&quot;: &quot;customComposition!<slot></slot>&quot;
                 },
                 &quot;App&quot;: {
                     &quot;Html&quot;: &quot;template_w_declarative-shadow-dom.html&quot;,
@@ -70,10 +70,10 @@
                 });
             });
             describe('after composition is changed via `updateComposition` method', function () {
-                var composition$;
+                var composition;
                 var temporaryComposition = "temporary composition";
                 beforeEach(function () {
-                    composition$ = scInclude.viewModel.CompositionProvider_0.Composition$;
+                    composition = scInclude.viewModel.CompositionProvider_0.Composition;
                     scInclude.updateComposition(temporaryComposition);
                 });
                 it('should render the temporary composition', function () {
@@ -84,8 +84,8 @@
 
                     expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_DEFAULT);
                 });
-                it('should NOT overwrite Composition$', function () {
-                    expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal(composition$);
+                it('should NOT overwrite Composition', function () {
+                    expect(scInclude.viewModel.CompositionProvider_0.Composition).to.be.equal(composition);
                 });
             });
             describe('after view-model property is replaced with itself', function () {

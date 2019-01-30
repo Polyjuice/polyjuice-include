@@ -14,7 +14,7 @@ function partialWithCustom() {
     return {
         "CompositionProvider_0": {
             "PartialId": "given PartialId",
-            "Composition$": "customComposition!<slot></slot>"
+            "Composition": "customComposition!<slot></slot>"
         },
         "App": {
             "Html": "template_w_declarative-shadow-dom.html",
@@ -27,7 +27,7 @@ function partialWithDefault() {
     return {
         "CompositionProvider_0": {
             "PartialId": "given PartialId",
-            "Composition$": ""
+            "Composition": ""
         },
         "App": {
             "Html": "template_w_declarative-shadow-dom.html",
@@ -40,7 +40,7 @@ function partialWithFallback() {
     return {
         "CompositionProvider_0": {
             "PartialId": "given PartialId",
-            "Composition$": ""
+            "Composition": ""
         },
         "App": {
             "Html": "templateToInclude.html",
