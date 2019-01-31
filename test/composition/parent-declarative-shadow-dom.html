@@ -24,7 +24,7 @@
             <starcounter-include partial="{
                 &quot;CompositionProvider_0&quot;: {
                     &quot;PartialId&quot;: &quot;given PartialId&quot;,
-                    &quot;Composition$&quot;: &quot;&quot;
+                    &quot;Composition&quot;: &quot;&quot;
                 },
                 &quot;App&quot;: {
                     &quot;Html&quot;: &quot;template_w_declarative-shadow-dom.html&quot;,
@@ -42,7 +42,7 @@
             <starcounter-include partial="{
                 &quot;CompositionProvider_0&quot;: {
                     &quot;PartialId&quot;: &quot;given PartialId&quot;,
-                    &quot;Composition$&quot;: &quot;&quot;
+                    &quot;Composition&quot;: &quot;&quot;
                 },
                 &quot;App&quot;: {
                     &quot;Html&quot;: &quot;template_w_declarative-shadow-dom.html&quot;,
@@ -72,7 +72,7 @@
         var alternativePartial = {
             "CompositionProvider_0": {
                 "PartialId": "given PartialId",
-                "Composition$": "",
+                "Composition": "",
                 "ViewUris": []
             },
             "App": {
@@ -83,7 +83,7 @@
         var alternativePartialWithTwo = {
             "CompositionProvider_0": {
                 "PartialId": "given PartialId",
-                "Composition$": "custom!",
+                "Composition": "custom!",
                 "ViewUris": ["template_w_declarative-shadow-dom.html"]
             },
             "App1": {
@@ -126,10 +126,10 @@
             });
         });
         describe('after composition is changed from custom subset via `updateComposition` method', function() {
-            var composition$;
+            var composition;
             var temporaryComposition = "temporary composition";
             beforeEach(function() {
-                composition$ = scInclude.viewModel.CompositionProvider_0.Composition$;
+                composition = scInclude.viewModel.CompositionProvider_0.Composition;
                 scInclude.updateComposition(temporaryComposition);
             });
             it('should render the temporary composition', function() {
@@ -140,20 +140,8 @@
                 expect(scInclude.shadowRoot.innerHTML).to.be
                     .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
             });
-            it('should NOT overwrite Composition$', function() {
-                expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal(composition$);
-            });
-            describe('after saveLayout() is called', function() {
-                beforeEach(function() {
-                    scInclude.saveLayout();
-                    scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
-                });
-                it('should overwrite Composition$', function() {
-                    expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(temporaryComposition);
-                });
-                it('should render the temporary composition', function() {
-                    expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
-                });
+            it('should NOT overwrite Composition', function() {
+                expect(scInclude.viewModel.CompositionProvider_0.Composition).to.be.equal(composition);
             });
         });
         describe('after partial property is replaced with the partial that does custom subset composition', function () {
@@ -167,10 +155,10 @@
                     .sameHTMLString_ignoringShadyCSSPolyfillClasses("custom!" + REFERENCE_ALTERNATIVE_COMPOSITION);
             });
             describe('after composition is changed from custom subset via `updateComposition` method', function() {
-                var composition$;
+                var composition;
                 var temporaryComposition = "temporary composition";
                 beforeEach(function() {
-                    composition$ = scInclude.viewModel.CompositionProvider_0.Composition$;
+                    composition = scInclude.viewModel.CompositionProvider_0.Composition;
                     scInclude.updateComposition(temporaryComposition);
                 });
                 it('should render the temporary composition', function() {
@@ -182,20 +170,8 @@
                     expect(scInclude.shadowRoot.innerHTML).to.be
                         .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
                 });
-                it('should NOT overwrite Composition$', function() {
-                    expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal(composition$);
-                });
-                describe('after saveLayout() is called', function() {
-                    beforeEach(function() {
-                        scInclude.saveLayout();
-                        scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
-                    });
-                    it('should overwrite Composition$', function() {
-                        expect(scInclude.viewModel.CompositionProvider_0.Composition$.trim()).to.be.equal(temporaryComposition);
-                    });
-                    it('should render the temporary composition', function() {
-                        expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
-                    });
+                it('should NOT overwrite Composition', function() {
+                    expect(scInclude.viewModel.CompositionProvider_0.Composition).to.be.equal(composition);
                 });
             });
         });

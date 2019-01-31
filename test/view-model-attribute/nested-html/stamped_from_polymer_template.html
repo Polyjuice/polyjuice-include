@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html>
 
@@ -17,6 +16,8 @@
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../../../starcounter-include.html">
     <script src="../../helpers/WCT-Polyfill_bugs_workaround.js"></script>
+    <script src="../../helpers/composition-fixtures.js"></script>
+    <script src="../../helpers/compareHTMLStrings.js"></script>
 </head>
 
 <body>
@@ -39,12 +40,13 @@
                     'Html': 'scope2Html;,/?:@&=+$',
                     'doesItWork': 'works!'
                 },
-                'scope3': {
+                'CompositionProvider_0': {
+                    'Composition': 'custom composition',
                     'doesItWork': 'works!'
                 }
             };
         };
-        const MERGED_URL = '/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=';
+        const MERGED_URL = '/sc/htmlmerger?scope1=scope1Html&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&CompositionProvider_0=';
         var changedPartial = {
             'scopeA': {
                 'Html': 'scopeAHtml',
@@ -153,7 +155,7 @@
                                 'Html': 'scope2Html;,/?:@&=+$',
                                 'doesItWork': 'still works!'
                             },
-                            'scope3': {
+                            'CompositionProvider_0': {
                                 'doesItWork': 'still works!'
                             }
                         };
@@ -178,8 +180,8 @@
                     });
 
                     it('should attach new `.Html` property as href attribute and property for `<imported-template>`', function () {
-                        expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                        expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                        expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&CompositionProvider_0=');
+                        expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=scopeAHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&CompositionProvider_0=');
                     });
                     it('should NOT attach new view-model model to `imported-template` immediately', function () {
                         expect(importedTemplate.model).to.equal(viewModel);
@@ -263,8 +265,8 @@
                     });
 
                     it('should attach new `.Html` property as href attribute and property for `<imported-template>`', function () {
-                        expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
-                        expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&scope3=');
+                        expect(importedTemplate.getAttribute("href")).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&CompositionProvider_0=');
+                        expect(importedTemplate.href).to.equal('/sc/htmlmerger?scope1=changedHtml&scope2=scope2Html%3B%2C%2F%3F%3A%40%26%3D%2B%24&CompositionProvider_0=');
                     });
                     it('should NOT forward the notification to `imported-template` immediately', function () {
                         expect(importedTemplate._setPendingPropertyOrPath).not.to.be.called;
@@ -291,6 +293,45 @@
                     });
                     it('should attach same partial model to `imported-template`', function () {
                         expect(importedTemplate.model).to.equal(viewModel);
+                    });
+                });
+
+                describe('after `dom-bind`` changed composition provider\'s `Composition` property (e.g. `viewModel.CompositionProvider_0.Composition`) to a new one', function () {
+                    var changedComposition;
+                    beforeEach(function() {
+                        sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
+                        changedComposition = 'changed custom composition';
+                        domBind.set('model.Page.CompositionProvider_0.Composition', changedComposition);
+                    });
+
+                    it('should change the shadowRoot to the given composition', function () {
+                        expect(include.shadowRoot.innerHTML).to.equal(changedComposition);
+                    });
+                });
+
+                describe('after `dom-bind`` changed composition provider\'s `Composition` property (e.g. `viewModel.CompositionProvider_0.Composition`) to an empty one', function () {
+                    var changedComposition;
+                    beforeEach(function() {
+                        sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
+                        changedComposition = '';
+                        domBind.set('model.Page.CompositionProvider_0.Composition', changedComposition);
+                    });
+
+                    it('should change the shadowRoot to the fallback composition', function () {
+                        expect(include.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_FALLBACK);
+                    });
+                });
+
+                describe('after `dom-bind`` changed composition provider\'s `Composition` property (e.g. `viewModel.CompositionProvider_0.Composition`) to `null`', function () {
+                    var changedComposition;
+                    beforeEach(function() {
+                        sinon.stub(importedTemplate, "_setPendingPropertyOrPath");
+                        changedComposition = '';
+                        domBind.set('model.Page.CompositionProvider_0.Composition', changedComposition);
+                    });
+
+                    it('should change the shadowRoot to the fallback composition', function () {
+                        expect(include.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_FALLBACK);
                     });
                 });
             });

@@ -23,7 +23,7 @@
             <starcounter-include partial="{
                 &quot;CompositionProvider_0&quot;: {
                     &quot;PartialId&quot;: &quot;given PartialId&quot;,
-                    &quot;Composition$&quot;: &quot;&quot;
+                    &quot;Composition&quot;: &quot;&quot;
                 },
                 &quot;App&quot;: {
                     &quot;Html&quot;: &quot;templateToInclude.html&quot;,
@@ -81,20 +81,8 @@
                 scInclude.updateComposition(""); //this is how starcounter-layout-html-editor resets
                 expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_FALLBACK);
             });
-            it('should NOT overwrite Composition$', function() {
-                expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.equal("");
-            });
-            describe('after saveLayout() is called', function() {
-                beforeEach(function() {
-                    scInclude.saveLayout();
-                    scInclude.updateComposition(); //simulate notifyPath which can trigger updateComposition
-                });
-                it('should overwrite Composition$', function() {
-                    expect(scInclude.viewModel.CompositionProvider_0.Composition$).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(temporaryComposition);
-                });
-                it('should render the temporary composition', function() {
-                    expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(temporaryComposition);
-                });
+            it('should NOT overwrite Composition', function() {
+                expect(scInclude.viewModel.CompositionProvider_0.Composition).to.be.equal("");
             });
         });
         describe('after partial property is replaced with itself', function() {
