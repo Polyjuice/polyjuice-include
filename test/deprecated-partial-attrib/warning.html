@@ -63,29 +63,30 @@
                 "doesItWork": "worked!"
             }
         };
-        describe('When partial attribute is set in HTML, a warning should be thrown', function () {
+        describe('When partial attribute is set in HTML', function () {
             before(function (done) {
                 sinon.spy(console, 'warn');
-                fixture('given-in-HTML');
+                scInclude = fixture('given-in-HTML').querySelector('starcounter-include');
                 // wait for polyfills
                 setTimeout(done, 50);
             });
-            it('should throw a warning about using `partial` attribute', function () {
+            it('should throw a warning about using `partial` attribute, on this element', function () {
                 expect(console.warn).to.be.called;
+                expect(console.warn).to.be.calledWith(sinon.match(/partial.*deprecated/),scInclude);
             });
             after(function () {
                 console.warn.restore();
             })
         });
 
-        describe('When partial property is set via JS, a warning should be thrown', function () {
+        describe('When partial property is set via JS', function () {
             before(function (done) {
                 sinon.spy(console, 'warn');
                 scInclude = fixture('given-in-JS').querySelector('starcounter-include');
                 // wait for polyfills
                 setTimeout(done, 50);
             });
-            it('should throw a warning about using `partial` property', function () {
+            it('should throw a warning about using `partial` property, on this element', function () {
                 // control test
                 expect(console.warn).to.be.not.called;
 
@@ -93,20 +94,24 @@
 
                 // test now
                 expect(console.warn).to.be.called;
+                expect(console.warn).to.be.calledWith(sinon.match(/partial.*deprecated/),scInclude);
             });
             after(function () {
                 console.warn.restore();
             })
         });
 
-        describe('When partial property is set via dom-bind, a warning should be thrown', function () {
+        describe('When partial property is set via dom-bind', function () {
             before(function (done) {
                 sinon.spy(console, 'warn');
                 domBind = fixture('dom-bind').querySelector('dom-bind');
                 // wait for polyfills
-                setTimeout(done, 50);
+                setTimeout(()=>{
+                    scInclude = domBind.parentNode.querySelector('starcounter-include');
+                    done();
+                }, 50);
             });
-            it('should throw a warning about using `partial` property', function () {
+            it('should throw a warning about using `partial` property, on this element', function () {
                 // control test
                 expect(console.warn).to.be.not.called;
 
@@ -114,6 +119,7 @@
 
                 // test now
                 expect(console.warn).to.be.called;
+                expect(console.warn).to.be.calledWith(sinon.match(/partial.*deprecated/),scInclude);
             });
             after(function () {
                 console.warn.restore();
