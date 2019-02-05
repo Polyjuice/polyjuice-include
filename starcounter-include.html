@@ -277,82 +277,87 @@ version: 5.4.0
          * If parent composition not given, fetches default composition from the imported template.
          * If default composition not given, uses fallback composition.
          * Warning: the temporary composition might come from https://github.com/Starcounter/starcounter-layout-html-editor/blob/17b21f729facd9a8dcd4241fb5c48cb71de11af5/starcounter-layout-html-editor.html#L253
+         * compositionString given as `""` is considered `null`
+         * TODO: support empty composition
          * @see .stampComposition
          * @param  {String} compositionString stringified HTML for new Shadow Root
          */
         StarcounterIncludePrototype.updateComposition = function(compositionString) {
+            // render temporary composition if given
             if (compositionString) {
                 this.setAttribute('composition', 'temporary');
-                this.temporaryComposition = compositionString;
                 return this._renderCompositionChange(compositionString, () => this.stringToDocumentFragment(compositionString));
             }
-            else {
-                const compositionProvider = this.viewModel && this.viewModel[this.compositionProvider];
-                if (compositionProvider) {
-                    this.partialId = compositionProvider.PartialId;
-                    this.temporaryComposition = null;
-					// For backward compatibility
-					var compositionProviderComposition = compositionProvider.Composition;
-                    if (compositionString === "") {
-                        //this is a request from starcounter-layout-html-editor to reset to default composition
-                    }
-                    else if (compositionProviderComposition) {
-                        this.storedLayout = compositionProviderComposition; //should always be string
-                        this.setAttribute('composition', 'custom');
-                        return this._renderCompositionChange(compositionProviderComposition, () => {
-                            const merged = this.stringToDocumentFragment(this.storedLayout);
+            // this is a request from composition editor to reset to default composition
+            const forceDefault = (compositionString === ""); // compositionString === null
 
-                            if (compositionProvider.ViewUris) {
-                                const keys = Object.keys(this.viewModel);
-                                for(let key of keys) {
-                                    const scoped = this.viewModel[key];
-                                    if (scoped && scoped.Html && compositionProvider.ViewUris.indexOf(scoped.Html) === -1) {
-                                        if (this.defaultComposition) {
-                                            this.template.scopedNodes.forEach((nodes) => {
-                                                if(nodes.scope === key) {
-                                                    nodes.forEach((node) => appendComposition(merged, node));
-                                                }
-                                            });
+            // look for custom compostion provider
+            const compositionProvider = this.viewModel && this.viewModel[this.compositionProvider];
+            let compositionProviderComposition = undefined;
+            if (compositionProvider) {
+                this.partialId = compositionProvider.PartialId;
+				compositionProviderComposition = compositionProvider.Composition;
+                // Store whatever is given in the view model - it's the stored composition/layout
+                this._storedLayout = compositionProviderComposition; //should always be string
+            } else {
+                this.partialId = null;
+            }
+
+            // If there is a custom composition render it
+            // Empty composition ("") is treat as none (`null`)
+            if (compositionProviderComposition && !forceDefault) {
+                this.setAttribute('composition', 'custom');
+                return this._renderCompositionChange(compositionProviderComposition, () => {
+                    // convert string from view-model, to actual document fragment
+                    const customComposition = this.stringToDocumentFragment(compositionProviderComposition);
+
+                    // append default compositions for views not covered by this composition
+                    if (compositionProvider.ViewUris) {
+                        const keys = Object.keys(this.viewModel);
+                        for(let key of keys) {
+                            const scoped = this.viewModel[key];
+                            if (scoped && scoped.Html && compositionProvider.ViewUris.indexOf(scoped.Html) === -1) {
+                                if (this.defaultComposition) {
+                                    this.template.scopedNodes.forEach((nodes) => {
+                                        if(nodes.scope === key) {
+                                            nodes.forEach((node) => appendComposition(customComposition, node));
                                         }
-                                        else {
-                                            return false;
-                                        }
-                                    }
+                                    });
+                                }
+                                else {
+                                    // BUG,TODO (tomalec): looks like a bug
+                                    // This means that if there *is* a custom composition, but it does not cover all views,
+                                    // and it happend that none of the views had a default composition,
+                                    // we would discard custom composition and use default -> fallback
+                                    return false;
                                 }
                             }
-
-                            return merged;
-                        });
+                        }
                     }
-                }
-                else {
-                    this.partialId = null;
-                }
 
-                // Find parent composition to clone (if have one)
-                const parentCompositionTemplate = Array.from(this.children)
-                    .find((element)=>{
-                        return element.matches
-                            && element.matches('template[is="declarative-shadow-dom"][presentation="parent"],template[is="declarative-shadow-dom"]:not([presentation])')
-                    });
-                const parentComposition = parentCompositionTemplate && parentCompositionTemplate.content;
-                if (parentComposition) {
-                    parentCompositionTemplate.setAttribute('presentation', 'parent');
-                    this.setAttribute('composition', 'parent');
-                    this.temporaryComposition = null;
-                    return this._renderCompositionChange(parentComposition, () => parentComposition.cloneNode(true));
-                }
-                if (this.defaultComposition) {
-                    this.temporaryComposition = null;
-                    this.setAttribute('composition', 'default');
-                    return this._renderCompositionChange(this.defaultComposition, () => this.defaultComposition.cloneNode(true));
-                }
-
-                if (!this.temporaryComposition) {
-                    this.setAttribute('composition', 'fallback');
-                    return this._renderCompositionChange("fallback", () => undefined);
-                }
+                    return customComposition;
+                });
             }
+            // Find parent composition to clone (if have one)
+            const parentCompositionTemplate = Array.from(this.children)
+                .find((element)=>{
+                    return element.matches
+                        && element.matches('template[is="declarative-shadow-dom"][presentation="parent"],template[is="declarative-shadow-dom"]:not([presentation])')
+                });
+            const parentComposition = parentCompositionTemplate && parentCompositionTemplate.content;
+            if (parentComposition) {
+                parentCompositionTemplate.setAttribute('presentation', 'parent');
+                this.setAttribute('composition', 'parent');
+                return this._renderCompositionChange(parentComposition, () => parentComposition.cloneNode(true));
+            }
+            if (this.defaultComposition) {
+                this.setAttribute('composition', 'default');
+                return this._renderCompositionChange(this.defaultComposition, () => this.defaultComposition.cloneNode(true));
+            }
+
+            // render fallback if there is nothing better
+            this.setAttribute('composition', 'fallback');
+            return this._renderCompositionChange("fallback", () => undefined);
         };
         // to fool Polymer into thinking `starcounter-include` is a polymer element thus forwarding notifications to it.
         StarcounterIncludePrototype.__dataHasAccessor = {partial: true, viewModel: true};
@@ -411,7 +416,7 @@ version: 5.4.0
                     // Just the composition was changed
                     // and it's different than already stored one
                     subPath === this.compositionProvider + '.Composition' &&
-                    value != this.storedLayout
+                    value != this._storedLayout
                 ) {
                     this.updateComposition();
                     return;
