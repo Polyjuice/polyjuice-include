@@ -282,6 +282,7 @@ version: 5.4.0
          */
         StarcounterIncludePrototype.updateComposition = function(compositionString) {
             if (compositionString) {
+                this.setAttribute('composition', 'temporary');
                 this.temporaryComposition = compositionString;
                 return this._renderCompositionChange(compositionString, () => this.stringToDocumentFragment(compositionString));
             }
@@ -297,6 +298,7 @@ version: 5.4.0
                     }
                     else if (compositionProviderComposition) {
                         this.storedLayout = compositionProviderComposition; //should always be string
+                        this.setAttribute('composition', 'custom');
                         return this._renderCompositionChange(compositionProviderComposition, () => {
                             const merged = this.stringToDocumentFragment(this.storedLayout);
 
@@ -336,16 +338,19 @@ version: 5.4.0
                 const parentComposition = parentCompositionTemplate && parentCompositionTemplate.content;
                 if (parentComposition) {
                     parentCompositionTemplate.setAttribute('presentation', 'parent');
+                    this.setAttribute('composition', 'parent');
                     this.temporaryComposition = null;
                     return this._renderCompositionChange(parentComposition, () => parentComposition.cloneNode(true));
                 }
                 if (this.defaultComposition) {
                     this.temporaryComposition = null;
+                    this.setAttribute('composition', 'default');
                     return this._renderCompositionChange(this.defaultComposition, () => this.defaultComposition.cloneNode(true));
                 }
 
                 if (!this.temporaryComposition) {
-                    return this._renderCompositionChange("temporary", () => undefined);
+                    this.setAttribute('composition', 'fallback');
+                    return this._renderCompositionChange("fallback", () => undefined);
                 }
             }
         };
