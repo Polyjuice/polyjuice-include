@@ -96,8 +96,6 @@
 
                     expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_DEFAULT);
                 });
-
-                });
                 it('should return to custom after resetting/refreshing/discarding (calling `scInclude.updateComposition()`)', function () {
                     scInclude.updateComposition(); //this is how starcounter-layout-html-editor resets
 
