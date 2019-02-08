@@ -289,7 +289,7 @@ version: 5.4.0
                 return this._renderCompositionChange(compositionString, () => this.stringToDocumentFragment(compositionString));
             }
             // this is a request from composition editor to reset to default composition
-            const forceDefault = (compositionString === ""); // compositionString === null
+            const forceDefault = (compositionString === ""); // should be changed to compositionString === null
 
             // look for custom compostion provider
             const compositionProvider = this.viewModel && this.viewModel[this.compositionProvider];
