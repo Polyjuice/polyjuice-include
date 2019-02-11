@@ -298,7 +298,7 @@ version: 5.4.0
                 this.partialId = compositionProvider.PartialId;
 				compositionProviderComposition = compositionProvider.Composition;
                 // Store whatever is given in the view model - it's the stored composition/layout
-                this._storedLayout = compositionProviderComposition; //should always be string
+                this._storedComposition = compositionProviderComposition; //should always be string
             } else {
                 this.partialId = null;
             }
@@ -416,7 +416,7 @@ version: 5.4.0
                     // Just the composition was changed
                     // and it's different than already stored one
                     subPath === this.compositionProvider + '.Composition' &&
-                    value != this._storedLayout
+                    value != this._storedComposition
                 ) {
                     this.updateComposition();
                     return;
