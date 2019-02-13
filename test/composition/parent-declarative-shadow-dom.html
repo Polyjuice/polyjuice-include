@@ -110,6 +110,9 @@
             expect(scInclude.shadowRoot.innerHTML.trim()).to.be
                 .sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_COMPOSITION);
         });
+        it('should have composition attribute set to `parent`', function () {
+            expect(scInclude).to.have.HTMLAttribute('composition').equal("parent");
+        });
         it('should attach `parent` as a value of the `presentation` attribute, to the templates', function () {
             expect(scInclude.firstElementChild).to.have
                 .HTMLAttribute('presentation').equal('parent');
@@ -135,6 +138,9 @@
             it('should render the temporary composition', function() {
                 expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
             });
+            it('should have composition attribute set to `temporary`', function () {
+                expect(scInclude).to.have.HTMLAttribute('composition').equal("temporary");
+            });
             it('should return to parent after resetting', function() {
                 scInclude.updateComposition(""); //this is how starcounter-layout-html-editor resets
                 expect(scInclude.shadowRoot.innerHTML).to.be
@@ -154,6 +160,9 @@
                 expect(scInclude.shadowRoot.innerHTML).to.be
                     .sameHTMLString_ignoringShadyCSSPolyfillClasses("custom!" + REFERENCE_ALTERNATIVE_COMPOSITION);
             });
+            it('should have composition attribute set to `custom`', function () {
+                expect(scInclude).to.have.HTMLAttribute('composition').equal("custom");
+            });
             describe('after composition is changed from custom subset via `updateComposition` method', function() {
                 var composition;
                 var temporaryComposition = "temporary composition";
@@ -163,6 +172,9 @@
                 });
                 it('should render the temporary composition', function() {
                     expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
+                });
+                it('should have composition attribute set to `temporary`', function () {
+                    expect(scInclude).to.have.HTMLAttribute('composition').equal("temporary");
                 });
                 it('should return to parent after resetting', function() {
 

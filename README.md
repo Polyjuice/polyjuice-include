@@ -126,6 +126,7 @@ Attribute     | Options  | Default      | Description
 `partial`     | *JSON*   |              | Set to provide partial JSON view-model. It's also a `partial` property.
 `partial-id`  | *String* |              | **Read-only** attribute that represents `PartialID` fetched from `partial` JSON. It's also a `partialId` property.
 `view-model`  | *JSON*   |              | Alias for `partial`
+`composition` | *String* |              | **Read-only** attribute that reflects currently used [composition kind](#kinds-of-compositions)
 
 ## Properties
 

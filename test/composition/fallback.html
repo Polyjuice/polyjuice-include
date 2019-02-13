@@ -49,6 +49,9 @@
             expect(scInclude.shadowRoot).to.be.not.null;
             expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_FALLBACK);
         });
+        it('should have composition attribute set to `fallback`', function () {
+            expect(scInclude).to.have.HTMLAttribute('composition').equal("fallback");
+        });
         describe('after partial property is replaced with a partial that contains a default composition', function() {
             beforeEach(function(done) {
                 scInclude.partial = partialWithDefault();
@@ -57,6 +60,9 @@
             it('should use it as its composition', function() {
                 expect(scInclude.shadowRoot).to.be.not.null;
                 expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_DEFAULT);
+            });
+            it('should have composition attribute set to `default`', function () {
+                expect(scInclude).to.have.HTMLAttribute('composition').equal("default");
             });
         });
         describe('after partial property is replaced with a partial that contains a custom composition', function() {
@@ -68,6 +74,9 @@
                 expect(scInclude.shadowRoot).to.be.not.null;
                 expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_CUSTOM);
             });
+            it('should have composition attribute set to `custom`', function () {
+                expect(scInclude).to.have.HTMLAttribute('composition').equal("custom");
+            });
         });
         describe('after composition is changed via `updateComposition` method', function() {
             var temporaryComposition = "temporary composition";
@@ -76,6 +85,9 @@
             });
             it('should render the temporary composition', function() {
                 expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(temporaryComposition);
+            });
+            it('should have composition attribute set to `temporary`', function () {
+                expect(scInclude).to.have.HTMLAttribute('composition').equal("temporary");
             });
             it('should return to fallback after resetting', function() {
                 scInclude.updateComposition(""); //this is how starcounter-layout-html-editor resets

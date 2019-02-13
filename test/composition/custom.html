@@ -49,7 +49,10 @@
 
                 expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_CUSTOM);
             });
-            describe('after viewModel property is replaced with a view-model that contains a default composition', function () {
+            it('should have composition attribute set to `custom`', function () {
+                expect(scInclude).to.have.HTMLAttribute('composition').equal("custom");
+            });
+            describe('after viewModel property is replaced with a view-model which views contain a default composition', function () {
                 beforeEach(function (done) {
                     scInclude.viewModel = partialWithDefault();
                     setTimeout(done, 500);
@@ -57,6 +60,9 @@
                 it('should use it as its composition', function () {
                     expect(scInclude.shadowRoot).to.be.not.null;
                     expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_DEFAULT);
+                });
+                it('should have composition attribute set to `default`', function () {
+                    expect(scInclude).to.have.HTMLAttribute('composition').equal("default");
                 });
             });
             describe('after viewModel property is replaced with a view-model that contains an empty composition', function () {
@@ -67,6 +73,9 @@
                 it('should use fallback as its composition', function () {
                     expect(scInclude.shadowRoot).to.be.not.null;
                     expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_FALLBACK);
+                });
+                it('should have composition attribute set to `fallback`', function () {
+                    expect(scInclude).to.have.HTMLAttribute('composition').equal("fallback");
                 });
             });
             describe('after composition is changed via `updateComposition` method', function () {
@@ -79,10 +88,18 @@
                 it('should render the temporary composition', function () {
                     expect(scInclude.shadowRoot.innerHTML.trim()).to.be.equal(temporaryComposition);
                 });
-                it('should return to default after resetting (setting to empty)', function () {
+                it('should have composition attribute set to `temporary`', function () {
+                    expect(scInclude).to.have.HTMLAttribute('composition').equal("temporary");
+                });
+                it('should return to default after force resetting (setting to empty)', function () {
                     scInclude.updateComposition(""); //this is how starcounter-layout-html-editor resets
 
                     expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_DEFAULT);
+                });
+                it('should return to custom after resetting/refreshing/discarding (calling `scInclude.updateComposition()`)', function () {
+                    scInclude.updateComposition(); //this is how starcounter-layout-html-editor resets
+
+                    expect(scInclude.shadowRoot.innerHTML).to.be.sameHTMLString_ignoringShadyCSSPolyfillClasses(REFERENCE_CUSTOM);
                 });
                 it('should NOT overwrite `compositionProvider.Composition`', function () {
                     expect(scInclude.viewModel.CompositionProvider_0.Composition).to.be.equal(composition);
