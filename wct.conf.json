@@ -7,12 +7,14 @@
     "sauce": {
       "browsers": [
         {
-          "browserName": "microsoftedge",
-          "platform": "Windows 10"
+          "browserName": "Chrome",
+          "platform": "Windows 10",
+          "version": "71.0"
         },
         {
-          "browserName": "safari",
-          "platform": "OS X 10.13"
+          "browserName": "Firefox",
+          "platform": "Windows 10",
+          "version": "64.0"
         }
       ]
     }
