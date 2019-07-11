@@ -1,3 +1,5 @@
+**Important**: `starcounter-include` component was designed for Starcounter 2 family and no longer supported in Starcounter 3. There will be no further development or improvements.
+
 &lt;starcounter-include&gt; [![Build Status](https://travis-ci.org/Starcounter/starcounter-include.svg?branch=master)](https://travis-ci.org/Starcounter/starcounter-include)
 ==============
 
