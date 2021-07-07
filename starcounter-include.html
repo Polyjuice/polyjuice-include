@@ -310,27 +310,30 @@ version: 5.4.0
                 return this._renderCompositionChange(compositionProviderComposition, () => {
                     // convert string from view-model, to actual document fragment
                     const customComposition = this.stringToDocumentFragment(compositionProviderComposition);
-
+                    
                     // append default compositions for views not covered by this composition
-                    if (compositionProvider.ViewUris) {
-                        const keys = Object.keys(this.viewModel);
-                        for(let key of keys) {
-                            const scoped = this.viewModel[key];
-                            if (scoped && scoped.Html && compositionProvider.ViewUris.indexOf(scoped.Html) === -1) {
-                                if (this.defaultComposition) {
-                                    this.template.scopedNodes.forEach((nodes) => {
-                                        if(nodes.scope === key) {
-                                            nodes.forEach((node) => appendComposition(customComposition, node));
-                                        }
-                                    });
-                                }
-                                else {
-                                    // BUG,TODO (tomalec): looks like a bug
-                                    // This means that if there *is* a custom composition, but it does not cover all views,
-                                    // and it happend that none of the views had a default composition,
-                                    // we would discard custom composition and use default -> fallback
-                                    return false;
-                                }
+                    const defaultViewHtmlsToBeRendered =
+                        compositionProvider.ActualViewUris.filter(
+                                x => !compositionProvider.ViewUris.includes(x.hasOwnProperty("BlendingUri") ? x.BlendingUri : x))
+                            .map(x => x.hasOwnProperty("ViewHtml") ? x.ViewHtml : x);
+
+                    const keys = Object.keys(this.viewModel);
+                    for (let key of keys) {
+                        const scoped = this.viewModel[key];
+                        if (scoped && scoped.Html && defaultViewHtmlsToBeRendered.includes(scoped.Html)) {
+                            if (this.defaultComposition) {
+                                this.template.scopedNodes.forEach((nodes) => {
+                                    if (nodes.scope === key) {
+                                        nodes.forEach((node) => appendComposition(customComposition, node));
+                                    }
+                                });
+                            }
+                            else {
+                                // BUG,TODO (tomalec): looks like a bug
+                                // This means that if there *is* a custom composition, but it does not cover all views,
+                                // and it happend that none of the views had a default composition,
+                                // we would discard custom composition and use default -> fallback
+                                return false;
                             }
                         }
                     }
